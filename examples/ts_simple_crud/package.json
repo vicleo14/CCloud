@@ -1,0 +1,30 @@
+{
+  "name": "prac2",
+  "version": "1.0.0",
+  "description": "Mini Saes",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && npm run serve",
+    "serve": "node dist/server.js"
+  },
+  "keywords": [
+    "Saes",
+    "mini"
+  ],
+  "author": "DavidJChavez",
+  "license": "MIT",
+  "dependencies": {
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.1",
+    "@types/node": "^11.11.0",
+    "@types/socket.io": "^2.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3333"
+  }
+}
