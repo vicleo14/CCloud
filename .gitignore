@@ -1,3 +1,7 @@
+# Custom directories
+user_storage/alumno/*
+user_storage/grupo/*
+
 # Logs
 logs
 *.log
