@@ -1,3 +1,9 @@
+--Author: Morales Flores Victor Leonel
+--Date:2019-04-28
+--ESCOM-IPN(MX)
+
+
+--PROTOTIPES
 --addRequestState(IN in_desc VARCHAR(300))
 --addActionType(IN cod INT,IN in_name VARCHAR(50),IN in_desc VARCHAR(300))
 --addRole(IN cod INT,IN in_name VARCHAR(50),IN in_desc VARCHAR(300))

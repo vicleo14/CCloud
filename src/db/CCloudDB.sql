@@ -1,3 +1,7 @@
+--Author: Morales Flores Victor Leonel
+--Date:2019-04-28
+--ESCOM-IPN(MX)
+
 DROP DATABASE IF EXISTS db_Ccloud;
 CREATE DATABASE db_Ccloud;
 USE db_Ccloud;
