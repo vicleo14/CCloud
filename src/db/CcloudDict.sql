@@ -18,6 +18,7 @@ CALL addActionType(1004,"User unlocked","");
 CALL addActionType(1005,"User updated","A user information was updated");
 CALL addActionType(1006,"User registrered","New user registrered");
 CALL addActionType(1007,"Master user registrered","New master user registrered");
+CALL addActionType(1008,"User deleted","");
 CALL addActionType(2000,"Undefined file action","");
 CALL addActionType(2001,"File uploaded","New file uploaded by a user");
 CALL addActionType(2002,"File dowunloaded","A user download a file");
@@ -49,3 +50,8 @@ CALL addContactType(5,"WhatsApp","Phone number associated with a whatsApp profil
 CALL addKeyType(0,"Undefined key type","");
 CALL addKeyType(1,"Encrypt/Decrypt key","Symmetric key for cipher and decipher files");
 CALL addKeyType(2,"Integrity key","Key for check the file integrity");
+
+--users
+CALL signIn("XXXXXXXXXXXXXXXXX1","MEMO","NARANJO","FERRERA","1998-01-01",1,"memo1","xxxxx",1,"memo1@gmail.com",1);
+CALL signIn("XXXXXXXXXXXXXXXXX2","DAVID JOSUE","RIDRÍGUEZ","CHÁVEZ","1998-01-01",1,"david1","xxxxx",1,"david1@gmail.com",1);
+CALL signIn("MOFVXXXXXXXXXXXXXX","VÍCTOR","MORALES","FLORES","1998-06-14",1,"victor1","xxxxx",1,"vicleo.morales@hotmail.com",1);

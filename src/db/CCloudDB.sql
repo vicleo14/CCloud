@@ -91,6 +91,8 @@ CREATE TABLE keyRequest(
 id_key INT NOT NULL,
 id_user VARCHAR(50) NOT NULL,
 nb_state INT NOT NULL,
+nb_code INT,
+dt_code TIMESTAMP,
 PRIMARY KEY(id_key,id_user),
 FOREIGN KEY(id_user) REFERENCES users(tx_nickname),
 FOREIGN KEY(id_key) REFERENCES keysC(id_file)
