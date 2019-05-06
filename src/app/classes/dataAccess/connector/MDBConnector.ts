@@ -4,13 +4,13 @@ import { createConnection } from 'net';
 
 export class MDBConnector implements IConnector
 {
-    private readonly HOST="localhost";
-    private readonly DATABASE="db_Ccloud";
-    private readonly PORT="3306";
-    private readonly USER="root";
-    private readonly PASSWORD="root";
+    protected readonly HOST="localhost";
+    protected readonly DATABASE="db_Ccloud";
+    protected readonly PORT="3306";
+    protected readonly USER="root";
+    protected readonly PASSWORD="root";
     //private mysql=require('mysql');
-    private connection;
+    protected connection;
     constructor(){}
     connect():void
     {

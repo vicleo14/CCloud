@@ -1,5 +1,11 @@
+//tsc test/TDAO_User.ts
+//node test/TDAO_User.js 
+
 import {IConnector} from "../src/app/classes/dataAccess/connector/IConnector"
 import {MDBConnector} from "../src/app/classes/dataAccess/connector/MDBConnector"
+import { DTOUser } from "../src/app/classes/dataAccess/dto/DTOUser";
+import { MDBDAOUser } from "../src/app/classes/dataAccess/dao/MDBDAOUser";
+import { IDAOUser } from "../src/app/classes/dataAccess/dao/IDAOUser";
 
 export class TDAO_User
 {
@@ -8,22 +14,25 @@ export class TDAO_User
     }
     public main():void{
         console.log("Hola");
-        var connector:IConnector;
-        connector= new MDBConnector();
-        connector.connect();
-        var query = connector.getConnection().query(
-            //'INSERT INTO personaje(nombre, apellido, biografia) VALUES(?, ?, ?)', 
-            'SELECT * FROM keyType', 
-            ['Homero', 'Simpson', 'Esposo de Marge y padre de Bart, Lisa y Maggie.'], 
-            function(error, result){
-            if(error){
-               throw error;
-            }else{
-               console.log(result);
-               connector.close();
-            }
-          }
-         );
+
+       
+        var contacts:string[]=["prueba@correo.com"];
+        console.log(contacts[0]);
+        var user:DTOUser=new DTOUser();
+        //user.setCurp("000000000000000000");
+        //user.setName("Prueba");
+        //user.setLastNameA("Prueba");
+        //user.setLastNameB("Prueba");
+        user.setNickname("prueba1");
+        //user.setBirthday(new Date());
+        //user.setRole(1);
+        //user.setHashPassword("XXXXXXXX"); 
+        //user.setActive(true);
+        //user.setContacts(contacts);
+
+        var daoUser:IDAOUser=new MDBDAOUser();
+        var aux=daoUser.findUsers(user);
+
         
     }
 }

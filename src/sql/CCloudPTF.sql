@@ -73,13 +73,46 @@ BEGIN
 END #
 DELIMITER ;
 --Eliminar usuario
---DROP PROCEDURE IF EXISTS deleteUser;
---DELIMITER #
---CREATE PROCEDURE deleteUser(IN nickname VARCHAR(50))
---BEGIN
---	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
---	DELETE FROM contact WHERE tx_curp LIKE @curp;
---	DELETE FROM users WHERE tx_nickname LIKE nickname;
---	DELETE FROM person WHERE tx_curp LIKE @curp;	
---END #
---DELIMITER ;
+DROP PROCEDURE IF EXISTS deleteUser;
+DELIMITER #
+CREATE PROCEDURE deleteUser(IN nickname VARCHAR(50))
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	DELETE FROM contact WHERE tx_curp LIKE @curp;
+	DELETE FROM actions WHERE id_user  LIKE nickname;	
+	DELETE FROM users WHERE tx_nickname LIKE nickname;
+	DELETE FROM person WHERE tx_curp LIKE @curp;	
+END #
+DELIMITER ;
+--obtener usuario
+DROP PROCEDURE IF EXISTS findUser;
+DELIMITER #
+CREATE PROCEDURE findUser(IN nickname VARCHAR(50))
+BEGIN
+	SELECT tx_nickname,tx_hash_password,bl_state,person.tx_curp,tx_name,tx_lastname_a,tx_lastname_b,dt_birthday,id_role
+	FROM users INNER JOIN person ON users.tx_curp=person.tx_curp
+	WHERE tx_nickname LIKE nickname;
+END #
+DELIMITER ;
+
+--obtener contactos de usuario
+DROP PROCEDURE IF EXISTS findUserContacts;
+DELIMITER #
+CREATE PROCEDURE findUserContacts(IN nickname VARCHAR(50))
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	select * from contact where tx_curp LIKE @curp;
+	
+END #
+DELIMITER ;
+
+--Agregar contacto
+DROP PROCEDURE IF EXISTS addContact;
+DELIMITER #
+CREATE PROCEDURE addContact(IN nickname VARCHAR(50),IN contact VARCHAR(100),IN contTypeIn INT)
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	INSERT INTO contact VALUES(contact,@curp,contTypeIn);
+END #
+DELIMITER ;
+
