@@ -1,5 +1,5 @@
-//tsc test/TDAO_User.ts
-//node test/TDAO_User.js 
+//tsc test/testUser.ts
+//node test/testUser.js 
 
 import {IConnector} from "../src/app/classes/dataAccess/connector/IConnector"
 import {MDBConnector} from "../src/app/classes/dataAccess/connector/MDBConnector"
@@ -7,13 +7,10 @@ import { DTOUser } from "../src/app/classes/dataAccess/dto/DTOUser";
 import { MDBDAOUser } from "../src/app/classes/dataAccess/dao/MDBDAOUser";
 import { IDAOUser } from "../src/app/classes/dataAccess/dao/IDAOUser";
 
-export class TDAO_User
+
+async function main()
 {
-    constructor()
-    {
-    }
-    public async main():void{
-        console.log("Pruebas de DAO para User:");
+    console.log("Pruebas de DAO para User:");
 
        //Agregar un usuario con DAO
         /*
@@ -42,7 +39,6 @@ export class TDAO_User
         //console.log(user2.getLastNameB());
         //console.log(user2.getBirthday());
         //console.log(user2.getRole());
-    }
 }
-var tdaouser:TDAO_User=new TDAO_User();
-tdaouser.main();
+
+main()

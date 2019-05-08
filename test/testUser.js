@@ -1,6 +1,4 @@
 "use strict";
-//tsc test/TDAO_User.ts
-//node test/TDAO_User.js 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -39,30 +37,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var DTOUser_1 = require("../src/app/classes/dataAccess/dto/DTOUser");
 var MDBDAOUser_1 = require("../src/app/classes/dataAccess/dao/MDBDAOUser");
-var TDAO_User = /** @class */ (function () {
-    function TDAO_User() {
-    }
-    TDAO_User.prototype.main = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var user2, daoUser2, aux;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log("Pruebas de DAO para User:");
-                        user2 = new DTOUser_1.DTOUser();
-                        user2.setNickname("victor1");
-                        daoUser2 = new MDBDAOUser_1.MDBDAOUser();
-                        return [4 /*yield*/, daoUser2.findUsers(user2)];
-                    case 1:
-                        aux = _a.sent();
-                        console.log(user2.getName());
-                        return [2 /*return*/];
-                }
-            });
+function main() {
+    return __awaiter(this, void 0, void 0, function () {
+        var user2, daoUser2, aux;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("Pruebas de DAO para User:");
+                    user2 = new DTOUser_1.DTOUser();
+                    user2.setNickname("victor1");
+                    daoUser2 = new MDBDAOUser_1.MDBDAOUser();
+                    return [4 /*yield*/, daoUser2.findUsers(user2)];
+                case 1:
+                    aux = _a.sent();
+                    console.log(user2.getName());
+                    return [2 /*return*/];
+            }
         });
-    };
-    return TDAO_User;
-}());
-exports.TDAO_User = TDAO_User;
-var tdaouser = new TDAO_User();
-tdaouser.main();
+    });
+}
