@@ -16,7 +16,6 @@ export class MDBDAOUser extends MDBConnector implements IDAOUser
         {
             state=0;
         }
-        console.log(user.getContacts()[0]);
         var query = this.connection.query(
            'CALL signIn(?,?,?,?,?,?,?,?,?,?,?)',
             [user.getCurp(),
@@ -34,7 +33,8 @@ export class MDBDAOUser extends MDBConnector implements IDAOUser
             function(error, result){
             if(error){
                throw error;
-            }else{
+            }
+            else{
                console.log(result);
             }
           }
@@ -47,12 +47,20 @@ export class MDBDAOUser extends MDBConnector implements IDAOUser
         this.connect();
         var query = this.connection.query(
            'CALL findUser(?)',[ user.getNickname()], 
-            function(error, result){
-            if(error){
-               throw error;
-            }else{
-               console.log(result[0].id_role);
-            }
+            async function(error, result){
+                if(error){
+                throw error;
+                }else{
+                    user.setName(result[0][0].tx_name);
+                    console.log(user.getName())
+                    user.setHashPassword(result[0][0].tx_hash_password);
+                    user.setActive(result[0][0].bl_state);
+                    user.setCurp(result[0][0].tx_curp);
+                    user.setLastNameA(result[0][0].tx_lastname_a);
+                    user.setLastNameB(result[0][0].tx_lastname_b);
+                    user.setBirthday(result[0][0].dt_birthday);
+                    user.setRole(result[0][0].id_role);
+                }
           }
          );
          this.close();
