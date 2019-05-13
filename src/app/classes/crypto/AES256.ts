@@ -31,4 +31,29 @@ export  class AES256 implements IBlockCipher{
         decrypted += decipher.final('ascii');
         return decrypted;
     }
+     cipherFile(data:Buffer,key:string):Buffer
+    {
+        var iv=this.ivGenerator.generateRandom(CryptoConstants.AES_IVSIZE_BYTES);
+        var buf_iv = Buffer.from(iv);
+        const cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
+        var buf_d = cipher.update(data);
+        var buf_d2 = cipher.final();
+        const totLength = buf_d.length + buf_d2.length + buf_iv.length;
+        var encrypted = Buffer.concat([buf_iv, buf_d, buf_d2], totLength);
+        return encrypted;
+    }
+    
+    decipherFile(data:Buffer,key:string):Buffer
+    {
+        var buf_iv = Buffer.alloc(CryptoConstants.AES_IVSIZE_BYTES);
+        data.copy(buf_iv, 0, 0, CryptoConstants.AES_IVSIZE_BYTES);
+        const decipher = crypto.createDecipheriv(this.ALGORITHM, key, buf_iv);
+        var content = Buffer.alloc(data.length-CryptoConstants.AES_IVSIZE_BYTES);
+        data.copy(content, 0, CryptoConstants.AES_IVSIZE_BYTES, data.length);
+        var buf_d = decipher.update(content);
+        var buf_d2 = decipher.final();
+        const totLength = buf_d.length + buf_d2.length;
+        var decrypted = Buffer.concat([buf_d, buf_d2], totLength);
+        return decrypted;
+    }
 }
