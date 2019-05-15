@@ -1,4 +1,5 @@
 import * as mysql from 'mysql';
+import {promisify} from 'util';
 import { IConnector } from "./IConnector";
 import { createConnection } from 'net';
 
@@ -12,28 +13,31 @@ export class MDBConnector implements IConnector
     //private mysql=require('mysql');
     protected connection;
     constructor(){}
-    connect():void
+    async connect()
     {
        
-        this.connection=mysql.createConnection(
-            {
-                host: this.HOST,
+        
+            const database=
+            {   host: this.HOST,
                 user: this.USER,
                 password: this.PASSWORD,
                 database: this.DATABASE
             }
-        );
-        this.connection.connect(function(error){
+        //this.connection=await mysql.createConnection(database);
+        this.connection=mysql.createPool(database);
+        console.log("Uno");
+        await this.connection.connect(async function(error){
             if(error){
                throw error;
             }else{
                console.log('Conexion correcta.');
             }
          });
+         console.log("Dos");
     }
-    close():void
+    async close()
     {
-        this.connection.end();
+        await this.connection.end();
         console.log('Conexion cerrada.');
     }
     getConnection():any{

@@ -61,14 +61,11 @@ CREATE PROCEDURE signIn(
 	IN roleIn INT,
 	IN nickname VARCHAR(50),
 	IN hash_password VARCHAR(256),
-	IN stateIn BOOLEAN,
-	IN contact VARCHAR(100),
-	IN contTypeIn INT
+	IN stateIn BOOLEAN
 )
 BEGIN
 	INSERT INTO person VALUES(curp,nameIn,lastname_a,lastname_b,birthday,roleIn);
 	INSERT INTO users VALUES(nickname,hash_password,stateIn,curp);
-	INSERT INTO contact VALUES(contact,curp,contTypeIn);
 	INSERT INTO actions VALUES(now(),nickname,1006);
 END #
 DELIMITER ;

@@ -30,15 +30,14 @@ async function main()
 
 
         //Buscar usuario con DAO
-        var user2:DTOUser=new DTOUser();
-        user2.setNickname("victor1");
         var daoUser2:IDAOUser=new MDBDAOUser();
-        const aux= await daoUser2.findUsers(user2);
-        //console.log(user2.getName());
+        const aux= await daoUser2.findUsers("victor1");
+        console.log(aux.getName());
         //console.log(user2.getLastNameA());
         //console.log(user2.getLastNameB());
         //console.log(user2.getBirthday());
         //console.log(user2.getRole());
+        console.log("Termina opearcion");
 }
 
 main()

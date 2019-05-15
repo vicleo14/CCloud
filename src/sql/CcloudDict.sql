@@ -52,6 +52,6 @@ CALL addKeyType(1,"Encrypt/Decrypt key","Symmetric key for cipher and decipher f
 CALL addKeyType(2,"Integrity key","Key for check the file integrity");
 
 --users
-CALL signIn("XXXXXXXXXXXXXXXXX1","MEMO","NARANJO","FERRERA","1998-01-01",1,"memo1","xxxxx",1,"memo1@gmail.com",1);
-CALL signIn("XXXXXXXXXXXXXXXXX2","DAVID JOSUE","RIDRÍGUEZ","CHÁVEZ","1998-01-01",1,"david1","xxxxx",1,"david1@gmail.com",1);
-CALL signIn("MOFVXXXXXXXXXXXXXX","VÍCTOR","MORALES","FLORES","1998-06-14",1,"victor1","xxxxx",1,"vicleo.morales@hotmail.com",1);
+CALL signIn("XXXXXXXXXXXXXXXXX1","MEMO","NARANJO","FERRERA","1998-01-01",1,"memo1","xxxxx",1);
+CALL signIn("XXXXXXXXXXXXXXXXX2","DAVID JOSUE","RIDRÍGUEZ","CHÁVEZ","1998-01-01",1,"david1","xxxxx",1);
+CALL signIn("MOFVXXXXXXXXXXXXXX","VÍCTOR","MORALES","FLORES","1998-06-14",1,"victor1","xxxxx",1);
