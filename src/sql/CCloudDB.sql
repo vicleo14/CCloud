@@ -83,17 +83,20 @@ CREATE TABLE keysC(
 id_file INT NOT NULL,
 id_type INT NOT NULL,
 tx_key_name VARCHAR(100),
+tx_hash VARCHAR(256),
 PRIMARY KEY (id_file,id_type),
 FOREIGN KEY(id_file) REFERENCES files(id_file),
 FOREIGN KEY(id_type) REFERENCES keyType(id_key_type)
 )ENGINE=InnoDB;
 CREATE TABLE keyRequest(
-id_key INT NOT NULL,
+id_file INT NOT NULL,
+id_keyType INT NOT NULL,
 id_user VARCHAR(50) NOT NULL,
 nb_state INT NOT NULL,
 nb_code INT,
-dt_code TIMESTAMP,
-PRIMARY KEY(id_key,id_user),
+tst_code TIMESTAMP,
+PRIMARY KEY(id_file,id_keyType,id_user),
 FOREIGN KEY(id_user) REFERENCES users(tx_nickname),
-FOREIGN KEY(id_key) REFERENCES keysC(id_file)
+FOREIGN KEY(id_keyType) REFERENCES keysC(id_type),
+FOREIGN KEY(id_file) REFERENCES keysC(id_file)
 )ENGINE=InnoDB;
