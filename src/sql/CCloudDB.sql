@@ -43,10 +43,10 @@ tx_curp VARCHAR(18),
 FOREIGN KEY(tx_curp) REFERENCES person(tx_curp)
 )ENGINE=InnoDB;
 CREATE TABLE actions(
-tst_action TIMESTAMP NOT NULL,
+tst_action TIMESTAMP(6) NOT NULL,
 id_user VARCHAR(50) NOT NULL,
 id_type INT NOT NULL,
-PRIMARY KEY(tst_action,id_user),
+PRIMARY KEY(tst_action,id_user,id_type),
 FOREIGN KEY(id_user) REFERENCES users(tx_nickname)
 )ENGINE=InnoDB;
 CREATE TABLE contact(

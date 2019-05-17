@@ -19,6 +19,7 @@ CALL addActionType(1005,"User updated","A user information was updated");
 CALL addActionType(1006,"User registrered","New user registrered");
 CALL addActionType(1007,"Master user registrered","New master user registrered");
 CALL addActionType(1008,"User deleted","");
+CALL addActionType(1009,"User password changed","A user request a password change");
 CALL addActionType(2000,"Undefined file action","");
 CALL addActionType(2001,"File uploaded","New file uploaded by a user");
 CALL addActionType(2002,"File dowunloaded","A user download a file");

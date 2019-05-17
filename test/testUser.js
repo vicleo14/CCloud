@@ -1,6 +1,4 @@
 "use strict";
-//tsc test/testUser.ts
-//node test/testUser.js 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -37,23 +35,52 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+//tsc test/testUser.ts
+//node test/testUser.js 
+var DTOUser_1 = require("../src/app/classes/dataAccess/dto/DTOUser");
 var MDBDAOUser_1 = require("../src/app/classes/dataAccess/dao/MDBDAOUser");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var daoUser2, aux;
+        var user, daoUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     console.log("Pruebas de DAO para User:");
-                    daoUser2 = new MDBDAOUser_1.MDBDAOUser();
-                    return [4 /*yield*/, daoUser2.findUsers("victor1")];
+                    user = new DTOUser_1.DTOUser();
+                    daoUser = new MDBDAOUser_1.MDBDAOUser();
+                    /*Agregar un usuario con DAO*/
+                    user.setCurp("MOFV980614HDFRLC00");
+                    user.setName("Leonel");
+                    user.setLastNameA("Morales");
+                    user.setLastNameB("Flores");
+                    user.setNickname("vicleo14");
+                    user.setBirthday(new Date());
+                    user.setRole(0);
+                    user.setHashPassword("prueba");
+                    user.setActive(true);
+                    return [4 /*yield*/, daoUser.createUser(user)];
                 case 1:
-                    aux = _a.sent();
-                    console.log(aux.getName());
-                    //console.log(user2.getLastNameA());
-                    //console.log(user2.getLastNameB());
-                    //console.log(user2.getBirthday());
-                    //console.log(user2.getRole());
+                    _a.sent();
+                    /*Modificar usuario */
+                    user.setName("Victor");
+                    user.setRole(1);
+                    return [4 /*yield*/, daoUser.updateUser(user)];
+                case 2:
+                    _a.sent();
+                    /*Update password */
+                    daoUser.updatePassword("vicleo14", "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=");
+                    /*Buscar usuario con DAO*/
+                    /*
+                    user= await daoUser.findUsers("vicleo14");
+                    console.log(user.getName());
+                    console.log(user.getLastNameA());
+                    console.log(user.getLastNameB());
+                    console.log(user.getBirthday());
+                    console.log(user.getRole());*/
+                    /*Bloquer usuario*/
+                    /*await daoUser.lockUser("vicleo14");*/
+                    /*Delete user*/
+                    /*await daoUser.deleteUser("vicleo14");*/
                     console.log("Termina opearcion");
                     return [2 /*return*/];
             }

@@ -1,12 +1,10 @@
 import { IDAOUser } from "./IDAOUser";
 import { DTOUser } from "../dto/DTOUser";
-import { MDBConnector } from "../connector/MDBConnector";
 import * as pool from "../connector/Connection"
-export class MDBDAOUser extends MDBConnector implements IDAOUser
+export class MDBDAOUser implements IDAOUser
 {
     async createUser(user: DTOUser)
     {
-        this.connect();
         var state:number;
         if(user.isActive())
         {
@@ -51,12 +49,43 @@ export class MDBDAOUser extends MDBConnector implements IDAOUser
         
         return user;
     }
-    updateUser(user: DTOUser): boolean
+    async updateUser(user: DTOUser)
     {
+        const query = await pool.query(
+           'CALL updateUser(?,?,?,?,?,?,?)',
+            [   user.getName(),
+                user.getLastNameA(),
+                user.getLastNameB(),
+                user.getBirthday(),
+                user.getRole(),
+                user.getNickname(),
+                user.getHashPassword()
+            ]);
         return true;
     }
-    deleteUser(user: DTOUser): boolean
+    async deleteUser(userNickname: string)
     {
+        const result=await pool.query('CALL deleteUser(?)',[userNickname]);
+        console.log(result);
         return true;
+    }
+    async updatePassword(nickname: string, hashPassword:string)
+    {
+        const query = await pool.query(
+            'CALL updatePassword(?,?)',
+             [   
+                 nickname,
+                 hashPassword
+             ]);
+         return true;
+    }
+    async lockUser(nickname:string)
+    {
+        const query = await pool.query(
+            'CALL lockUser(?)',
+             [   
+                 nickname
+             ]);
+         return true;
     }
 }

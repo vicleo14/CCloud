@@ -69,6 +69,61 @@ BEGIN
 	INSERT INTO actions VALUES(now(),nickname,1006);
 END #
 DELIMITER ;
+----------------------------------------------------------------------
+--Actualizar usuario
+DROP PROCEDURE IF EXISTS updateUser;
+DELIMITER #
+CREATE PROCEDURE updateUser(
+	IN nameIn VARCHAR(50),
+	IN lastname_a VARCHAR(50),
+	IN lastname_b VARCHAR(50),
+	IN birthday DATE,
+	IN roleIn INT,
+	IN nickname VARCHAR(50),
+	IN hash_password VARCHAR(256)
+)
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	UPDATE person
+	SET tx_name=nameIn,tx_lastname_a=lastname_a,tx_lastname_b=lastname_b,dt_birthday=birthday,id_role=roleIn 
+	WHERE tx_curp LIKE @curp;
+	UPDATE users SET tx_hash_password=hash_password WHERE tx_nickname LIKE nickname;
+	INSERT INTO actions VALUES(now(),nickname,1005);
+END #
+DELIMITER ;
+
+--Actualizar contrasenia
+DROP PROCEDURE IF EXISTS updatePassword;
+DELIMITER #
+CREATE PROCEDURE updatePassword(
+	IN nickname VARCHAR(50),
+	IN hash_password VARCHAR(256)
+)
+BEGIN
+	
+	UPDATE users 
+	SET tx_hash_password=hash_password
+	WHERE tx_nickname LIKE nickname;
+	INSERT INTO actions VALUES(now(),nickname,1009);
+END #
+DELIMITER ;
+
+--Bloquear usuario 
+DROP PROCEDURE IF EXISTS lockUser;
+DELIMITER #
+CREATE PROCEDURE lockUser(
+	IN nickname VARCHAR(50)
+)
+BEGIN
+	
+	UPDATE users 
+	SET bl_state=0
+	WHERE tx_nickname LIKE nickname;
+	INSERT INTO actions VALUES(now(),nickname,1003);
+END #
+DELIMITER ;
+-----------------------------------------------------------------------
+
 --Eliminar usuario
 DROP PROCEDURE IF EXISTS deleteUser;
 DELIMITER #
@@ -81,6 +136,7 @@ BEGIN
 	DELETE FROM person WHERE tx_curp LIKE @curp;	
 END #
 DELIMITER ;
+
 --obtener usuario
 DROP PROCEDURE IF EXISTS findUser;
 DELIMITER #

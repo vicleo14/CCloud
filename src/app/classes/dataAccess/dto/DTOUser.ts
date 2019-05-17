@@ -9,7 +9,6 @@ export class DTOUser
 	private nickname :string;
 	private hash_password :string;
 	private active:boolean;
-    private contact :string[];
     constructor(){}
     //GETTERS
     public getCurp():string
@@ -48,10 +47,7 @@ export class DTOUser
     {
         return this.active;
     }
-    public getContacts():string[]
-    {
-        return this.contact;
-    }
+    
 
     //SETTERS
     public setCurp(curp:string):void
@@ -90,9 +86,5 @@ export class DTOUser
     {
         this.active=active;
     }
-    public setContacts(contactList:string[])
-    {
-        console.log(contactList);
-        this.contact=contactList;
-    }
+
 }

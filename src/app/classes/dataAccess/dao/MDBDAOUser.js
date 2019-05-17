@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -49,43 +36,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var DTOUser_1 = require("../dto/DTOUser");
-var MDBConnector_1 = require("../connector/MDBConnector");
 var pool = require("../connector/Connection");
-var MDBDAOUser = /** @class */ (function (_super) {
-    __extends(MDBDAOUser, _super);
+var MDBDAOUser = /** @class */ (function () {
     function MDBDAOUser() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     MDBDAOUser.prototype.createUser = function (user) {
-        this.connect();
-        var state;
-        if (user.isActive()) {
-            state = 1;
-        }
-        else {
-            state = 0;
-        }
-        var query = this.connection.query('CALL signIn(?,?,?,?,?,?,?,?,?,?,?)', [user.getCurp(),
-            user.getName(),
-            user.getLastNameA(),
-            user.getLastNameB(),
-            user.getBirthday(),
-            user.getRole(),
-            user.getNickname(),
-            user.getHashPassword(),
-            state,
-            user.getContacts()[0],
-            0
-        ], function (error, result) {
-            if (error) {
-                throw error;
-            }
-            else {
-                console.log(result);
-            }
+        return __awaiter(this, void 0, void 0, function () {
+            var state, query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (user.isActive()) {
+                            state = 1;
+                        }
+                        else {
+                            state = 0;
+                        }
+                        return [4 /*yield*/, pool.query('CALL signIn(?,?,?,?,?,?,?,?,?)', [user.getCurp(),
+                                user.getName(),
+                                user.getLastNameA(),
+                                user.getLastNameB(),
+                                user.getBirthday(),
+                                user.getRole(),
+                                user.getNickname(),
+                                user.getHashPassword(),
+                                state
+                            ])];
+                    case 1:
+                        query = _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
         });
-        this.close();
-        return true;
     };
     MDBDAOUser.prototype.findUsers = function (userNickname) {
         return __awaiter(this, void 0, void 0, function () {
@@ -115,11 +97,70 @@ var MDBDAOUser = /** @class */ (function (_super) {
         });
     };
     MDBDAOUser.prototype.updateUser = function (user) {
-        return true;
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL updateUser(?,?,?,?,?,?,?)', [user.getName(),
+                            user.getLastNameA(),
+                            user.getLastNameB(),
+                            user.getBirthday(),
+                            user.getRole(),
+                            user.getNickname(),
+                            user.getHashPassword()
+                        ])];
+                    case 1:
+                        query = _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
     };
-    MDBDAOUser.prototype.deleteUser = function (user) {
-        return true;
+    MDBDAOUser.prototype.deleteUser = function (userNickname) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL deleteUser(?)', [userNickname])];
+                    case 1:
+                        result = _a.sent();
+                        console.log(result);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    MDBDAOUser.prototype.updatePassword = function (nickname, hashPassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL updatePassword(?,?)', [
+                            nickname,
+                            hashPassword
+                        ])];
+                    case 1:
+                        query = _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    MDBDAOUser.prototype.lockUser = function (nickname) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL lockUser(?)', [
+                            nickname
+                        ])];
+                    case 1:
+                        query = _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
     };
     return MDBDAOUser;
-}(MDBConnector_1.MDBConnector));
+}());
 exports.MDBDAOUser = MDBDAOUser;

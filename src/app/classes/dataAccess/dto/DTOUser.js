@@ -31,9 +31,6 @@ var DTOUser = /** @class */ (function () {
     DTOUser.prototype.isActive = function () {
         return this.active;
     };
-    DTOUser.prototype.getContacts = function () {
-        return this.contact;
-    };
     //SETTERS
     DTOUser.prototype.setCurp = function (curp) {
         this.curp = curp;
@@ -62,10 +59,6 @@ var DTOUser = /** @class */ (function () {
     };
     DTOUser.prototype.setActive = function (active) {
         this.active = active;
-    };
-    DTOUser.prototype.setContacts = function (contactList) {
-        console.log(contactList);
-        this.contact = contactList;
     };
     return DTOUser;
 }());
