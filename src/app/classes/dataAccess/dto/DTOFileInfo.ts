@@ -1,4 +1,4 @@
-export class DTOFile
+export class DTOFileInfo
 {
     private id:number;
     private cipheredName:string;
