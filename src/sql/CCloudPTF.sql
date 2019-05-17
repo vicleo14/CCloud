@@ -35,7 +35,7 @@ DROP PROCEDURE IF EXISTS addContactType;
 DELIMITER #
 CREATE PROCEDURE addContactType(IN cod INT,IN in_name VARCHAR(50),IN in_desc VARCHAR(300))
 BEGIN
-	INSERT INTO typeContact(id_type_contact,tx_name,tx_descrpiption)
+	INSERT INTO typeContact(id_type_contact,tx_name,tx_description)
     VALUES(cod,in_name,in_desc);
 END #
 DELIMITER ;
@@ -148,17 +148,8 @@ BEGIN
 END #
 DELIMITER ;
 
---obtener contactos de usuario
-DROP PROCEDURE IF EXISTS findUserContacts;
-DELIMITER #
-CREATE PROCEDURE findUserContacts(IN nickname VARCHAR(50))
-BEGIN
-	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
-	select * from contact where tx_curp LIKE @curp;
-	
-END #
-DELIMITER ;
 
+--------------------------------CONTACTOS-------------------------
 --Agregar contacto
 DROP PROCEDURE IF EXISTS addContact;
 DELIMITER #
@@ -168,4 +159,50 @@ BEGIN
 	INSERT INTO contact VALUES(contact,@curp,contTypeIn);
 END #
 DELIMITER ;
+
+--obtener contactos de usuario
+DROP PROCEDURE IF EXISTS findUserContacts;
+DELIMITER #
+CREATE PROCEDURE findUserContacts(IN nickname VARCHAR(50))
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	select id_contact,id_type from contact where tx_curp LIKE @curp;
+	
+END #
+DELIMITER ;
+
+--obtener contactos de usuario DETALLADO
+DROP PROCEDURE IF EXISTS findUserDetailedContacts;
+DELIMITER #
+CREATE PROCEDURE findUserDetailedContacts(IN nickname VARCHAR(50))
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	select id_contact,tx_name,tx_description from contact 
+	INNER JOIN typeContact ON contact.id_type=typeContact.id_type_contact 
+	where tx_curp LIKE @curp;
+	
+END #
+DELIMITER ;
+
+--obtener contactos de usuario con tipo especifico
+DROP PROCEDURE IF EXISTS findUserContactsByType;
+DELIMITER #
+CREATE PROCEDURE findUserContactsByType(IN nickname VARCHAR(50), IN typeC INT)
+BEGIN
+	SET @curp=(SELECT tx_curp FROM users WHERE tx_nickname LIKE nickname);
+	select id_contact,id_type from contact where tx_curp LIKE @curp AND id_type=typeC;
+	
+END #
+DELIMITER ;
+
+--eliminar contacto
+DROP PROCEDURE IF EXISTS deleteContact;
+DELIMITER #
+CREATE PROCEDURE deleteContact( IN contactID VARCHAR(100))
+BEGIN
+	
+	DELETE FROM contact WHERE id_contact LIKE contactID;
+END #
+DELIMITER ;
+
 

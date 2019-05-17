@@ -35,132 +35,84 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var DTOUser_1 = require("../dto/DTOUser");
 var pool = require("../connector/Connection");
-var MDBDAOUser = /** @class */ (function () {
-    function MDBDAOUser() {
+var ContactConstants_1 = require("../../utils/ContactConstants");
+var MDBDAOContact = /** @class */ (function () {
+    function MDBDAOContact() {
     }
-    MDBDAOUser.prototype.createUser = function (user) {
-        return __awaiter(this, void 0, void 0, function () {
-            var state, query;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (user.isActive()) {
-                            state = 1;
-                        }
-                        else {
-                            state = 0;
-                        }
-                        return [4 /*yield*/, pool.query('CALL signIn(?,?,?,?,?,?,?,?,?)', [user.getCurp(),
-                                user.getName(),
-                                user.getLastNameA(),
-                                user.getLastNameB(),
-                                user.getBirthday(),
-                                user.getRole(),
-                                user.getNickname(),
-                                user.getHashPassword(),
-                                state
-                            ])];
-                    case 1:
-                        query = _a.sent();
-                        return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    MDBDAOUser.prototype.findUsers = function (userNickname) {
-        return __awaiter(this, void 0, void 0, function () {
-            var user, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        user = new DTOUser_1.DTOUser();
-                        return [4 /*yield*/, pool.query('CALL findUser(?)', [userNickname])];
-                    case 1:
-                        result = _a.sent();
-                        if (result[0].length) {
-                            user.setName(result[0][0].tx_name);
-                            user.setHashPassword(result[0][0].tx_hash_password);
-                            user.setActive(result[0][0].bl_state);
-                            user.setCurp(result[0][0].tx_curp);
-                            user.setLastNameA(result[0][0].tx_lastname_a);
-                            user.setLastNameB(result[0][0].tx_lastname_b);
-                            user.setBirthday(result[0][0].dt_birthday);
-                            user.setRole(result[0][0].id_role);
-                        }
-                        else
-                            throw "Usuario no encontrado.";
-                        return [2 /*return*/, user];
-                }
-            });
-        });
-    };
-    MDBDAOUser.prototype.updateUser = function (user) {
+    MDBDAOContact.prototype.createContact = function (nickname, contact) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL updateUser(?,?,?,?,?,?,?)', [user.getName(),
-                            user.getLastNameA(),
-                            user.getLastNameB(),
-                            user.getBirthday(),
-                            user.getRole(),
-                            user.getNickname(),
-                            user.getHashPassword()
+                    case 0: return [4 /*yield*/, pool.query('CALL addContact(?,?,?)', [nickname,
+                            contact.getContact(),
+                            contact.getType()
                         ])];
                     case 1:
                         query = _a.sent();
-                        return [2 /*return*/, true];
+                        console.log(query);
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    MDBDAOUser.prototype.deleteUser = function (userNickname) {
-        return __awaiter(this, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL deleteUser(?)', [userNickname])];
-                    case 1:
-                        result = _a.sent();
-                        console.log(result);
-                        return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    MDBDAOUser.prototype.updatePassword = function (nickname, hashPassword) {
+    MDBDAOContact.prototype.findContacts = function (nickname) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL updatePassword(?,?)', [
-                            nickname,
-                            hashPassword
-                        ])];
+                    case 0: return [4 /*yield*/, pool.query('CALL findUserContacts(?)', [nickname])];
                     case 1:
                         query = _a.sent();
-                        return [2 /*return*/, true];
+                        console.log(query[0][1]);
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    MDBDAOUser.prototype.lockUser = function (nickname) {
+    MDBDAOContact.prototype.findDetailedContacts = function (nickname) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL lockUser(?)', [
-                            nickname
-                        ])];
+                    case 0: return [4 /*yield*/, pool.query('CALL findUserDetailedContacts(?)', [nickname])];
                     case 1:
                         query = _a.sent();
-                        return [2 /*return*/, true];
+                        console.log(query[0][1]);
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    return MDBDAOUser;
+    MDBDAOContact.prototype.findEmails = function (nickname) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL findUserContactsByType(?,?)', [nickname, ContactConstants_1.ContactConstants.CONTACT_EMAIL])];
+                    case 1:
+                        query = _a.sent();
+                        console.log(query[0][0]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MDBDAOContact.prototype.deleteContact = function (contact) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL deleteContact(?)', [contact])];
+                    case 1:
+                        query = _a.sent();
+                        console.log(query);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return MDBDAOContact;
 }());
-exports.MDBDAOUser = MDBDAOUser;
+exports.MDBDAOContact = MDBDAOContact;

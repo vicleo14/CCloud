@@ -43,7 +43,7 @@ CALL addRole(2,"Common user","Client user. Can upload, donload or share her file
 --contactType
 CALL addContactType(0,"Undefined","The contact type wan not defined");
 CALL addContactType(1,"Email","An email address.");
-CALL addContactType(2,"Phoe number","Phone number for calls");
+CALL addContactType(2,"Phone number","Phone number for calls");
 CALL addContactType(3,"Facebook","");
 CALL addContactType(4,"Twitter","");
 CALL addContactType(5,"WhatsApp","Phone number associated with a whatsApp profile");

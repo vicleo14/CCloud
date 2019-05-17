@@ -19,7 +19,7 @@ tx_desc VARCHAR(300) NOT NULL
 CREATE TABLE typeContact(
 id_type_contact INT NOT NULL PRIMARY KEY,
 tx_name VARCHAR(50) NOT NULL,
-tx_descrpiption VARCHAR(300)
+tx_description VARCHAR(300)
 )ENGINE=InnoDB;
 CREATE TABLE keyType(
 id_key_type INT NOT NULL PRIMARY KEY,
