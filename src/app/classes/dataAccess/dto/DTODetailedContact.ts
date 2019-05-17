@@ -2,7 +2,7 @@ export class DTODetailedContact
 {
     private contact:string;
     private type:string;
-    private descrpition:string;
+    private description:string;
 
     /*GETTERS*/
     public getContact():string
@@ -15,11 +15,19 @@ export class DTODetailedContact
     }
     public getDescription():string
     {
-        return this.descrpition;
+        return this.description;
     }
     /*SETTERS*/
     public setContact(contact:string)
     {
         this.contact=contact;
+    }
+    public setType(type:string)
+    {
+        this.type=type;
+    }
+    public setDescription(description:string)
+    {
+        this.description=description;
     }
 }

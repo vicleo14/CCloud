@@ -33,7 +33,7 @@ export class MDBDAOUser implements IDAOUser
 
         var user:DTOUser=new DTOUser();
         const result=await pool.query('CALL findUser(?)',[userNickname]);
-        if(result[0].length)
+        if(result[0].length)/*REVISAR*/
         {
             user.setName(result[0][0].tx_name);
             user.setHashPassword(result[0][0].tx_hash_password);

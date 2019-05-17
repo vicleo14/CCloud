@@ -11,11 +11,17 @@ var DTODetailedContact = /** @class */ (function () {
         return this.type;
     };
     DTODetailedContact.prototype.getDescription = function () {
-        return this.descrpition;
+        return this.description;
     };
     /*SETTERS*/
     DTODetailedContact.prototype.setContact = function (contact) {
         this.contact = contact;
+    };
+    DTODetailedContact.prototype.setType = function (type) {
+        this.type = type;
+    };
+    DTODetailedContact.prototype.setDescription = function (description) {
+        this.description = description;
     };
     return DTODetailedContact;
 }());

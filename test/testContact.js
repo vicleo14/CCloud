@@ -37,9 +37,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var DTOContact_1 = require("../src/app/classes/dataAccess/dto/DTOContact");
 var MDBDAOContact_1 = require("../src/app/classes/dataAccess/dao/MDBDAOContact");
+var ContactConstants_1 = require("../src/app/classes/utils/ContactConstants");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var dtoContact, daoContact;
+        var dtoContact, daoContact, contacts, contactsD, emails;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -47,28 +48,23 @@ function main() {
                     dtoContact = new DTOContact_1.DTOContact();
                     daoContact = new MDBDAOContact_1.MDBDAOContact();
                     /*Agregar un contacto con DAO*/
-                    /*dtoContact.setContact("5545636429");
-                    dtoContact.setContatType(ContactConstants.CONTACT_PHONE);
-                    await daoContact.createContact("vicleo14",dtoContact);*/
-                    /*Buscar usuario con DAO*/
-                    //await daoContact.findContacts("vicleo14");
-                    return [4 /*yield*/, daoContact.findDetailedContacts("vicleo14")];
+                    dtoContact.setContact("vicleo.morales@hotmail.com");
+                    dtoContact.setContatType(ContactConstants_1.ContactConstants.CONTACT_EMAIL);
+                    return [4 /*yield*/, daoContact.createContact("vicleo14", dtoContact)];
                 case 1:
-                    /*Agregar un contacto con DAO*/
-                    /*dtoContact.setContact("5545636429");
-                    dtoContact.setContatType(ContactConstants.CONTACT_PHONE);
-                    await daoContact.createContact("vicleo14",dtoContact);*/
-                    /*Buscar usuario con DAO*/
-                    //await daoContact.findContacts("vicleo14");
                     _a.sent();
-                    return [4 /*yield*/, daoContact.findEmails("vicleo14")];
+                    return [4 /*yield*/, daoContact.findContacts("vicleo14")];
                 case 2:
-                    _a.sent();
-                    /*Delete user*/
-                    return [4 /*yield*/, daoContact.deleteContact("vicleo.morales@hotmail.com")];
+                    contacts = _a.sent();
+                    return [4 /*yield*/, daoContact.findDetailedContacts("vicleo14")];
                 case 3:
-                    /*Delete user*/
-                    _a.sent();
+                    contactsD = _a.sent();
+                    return [4 /*yield*/, daoContact.findEmails("vicleo14")];
+                case 4:
+                    emails = _a.sent();
+                    console.log(contacts);
+                    console.log(contactsD);
+                    console.log(emails);
                     return [2 /*return*/];
             }
         });

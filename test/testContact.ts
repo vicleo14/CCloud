@@ -12,21 +12,24 @@ async function main()
         var dtoContact:DTOContact=new DTOContact();
         var daoContact:IDAOContact=new MDBDAOContact();
        /*Agregar un contacto con DAO*/
-        /*dtoContact.setContact("5545636429");
-        dtoContact.setContatType(ContactConstants.CONTACT_PHONE);
-        await daoContact.createContact("vicleo14",dtoContact);*/
-
+        /*
+       dtoContact.setContact("vicleo.morales@hotmail.com");
+       dtoContact.setContatType(ContactConstants.CONTACT_EMAIL);
+       await daoContact.createContact("vicleo14",dtoContact);
+       */ 
         
         /*Buscar usuario con DAO*/
-        
-        //await daoContact.findContacts("vicleo14");
-        await daoContact.findDetailedContacts("vicleo14");
-        await daoContact.findEmails("vicleo14");
-        
-        
+        /*
+        var contacts:DTOContact[]=await daoContact.findContacts("vicleo14");
+        var contactsD:DTODetailedContact[]=await daoContact.findDetailedContacts("vicleo14");
+        var emails:DTOContact[]=await daoContact.findEmails("vicleo14");
+        console.log(contacts);
+        console.log(contactsD);
+        console.log(emails);
+        */
         
         /*Delete user*/
-        await daoContact.deleteContact("vicleo.morales@hotmail.com");
+        /*await daoContact.deleteContact("vicleo.morales@hotmail.com");*/
 }
 
 main()

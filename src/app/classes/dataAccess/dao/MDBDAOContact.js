@@ -35,6 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var DTOContact_1 = require("../dto/DTOContact");
+var DTODetailedContact_1 = require("../dto/DTODetailedContact");
 var pool = require("../connector/Connection");
 var ContactConstants_1 = require("../../utils/ContactConstants");
 var MDBDAOContact = /** @class */ (function () {
@@ -51,7 +53,6 @@ var MDBDAOContact = /** @class */ (function () {
                         ])];
                     case 1:
                         query = _a.sent();
-                        console.log(query);
                         return [2 /*return*/];
                 }
             });
@@ -59,42 +60,64 @@ var MDBDAOContact = /** @class */ (function () {
     };
     MDBDAOContact.prototype.findContacts = function (nickname) {
         return __awaiter(this, void 0, void 0, function () {
-            var query;
+            var contacts, query, i, aux;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL findUserContacts(?)', [nickname])];
+                    case 0:
+                        contacts = new Array();
+                        return [4 /*yield*/, pool.query('CALL findUserContacts(?)', [nickname])];
                     case 1:
                         query = _a.sent();
-                        console.log(query[0][1]);
-                        return [2 /*return*/];
+                        for (i = 0; i < query[0].length; i++) {
+                            aux = new DTOContact_1.DTOContact();
+                            aux.setContact(query[0][i].id_contact);
+                            aux.setContatType(query[0][i].id_type);
+                            contacts.push(aux);
+                        }
+                        return [2 /*return*/, contacts];
                 }
             });
         });
     };
     MDBDAOContact.prototype.findDetailedContacts = function (nickname) {
         return __awaiter(this, void 0, void 0, function () {
-            var query;
+            var detailedContacts, query, i, aux;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL findUserDetailedContacts(?)', [nickname])];
+                    case 0:
+                        detailedContacts = new Array();
+                        return [4 /*yield*/, pool.query('CALL findUserDetailedContacts(?)', [nickname])];
                     case 1:
                         query = _a.sent();
-                        console.log(query[0][1]);
-                        return [2 /*return*/];
+                        for (i = 0; i < query[0].length; i++) {
+                            aux = new DTODetailedContact_1.DTODetailedContact();
+                            aux.setContact(query[0][i].id_contact);
+                            aux.setType(query[0][i].tx_name);
+                            aux.setDescription(query[0][i].tx_description);
+                            detailedContacts.push(aux);
+                        }
+                        return [2 /*return*/, detailedContacts];
                 }
             });
         });
     };
     MDBDAOContact.prototype.findEmails = function (nickname) {
         return __awaiter(this, void 0, void 0, function () {
-            var query;
+            var contacts, query, i, aux;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, pool.query('CALL findUserContactsByType(?,?)', [nickname, ContactConstants_1.ContactConstants.CONTACT_EMAIL])];
+                    case 0:
+                        contacts = new Array();
+                        return [4 /*yield*/, pool.query('CALL findUserContactsByType(?,?)', [nickname, ContactConstants_1.ContactConstants.CONTACT_EMAIL])];
                     case 1:
                         query = _a.sent();
-                        console.log(query[0][0]);
-                        return [2 /*return*/];
+                        for (i = 0; i < query[0].length; i++) {
+                            aux = new DTOContact_1.DTOContact();
+                            aux.setContact(query[0][i].id_contact);
+                            aux.setContatType(query[0][i].id_type);
+                            contacts.push(aux);
+                        }
+                        return [2 /*return*/, contacts];
                 }
             });
         });
@@ -107,7 +130,6 @@ var MDBDAOContact = /** @class */ (function () {
                     case 0: return [4 /*yield*/, pool.query('CALL deleteContact(?)', [contact])];
                     case 1:
                         query = _a.sent();
-                        console.log(query);
                         return [2 /*return*/];
                 }
             });
