@@ -361,9 +361,7 @@ CREATE PROCEDURE updateRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname 
 BEGIN
 	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,-1,now());
 	UPDATE keyRequest 
-	SET nb_state=stateR,
-		nb_code=codeR,
-		tst_code=now() 
+	SET nb_state=stateR,nb_code=codeR,tst_code=now() 
 	WHERE id_file LIKE idFile AND  id_keyType=idType AND id_user LIKE nickname; 
 END #
 DELIMITER ;
