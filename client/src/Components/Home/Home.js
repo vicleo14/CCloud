@@ -1,4 +1,4 @@
-import { MDBBtn, MDBCol, MDBContainer, MDBMask, MDBRow, MDBView } from "mdbreact";
+import { MDBBtn, MDBCol, MDBContainer, MDBMask, MDBRow } from "mdbreact";
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
