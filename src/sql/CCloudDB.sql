@@ -64,8 +64,9 @@ nb_attempt INT NOT NULL,
 id_user VARCHAR(50) NOT NULL,
 FOREIGN KEY(id_user) REFERENCES users(tx_nickname)
 )ENGINE=InnoDB;
+-------------------------------------
 CREATE TABLE files(
-id_file INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+id_file VARCHAR(256) NOT NULL PRIMARY KEY,
 tx_ciphered_name VARCHAR(100) NOT NULL,
 tx_deciphered_name VARCHAR(100) NOT NULL,
 tx_mac VARCHAR(256),
@@ -74,13 +75,13 @@ dt_update DATE
 )ENGINE=InnoDB;
 CREATE TABLE users_files(
 id_user VARCHAR(50) NOT NULL,
-id_file INT NOT NULL,
+id_file  VARCHAR(256) NOT NULL,
 PRIMARY KEY(id_user,id_file),
 FOREIGN KEY(id_user) REFERENCES users(tx_nickname),
 FOREIGN KEY(id_file) REFERENCES files(id_file)
 )ENGINE=InnoDB;
 CREATE TABLE keysC(
-id_file INT NOT NULL,
+id_file  VARCHAR(256) NOT NULL,
 id_type INT NOT NULL,
 tx_key_name VARCHAR(100),
 tx_hash VARCHAR(256),
@@ -89,7 +90,7 @@ FOREIGN KEY(id_file) REFERENCES files(id_file),
 FOREIGN KEY(id_type) REFERENCES keyType(id_key_type)
 )ENGINE=InnoDB;
 CREATE TABLE keyRequest(
-id_file INT NOT NULL,
+id_file  VARCHAR(256) NOT NULL,
 id_keyType INT NOT NULL,
 id_user VARCHAR(50) NOT NULL,
 nb_state INT NOT NULL,

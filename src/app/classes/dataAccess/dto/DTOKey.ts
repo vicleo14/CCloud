@@ -1,6 +1,6 @@
 export class DTOKey
 {
-    private idFile: number;
+    private idFile: string;
     private idType:number;
     private keyFileName:string;
     private keyHash:string;

@@ -1,6 +1,6 @@
 export class DTOFileInfo
 {
-    private id:number;
+    private id:string;
     private cipheredName:string;
     private decipheredName:string;
     private mac:string;

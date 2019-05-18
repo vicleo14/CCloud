@@ -1,7 +1,7 @@
 export class DTORequest
 {
     //private user:string;
-    private idFile:number;
+    private idFile:string;
     private idKeyType:number;
     private codeDate: Date;
     private code:number;

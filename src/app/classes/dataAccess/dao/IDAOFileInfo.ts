@@ -5,4 +5,5 @@ export interface IDAOFileInfo
     deleteFile();
     findFilesByUser();
     findFileById();
+    shareFile();
 }

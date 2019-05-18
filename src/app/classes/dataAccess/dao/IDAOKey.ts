@@ -3,5 +3,6 @@ export interface IDAOKey
     createKey():any;
     deleteKey():any;
     updateKey():any;
-    findKeyByFileId(idFile:any):any;
+    findKeysByFileId(idFile:any):any;
+    findKeyByFileIdAndType(idFile:any):any;
 }

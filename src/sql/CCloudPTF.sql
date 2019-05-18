@@ -205,4 +205,194 @@ BEGIN
 END #
 DELIMITER ;
 
+--------------------------------FILES-------------------------
+--crear
+DROP PROCEDURE IF EXISTS createFile;
+DELIMITER #
+CREATE PROCEDURE createFile(IN nickname VARCHAR(50),IN idFile VARCHAR(256),cName VARCHAR(100),dName VARCHAR(100),mac VARCHAR(256),nb_size INT)
+BEGIN
+	INSERT INTO files VALUES(idFile,cName,dName,mac,nb_size,now());
+	INSERT INTO users_files VALUES(nickname,idFile);
+END #
+DELIMITER ;
+--compartir archivo
+DROP PROCEDURE IF EXISTS shareFile;
+DELIMITER #
+CREATE PROCEDURE shareFile(IN nickname VARCHAR(50),IN idFile VARCHAR(256))
+BEGIN
+	INSERT INTO users_files VALUES(nickname,idFile);
+END #
+DELIMITER ;
+--actualizar
+DROP PROCEDURE IF EXISTS updateFile;
+DELIMITER #
+CREATE PROCEDURE updateFile(IN idFile VARCHAR(256),cName VARCHAR(100),dName VARCHAR(100),mac VARCHAR(256),size INT)
+BEGIN
+	UPDATE files 
+	SET tx_ciphered_name=cName,tx_deciphered_name= dName,tx_mac=mac,nb_size=size 
+	WHERE id_file LIKE idFile;
+END #
+DELIMITER ;
 
+--eliminar
+DROP PROCEDURE IF EXISTS deleteFile;
+DELIMITER #
+CREATE PROCEDURE deleteFile(IN idFile VARCHAR(256))
+BEGIN
+	DELETE FROM files WHERE id_file LIKE idFile;
+END #
+DELIMITER ;
+--encontrar archivos por usuario
+DROP PROCEDURE IF EXISTS findFilesByUser;
+DELIMITER #
+CREATE PROCEDURE findFilesByUser(IN nickname VARCHAR(50))
+BEGIN
+	SELECT * FROM files INNER JOIN users_files 
+	ON files.id_file= users_files.id_file 
+	WHERE id_user LIKE nikcname;
+
+END #
+DELIMITER ;
+--encontrar archivos por usuario
+DROP PROCEDURE IF EXISTS findFileById;
+DELIMITER #
+CREATE PROCEDURE findFileById(IN idFile VARCHAR(256))
+BEGIN
+	SELECT * FROM files 
+	WHERE id_file LIKE idFile;
+
+END #
+DELIMITER ;
+---------------------------------KEYS-------------------------
+--crear
+DROP PROCEDURE IF EXISTS createKey;
+DELIMITER #
+CREATE PROCEDURE createKey(IN idFile VARCHAR(256),IN idType INT,IN txKeyName VARCHAR(100),IN txHash VARCHAR(256))
+BEGIN
+	INSERT INTO keysC VALUES(idFile,idType,txKeyName,txHash);
+END #
+DELIMITER ;
+
+--actualizar
+DROP PROCEDURE IF EXISTS updateKey;
+DELIMITER #
+CREATE PROCEDURE updateKey(IN idFile VARCHAR(256),IN idType INT,IN txKeyName VARCHAR(100),IN txHash VARCHAR(256))
+BEGIN
+	UPDATE keysC 
+	SET tx_key_name=txKeyName,tx_hash=txHash 
+	WHERE id_file LIKE idFile AND id_type LIKE idType;
+END #
+DELIMITER ;
+--encontrar llaves por id de archivo
+DROP PROCEDURE IF EXISTS findKeysByFile;
+DELIMITER #
+CREATE PROCEDURE findKeysByFile(IN idFile VARCHAR(256))
+BEGIN
+	SELECT * FROM keysC WHERE id_file LIKE idFile;
+END #
+DELIMITER ;
+--encontrar llave por id de archivo y tipo
+DROP PROCEDURE IF EXISTS findKeyByFileType;
+DELIMITER #
+CREATE PROCEDURE findKeyByFileType(IN idFile VARCHAR(256), IN typeC INT)
+BEGIN
+	SELECT * FROM keysC WHERE id_file LIKE idFile AND id_type=typeC;
+END #
+DELIMITER ;
+--eliminar
+DROP PROCEDURE IF EXISTS deleteKey;
+DELIMITER #
+CREATE PROCEDURE deleteKey(IN nickname VARCHAR(50), IN typeC INT)
+BEGIN
+	DELETE FROM keysC WHERE id_file LIKE idFile AND id_type LIKE idType;
+END #
+DELIMITER ;
+
+--------------------------------ACTIONS-------------------------
+--crear
+DROP PROCEDURE IF EXISTS createAction;
+DELIMITER #
+CREATE PROCEDURE createAction(IN nickname VARCHAR(50), IN typeAct INT)
+BEGIN
+	INSERT INTO actions VALUES(now(),nickname,typeAct);
+END #
+DELIMITER ;
+
+--eliminar acciones de un usuario
+DROP PROCEDURE IF EXISTS deleteActions;
+DELIMITER #
+CREATE PROCEDURE deleteActions(IN nickname VARCHAR(50))
+BEGIN
+	DELETE FROM actions WHERE id_user LIKE nickname;
+END #
+DELIMITER ;
+
+--encontrar acciones de un usuario
+DROP PROCEDURE IF EXISTS findActionsByUser;
+DELIMITER #
+CREATE PROCEDURE findActionsByUser(IN nickname VARCHAR(50))
+BEGIN
+	SELECT * FROM actions WHERE id_user LIKE nickname;
+END #
+DELIMITER ;
+
+--encontrar acciones de un tipo
+DROP PROCEDURE IF EXISTS deleteActions;
+DELIMITER #
+CREATE PROCEDURE deleteActions(IN typeAc INT)
+BEGIN
+	SELECT * FROM actions WHERE id_type=typeAc;
+END #
+DELIMITER ;
+
+--------------------------------REQUEST-------------------------
+--crear
+DROP PROCEDURE IF EXISTS createRequest;
+DELIMITER #
+CREATE PROCEDURE createRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname VARCHAR(50))
+BEGIN
+	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,-1,now());
+END #
+DELIMITER ;
+--actualizar
+DROP PROCEDURE IF EXISTS updateRequest;
+DELIMITER #
+CREATE PROCEDURE updateRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname VARCHAR(50), IN stateR INT,IN codeR INT)
+BEGIN
+	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,-1,now());
+	UPDATE keyRequest 
+	SET nb_state=stateR,
+		nb_code=codeR,
+		tst_code=now() 
+	WHERE id_file LIKE idFile AND  id_keyType=idType AND id_user LIKE nickname; 
+END #
+DELIMITER ;
+
+--delete request
+DROP PROCEDURE IF EXISTS deleteRequest;
+DELIMITER #
+CREATE PROCEDURE deleteRequest(IN idFile VARCHAR(256),IN idType INT, IN nickname VARCHAR(50))
+BEGIN
+	DELETE FROM keyRequest 	WHERE id_file LIKE idFile AND  id_keyType=idType AND id_user LIKE nickname; 
+END #
+DELIMITER ;
+
+--find requests by user
+DROP PROCEDURE IF EXISTS findRequestsByUser;
+DELIMITER #
+CREATE PROCEDURE findRequestsByUser(IN nickname VARCHAR(50))
+BEGIN
+	SELECT * FROM keyRequest 
+	WHERE id_user LIKE nickname;
+END #
+DELIMITER ;
+
+--find requests by user and file id
+DROP PROCEDURE IF EXISTS findRequestByUserAndFile;
+DELIMITER #
+CREATE PROCEDURE findRequestByUserAndFile(IN nickname VARCHAR(50),IN idFile VARCHAR(256))
+BEGIN
+	SELECT * FROM keyRequest 
+	WHERE id_user LIKE nickname AND id_file LIKE idFile;
+END #
+DELIMITER ;
