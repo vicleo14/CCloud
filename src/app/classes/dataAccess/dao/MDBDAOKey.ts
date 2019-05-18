@@ -50,6 +50,4 @@ export class MDBDAOKey implements IDAOKey
         key.setKeyHash(result[0][0].tx_hash);
         return key;
     }
-
-
 }

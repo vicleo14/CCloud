@@ -379,7 +379,6 @@ DROP PROCEDURE IF EXISTS updateRequest;
 DELIMITER #
 CREATE PROCEDURE updateRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname VARCHAR(50), IN stateR INT,IN codeR INT)
 BEGIN
-	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,-1,now());
 	UPDATE keyRequest 
 	SET nb_state=stateR,nb_code=codeR,tst_code=now() 
 	WHERE id_file LIKE idFile AND  id_keyType=idType AND id_user LIKE nickname; 
@@ -412,5 +411,15 @@ CREATE PROCEDURE findRequestByUserAndFile(IN nickname VARCHAR(50),IN idFile VARC
 BEGIN
 	SELECT * FROM keyRequest 
 	WHERE id_user LIKE nickname AND id_file LIKE idFile;
+END #
+DELIMITER ;
+
+--find requests by user and file id
+DROP PROCEDURE IF EXISTS findRequestByUserFileType;
+DELIMITER #
+CREATE PROCEDURE findRequestByUserFileType(IN nickname VARCHAR(50),IN idFile VARCHAR(256),IN idKey INT)
+BEGIN
+	SELECT * FROM keyRequest 
+	WHERE id_user LIKE nickname AND id_file LIKE idFile AND id_keyType=idKey;
 END #
 DELIMITER ;

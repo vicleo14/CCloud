@@ -1,6 +1,6 @@
 export class DTORequest
 {
-    //private user:string;
+    private user:string;
     private idFile:string;
     private idKeyType:number;
     private codeDate: Date;
@@ -11,7 +11,11 @@ export class DTORequest
 
     }
     /* SETTERS */
-    public setIdFile(idFile:number)
+    public setUser(nickname:string)
+    {
+        this.user=nickname;
+    }
+    public setIdFile(idFile:string)
     {
         this.idFile=idFile;
     }
@@ -51,5 +55,9 @@ export class DTORequest
     public getState()
     {
         return this.state;
+    }
+    public getUser()
+    {
+        return this.user;
     }
 }
