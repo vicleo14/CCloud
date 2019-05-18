@@ -6,19 +6,13 @@ export class DTOFileInfo
     private mac:string;
     private size:number;
     private date:Date;
-    private users:string[];
 
     constructor()
     {
-        this.users= new Array();
-    }
-    /*ADD USER */
-    public addUser(user:string)
-    {
-        this.users.push(user);
+        
     }
     /* GETTERS */
-    public getId():number
+    public getId():string
     {
         return this.id;
     }
@@ -42,12 +36,8 @@ export class DTOFileInfo
     {
         return this.date;
     }
-    public getUsers():string[]
-    {
-        return this.users;
-    }
     /* SETTERS */
-    public setId(id:number)
+    public setId(id:string)
     {
         this.id=id;
     }
@@ -70,9 +60,5 @@ export class DTOFileInfo
     public setDate(date:Date)
     {
         this.date=date;
-    }
-    public setUsers(users:string[])
-    {
-        this.users=users;
     }
 }

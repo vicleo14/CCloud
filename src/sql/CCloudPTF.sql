@@ -223,6 +223,14 @@ BEGIN
 	INSERT INTO users_files VALUES(nickname,idFile);
 END #
 DELIMITER ;
+--quitar acceso a archivo
+DROP PROCEDURE IF EXISTS unshareFile;
+DELIMITER #
+CREATE PROCEDURE unshareFile(IN nickname VARCHAR(50),IN idFile VARCHAR(256))
+BEGIN
+	DELETE FROM users_files WHERE id_user LIKE nickname AND id_file LIKE idFile;
+END #
+DELIMITER ;
 --actualizar
 DROP PROCEDURE IF EXISTS updateFile;
 DELIMITER #
@@ -249,7 +257,7 @@ CREATE PROCEDURE findFilesByUser(IN nickname VARCHAR(50))
 BEGIN
 	SELECT * FROM files INNER JOIN users_files 
 	ON files.id_file= users_files.id_file 
-	WHERE id_user LIKE nikcname;
+	WHERE id_user LIKE nickname;
 
 END #
 DELIMITER ;
@@ -259,6 +267,16 @@ DELIMITER #
 CREATE PROCEDURE findFileById(IN idFile VARCHAR(256))
 BEGIN
 	SELECT * FROM files 
+	WHERE id_file LIKE idFile;
+
+END #
+DELIMITER ;
+--encontrar usuarios con acceso por archivos
+DROP PROCEDURE IF EXISTS findUsersOfFile;
+DELIMITER #
+CREATE PROCEDURE findUsersOfFile(IN idFile VARCHAR(256))
+BEGIN
+	SELECT id_user FROM users_files 
 	WHERE id_file LIKE idFile;
 
 END #
