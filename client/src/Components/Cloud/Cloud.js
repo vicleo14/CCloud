@@ -13,13 +13,31 @@ class Cloud extends React.Component {
                 <Navbrowser></Navbrowser>
                 <MDBContainer fluid>
                     <MDBRow id="main-row">
-                        <MDBCol md="2" sm="12" className="text-wrap text-truncate border-right justify-content-sm-center">
-                            <MDBBtn className="blue-gradient"><MDBIcon icon="plus" className="pr-2" />Upload</MDBBtn>
-                            <Sidebrowser/>
+                        <MDBCol md="3" sm="12" className="text-wrap text-truncate border-right">
+                            <MDBRow style={{ height: "20px" }}>
+                                <MDBCol></MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol md="12" sm="12">
+                                    <MDBBtn className="blue-gradient"><MDBIcon icon="plus" className="pr-2" />Upload</MDBBtn>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol md="8" sm="12">
+                                    <Sidebrowser />
+                                </MDBCol>
+                            </MDBRow>
                         </MDBCol>
                         <MDBCol className="d-block d-md-none border-top"></MDBCol>
-                        <MDBCol md="10" sm="12">
-                            <Browser />
+                        <MDBCol md="9" sm="12">
+                            <MDBRow style={{ height: "20px" }}>
+                                <MDBCol></MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol>
+                                    <Browser />
+                                </MDBCol>
+                            </MDBRow>
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
