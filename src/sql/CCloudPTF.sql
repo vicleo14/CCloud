@@ -332,16 +332,18 @@ DROP PROCEDURE IF EXISTS findActionsByUser;
 DELIMITER #
 CREATE PROCEDURE findActionsByUser(IN nickname VARCHAR(50))
 BEGIN
-	SELECT * FROM actions WHERE id_user LIKE nickname;
+	SELECT * FROM actions INNER JOIN actionType 
+	ON actions.id_type=actionType.id_action_type WHERE id_user LIKE nickname;
 END #
 DELIMITER ;
 
 --encontrar acciones de un tipo
-DROP PROCEDURE IF EXISTS deleteActions;
+DROP PROCEDURE IF EXISTS findActionsByType;
 DELIMITER #
-CREATE PROCEDURE deleteActions(IN typeAc INT)
+CREATE PROCEDURE findActionsByType(IN typeAc INT)
 BEGIN
-	SELECT * FROM actions WHERE id_type=typeAc;
+	SELECT * FROM actions INNER JOIN actionType 
+	ON actions.id_type=actionType.id_action_type WHERE id_type=typeAc;
 END #
 DELIMITER ;
 

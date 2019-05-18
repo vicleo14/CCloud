@@ -1,7 +1,7 @@
 export interface IDAOAction
 {
-    createAction():any;
-    findActionsByUser();
-    findActionsByType();
-    deleteActionsByUser();
+    createAction(nickname:string,type:number):any;
+    findActionsByUser(nickname:string):any;
+    findActionsByType(type:number):any;
+    deleteActionsByUser(nickname:string):any;
 }

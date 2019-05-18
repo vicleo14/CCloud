@@ -1,31 +1,45 @@
 export class DTOAction
 {
     //private user:string;
-    private actions:number[];
+    private action:number;
+    private date:Date;
+    private description:string;
     constructor()
     {
-        this.actions=new Array();
-    }
-    public addAction(action:number)
-    {
-        this.actions.push(action);
+       
     }
     /* SETTERS */
     /*public setUser(user:string)
     {
         this.user=user;
     }*/
-    public setActions(actions:number[])
+    public setAction(action:number)
     {
-        this.actions=actions;
+        this.action=action;
+    }
+    public setDate(date:Date)
+    {
+        this.date=date;
+    }
+    public setDescription(description:string)
+    {
+        this.description=description;
     }
     /* GETTERS */
     /*public getUser()
     {
         return this.user;
     }*/
-    public getActions()
+    public getAction()
     {
-        return this.actions;
+        return this.action;
+    }
+    public getDate():Date
+    {
+        return this.date;
+    }
+    public getDescription():string
+    {
+       return this.description;
     }
 }
