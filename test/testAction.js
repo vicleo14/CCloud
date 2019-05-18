@@ -35,36 +35,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var DTOContact_1 = require("../src/app/classes/dataAccess/dto/DTOContact");
-var MDBDAOContact_1 = require("../src/app/classes/dataAccess/dao/MDBDAOContact");
-var ContactConstants_1 = require("../src/app/classes/utils/ContactConstants");
+var ActionConstants_1 = require("../src/app/classes/utils/ActionConstants");
+var DTOAction_1 = require("../src/app/classes/dataAccess/dto/DTOAction");
+var MDBDAOAction_1 = require("../src/app/classes/dataAccess/dao/MDBDAOAction");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var dtoContact, daoContact, contacts, contactsD, emails;
+        var actions, dtoAction, resActions;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("Pruebas de DAO para User:");
-                    dtoContact = new DTOContact_1.DTOContact();
-                    daoContact = new MDBDAOContact_1.MDBDAOContact();
-                    /*Agregar un contacto con DAO*/
-                    dtoContact.setContact("vicleo.morales@hotmail.com");
-                    dtoContact.setContatType(ContactConstants_1.ContactConstants.CONTACT_EMAIL);
-                    return [4 /*yield*/, daoContact.createContact("vicleo14", dtoContact)];
+                    console.log("Inicio");
+                    actions = new MDBDAOAction_1.MDBDAOAction();
+                    dtoAction = new DTOAction_1.DTOAction();
+                    return [4 /*yield*/, actions.findActionsByType(ActionConstants_1.ActionConstants.ACTION_SESSION_USERREGISTRERED)];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, daoContact.findContacts("vicleo14")];
-                case 2:
-                    contacts = _a.sent();
-                    return [4 /*yield*/, daoContact.findDetailedContacts("vicleo14")];
-                case 3:
-                    contactsD = _a.sent();
-                    return [4 /*yield*/, daoContact.findEmails("vicleo14")];
-                case 4:
-                    emails = _a.sent();
-                    console.log(contacts);
-                    console.log(contactsD);
-                    console.log(emails);
+                    resActions = _a.sent();
+                    console.log(resActions);
                     return [2 /*return*/];
             }
         });
