@@ -1,6 +1,6 @@
 import { IDAOFileInfo } from "./IDAOFileInfo";
 import { DTOFileInfo } from "../dto/DTOFileInfo";
-import * as pool from "../connector/Connection"
+import * as pool from "../connector/Connection";
 export class MDBDAOFileInfo implements IDAOFileInfo
 {
     async createFile(nickname:string,fileInfo:DTOFileInfo)

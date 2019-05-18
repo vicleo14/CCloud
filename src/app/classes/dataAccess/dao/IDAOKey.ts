@@ -1,8 +1,10 @@
+import { DTOKey } from "../dto/DTOKey";
+
 export interface IDAOKey
 {
-    createKey():any;
-    deleteKey():any;
-    updateKey():any;
+    createKey(key:DTOKey):any;
+    deleteKey(idFile:any,idType:number):any;
+    updateKey(key:DTOKey):any;
     findKeysByFileId(idFile:any):any;
-    findKeyByFileIdAndType(idFile:any):any;
+    findKeyByFileIdAndType(idFile:any,idType:number):any;
 }

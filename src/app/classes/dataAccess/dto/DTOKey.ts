@@ -6,7 +6,7 @@ export class DTOKey
     private keyHash:string;
     constructor(){}
     /* SETTERS */
-    public setIdFile(idFile: number)
+    public setIdFile(idFile: string)
     {
         this.idFile=idFile;
     }

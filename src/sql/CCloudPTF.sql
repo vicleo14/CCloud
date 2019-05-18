@@ -312,15 +312,15 @@ DELIMITER ;
 --encontrar llave por id de archivo y tipo
 DROP PROCEDURE IF EXISTS findKeyByFileType;
 DELIMITER #
-CREATE PROCEDURE findKeyByFileType(IN idFile VARCHAR(256), IN typeC INT)
+CREATE PROCEDURE findKeyByFileType(IN idFile VARCHAR(256), IN idType INT)
 BEGIN
-	SELECT * FROM keysC WHERE id_file LIKE idFile AND id_type=typeC;
+	SELECT * FROM keysC WHERE id_file LIKE idFile AND id_type=idType;
 END #
 DELIMITER ;
 --eliminar
 DROP PROCEDURE IF EXISTS deleteKey;
 DELIMITER #
-CREATE PROCEDURE deleteKey(IN nickname VARCHAR(50), IN typeC INT)
+CREATE PROCEDURE deleteKey(IN idFile VARCHAR(50), IN idType INT)
 BEGIN
 	DELETE FROM keysC WHERE id_file LIKE idFile AND id_type LIKE idType;
 END #
