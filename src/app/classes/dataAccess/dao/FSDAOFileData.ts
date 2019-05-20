@@ -1,9 +1,9 @@
 import { IDAOFileData } from "./IDAOFileData";
 import * as fs from "fs";
 export class FSDAOFileData implements IDAOFileData{
-    createFile(path:string,name:string,data:Buffer)
+    createFile(path:string,name:string,data:any)
     {
-        fs.writeFileSync(path+name,data,'utf8');
+        fs.writeFileSync(path+name,data,);
     }
     deleteFile(path:string,name:string)
     {
@@ -11,6 +11,6 @@ export class FSDAOFileData implements IDAOFileData{
     }
     readFile(path:string,name:string):Buffer
     {
-        return fs.readFileSync(path+name);
+        return fs.readFileSync(path+name,);
     }
 }
