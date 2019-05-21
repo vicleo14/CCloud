@@ -16,11 +16,11 @@ export class DTOFileInfo
     {
         return this.id;
     }
-    public getCipheredName():String
+    public getCipheredName():string
     {
         return this.cipheredName;
     }
-    public getDecipheredName():String
+    public getDecipheredName():string
     {
         return this.decipheredName;
     }
