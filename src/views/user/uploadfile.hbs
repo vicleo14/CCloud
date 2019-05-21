@@ -1,0 +1,38 @@
+<script src="/js/hashLog.js">
+
+</script>
+<div class="container p-12">
+    <div class="div">
+        <div class="col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/user/login" method="POST" id="uploadFile">
+                        
+                        <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile02">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                        </div>
+                        
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Ciphered info</span>
+                            </div>
+                            <textarea class="form-control" aria-label="Ciphered info"></textarea>
+                            </div>
+                    </form>
+                    <div class="card">
+                        <div class="card-bdy">
+                            <a class="btn btn btn-outline-warning" href="#" role="button">Get your MAC key</a>
+                            <a class="btn btn btn-outline-danger" href="#" role="button">Get your AES key</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                            <button class="btn btn-success btn-block" onclick="sendForm()">Send file</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -46,4 +46,8 @@ router.post("/login",async (req,res)=>
         console.log("Error:",x);
     }
 });
+router.get("/upload-file",(req,res)=>
+{
+    res.render("user/uploadfile");
+});
 module.exports=router;
