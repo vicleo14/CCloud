@@ -10,18 +10,22 @@ import {IMac} from "../src/app/classes/crypto/IMac";
 import {HMac} from "../src/app/classes/crypto/HMac";
 import {IDAOFileData} from "../src/app/classes/dataAccess/dao/IDAOFileData";
 import {FSDAOFileData} from "../src/app/classes/dataAccess/dao/FSDAOFileData";
+import {IRSA} from '../src/app/classes/crypto/IRSA';
+import {RSA} from '../src/app/classes/crypto/RSA';
 var name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 var name2="key"+ExtensionConstants.CIPHERKEYD_EXTENSION;
 var name3="mac"+ExtensionConstants.MACKEYD_EXTENSION;
-var namep="can.mp3";
-var pathP="../";
+var namep="ArquitecturaComputadoras.PDF";
+var pathP="./";
+const filestr = require('fs');
 function uploadFile(/*file*/)
 {
-    var  cipher:IBlockCipher=new AES256();
+    var cipher:IBlockCipher=new AES256();
     var generator:IRandomGenerator=new RandomGenerator();
     var mac:IMac=new HMac();
     var hash:IHash=new SHA256();
     var fs:IDAOFileData=new FSDAOFileData();
+    var rsa:IRSA=new RSA();
     //var reader=new FileReader();
 
     //reader.readAsArrayBuffer();
@@ -48,9 +52,18 @@ function uploadFile(/*file*/)
     fs.createFile("./",name2,keyC);
     fs.createFile("./",name3,keyM);
 
-   
+    //Se obtienen las llaves RSA anteriormente creadas
+    var pubKey = filestr.readFileSync("./publicKey.txt");
+    var privKey = filestr.readFileSync("./privateKey.txt");
+    //var pub = pubKey.slice(26, pubKey.length-25);
+    //Se cifran con la llave pública la llave de la mac y la llave del archivo
+    var cipheredKeyM = rsa.publicEncryption(pubKey.toString(), keyM);
+    var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
+    console.log(cipheredKeyM);
+    console.log(cipheredKeyC);
 
-
+    fs.createFile("./","cipheredKeyM.txt",cipheredKeyM);
+    fs.createFile("./","cipheredKeyC.txt",cipheredKeyC);
 }
 
 uploadFile();

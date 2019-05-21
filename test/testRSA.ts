@@ -14,7 +14,6 @@ function main(){
     publicKey = keys[0];
     privateKey = keys[1];
     console.log(publicKey.length);
-    console.log("\n");
     console.log(privateKey.length);
 
     //Original file reader

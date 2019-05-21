@@ -1,6 +1,8 @@
+import {DTOFileData} from "../dto/DTOFileData";
+
 export interface IDAOFileData
 {
-    createFile(path:string,name:string,data:any);
+    createFile(path:string, fileData: DTOFileData);
     deleteFile(path:string,name:string);
     readFile(path:string,name:string):Buffer;
 }
