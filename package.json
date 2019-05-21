@@ -1,0 +1,41 @@
+{
+  "name": "ccloud",
+  "version": "1.0.0",
+  "description": "Cryptographic service",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.1.0",
+    "handlebars": "^4.1.2",
+    "mariadb": "^2.0.5",
+    "morgan": "^1.9.1",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  },
+  "scripts": {
+    "dev": "nodemon src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicleo14/CCloud.git"
+  },
+  "keywords": [
+    "crypto",
+    "cloud",
+    "AES",
+    "RSA",
+    "SHA256"
+  ],
+  "author": "Victor Morales & Guillermo Naranjo & David Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vicleo14/CCloud/issues"
+  },
+  "homepage": "https://github.com/vicleo14/CCloud#readme"
+}
