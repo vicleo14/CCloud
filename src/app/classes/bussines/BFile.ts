@@ -32,6 +32,7 @@ import {IHash} from "../crypto/IHash";
 import {SHA256} from "../crypto/SHA256";
 
 import * as fs from 'fs';
+import {downloadData} from "../utils/downloadDataType";
 
 export class BFile
 {
@@ -103,7 +104,7 @@ export class BFile
 		}
 	}
 
-	public downloadFile(nickname:string, fileName:string):Buffer{
+	public downloadFile(nickname:string, fileName:string):downloadData{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dto_action:DTOAction = new DTOAction();
@@ -137,9 +138,11 @@ export class BFile
 			//Obtaining file's data
 			var data = dao_file_data.readFile("../uploadedFiles", dto_file_info.getCipheredName());
 			dao_action.createAction(nickname, 2002);
-			dto_file_info.getMAC();
-			dto_file_info.getDecipheredName();
-			return data;
+			var data_to_return:downloadData;
+			data_to_return.data = data;
+			data_to_return.fileName = dto_file_info.getDecipheredName();
+			data_to_return.MAC = dto_file_info.getMAC();
+			return data_to_return;
 		}
 	}
 
