@@ -17,4 +17,18 @@ export class HMac implements IMac
 		var tagp:string = this.calculateMac(message, key);
 		return (tag === tagp)?true:false;
 	}
+
+	/*public calculateMacBuf(message: Buffer, key: Buffer): string
+	{
+		var tag: string;
+		const hmac = crypto.createHmac('sha256', key.toString());
+		hmac.update(message.toString());
+		tag = hmac.digest('base64');
+		return tag;	
+	}
+
+	public verifyMacBuf(message: Buffer, key: Buffer, ): boolean
+	{
+
+	}*/
 }
