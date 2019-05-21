@@ -5,10 +5,7 @@ import * as pool from "../connector/Connection"
 import { ContactConstants } from "../../utils/ContactConstants";
 export class MDBDAOContact implements IDAOContact
 {
-    constructor()
-    {
-
-    }
+    constructor(){}
     async createContact(nickname: string, contact:DTOContact)
     {
         const query = await pool.query(
