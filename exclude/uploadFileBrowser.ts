@@ -10,6 +10,9 @@ import {IMac} from "../src/app/classes/crypto/IMac";
 import {HMac} from "../src/app/classes/crypto/HMac";
 import {IDAOFileData} from "../src/app/classes/dataAccess/dao/IDAOFileData";
 import {FSDAOFileData} from "../src/app/classes/dataAccess/dao/FSDAOFileData";
+import {IRSA} from '../src/app/classes/crypto/IRSA';
+import {RSA} from '../src/app/classes/crypto/RSA';
+import * as fs from     "fs";
 var name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 var name2="key"+ExtensionConstants.CIPHERKEYD_EXTENSION;
 var name3="mac"+ExtensionConstants.MACKEYD_EXTENSION;
@@ -22,8 +25,10 @@ function uploadFile(file)
     var mac:IMac=new HMac();
     var hash:IHash=new SHA256();
     var fs:IDAOFileData=new FSDAOFileData();
+    var rsa:IRSA=new RSA();
     var reader=new FileReader();
     const fileS=file[0];
+
     reader.onload=function()
     {
         /* GENERAMOS VALORES ALEATORIOS */
@@ -38,7 +43,12 @@ function uploadFile(file)
         /* CALCULAMOS HASH DE LLAVES */
         var hashK=hash.calculateHash(keyC);
         var hashm=hash.calculateHash(keyM);
+        //Se obtienen las llaves RSA anteriormente creadas
+        var pubKey = filestr.readFileSync("./publicKey.txt");
         /* CIFRAMOS LLAVES CON RSA */
+        //Se cifran con la llave pública la llave de la mac y la llave del archivo
+        var cipheredKeyM = rsa.publicEncryption(pubKey.toString(), keyM);
+        var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
     }
      /* LEEMOS ARCHIVO */
     reader.readAsArrayBuffer(fileS);
