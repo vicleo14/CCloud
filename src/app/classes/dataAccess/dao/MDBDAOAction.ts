@@ -7,6 +7,7 @@ export class MDBDAOAction implements IDAOAction{
     {
         const query = await pool.query(
             'CALL createAction(?,?)',[nickname,type]);
+        return ;
     }
     async findActionsByUser(nickname:string)
     {
@@ -42,5 +43,6 @@ export class MDBDAOAction implements IDAOAction{
     {
         const query = await pool.query(
             'CALL deleteActions(?)',[nickname]);
+        return ;
     }
 }
