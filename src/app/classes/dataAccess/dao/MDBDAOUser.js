@@ -90,7 +90,7 @@ var MDBDAOUser = /** @class */ (function () {
                             user.setRole(result[0][0].id_role);
                         }
                         else
-                            throw "Usuario no encontrado.";
+                            user = undefined;
                         return [2 /*return*/, user];
                 }
             });

@@ -45,7 +45,7 @@ export class MDBDAOUser implements IDAOUser
             user.setRole(result[0][0].id_role);
         }
         else
-            throw "Usuario no encontrado."
+            user=undefined;
         
         return user;
     }

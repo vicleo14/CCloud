@@ -53,7 +53,7 @@ var MDBDAOContact = /** @class */ (function () {
                         ])];
                     case 1:
                         query = _a.sent();
-                        return [2 /*return*/, true];
+                        return [2 /*return*/];
                 }
             });
         });
@@ -130,7 +130,7 @@ var MDBDAOContact = /** @class */ (function () {
                     case 0: return [4 /*yield*/, pool.query('CALL deleteContact(?)', [contact])];
                     case 1:
                         query = _a.sent();
-                        return [2 /*return*/, true];
+                        return [2 /*return*/];
                 }
             });
         });

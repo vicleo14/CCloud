@@ -38,9 +38,11 @@ exports.__esModule = true;
 var DTOUser_1 = require("../dataAccess/dto/DTOUser");
 var MDBDAOUser_1 = require("../dataAccess/dao/MDBDAOUser");
 var DTOAction_1 = require("../dataAccess/dto/DTOAction");
+var MDBDAOAction_1 = require("../dataAccess/dao/MDBDAOAction");
 var DTOContact_1 = require("../dataAccess/dto/DTOContact");
 var MDBDAOContact_1 = require("../dataAccess/dao/MDBDAOContact");
 var ContactConstants_1 = require("../utils/ContactConstants");
+var ActionConstants_1 = require("../utils/ActionConstants");
 var Mail_1 = require("../mail/Mail");
 var BUser = /** @class */ (function () {
     function BUser() {
@@ -48,7 +50,7 @@ var BUser = /** @class */ (function () {
     }
     BUser.prototype.createUser = function (curp, name, l_name_a, l_name_b, birth, role, nickn, pass, email) {
         return __awaiter(this, void 0, void 0, function () {
-            var mailSender, dto_user, dto_action, dto_contact, band_email, regexpEmail, dao_user, dao_contact, cont;
+            var mailSender, dto_user, dto_action, dto_contact, dao_user, band_email, regexpEmail, dao_contact, cont, x_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -56,9 +58,14 @@ var BUser = /** @class */ (function () {
                         dto_user = new DTOUser_1.DTOUser();
                         dto_action = new DTOAction_1.DTOAction();
                         dto_contact = new DTOContact_1.DTOContact();
-                        //Check if the nickname is already in use
-                        if (!dao_user.findUsers(nickn))
-                            return [2 /*return*/, false];
+                        dao_user = new MDBDAOUser_1.MDBDAOUser();
+                        return [4 /*yield*/, dao_user.findUsers(nickn)];
+                    case 1:
+                        if (!((_a.sent()) == undefined)) return [3 /*break*/, 9];
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, 7, 8]);
+                        //    return false;
                         //If there's no othe user with the same nickname, continues the process
                         dto_user.setCurp(curp);
                         dto_user.setName(name);
@@ -71,8 +78,29 @@ var BUser = /** @class */ (function () {
                         dto_user.setActive(true);
                         band_email = false;
                         regexpEmail = new RegExp('/^((?!(@)).)*$/');
-                        dao_user = new MDBDAOUser_1.MDBDAOUser();
-                        dao_user.createUser(dto_user);
+                        /*for(let cont of contact){
+                            if(!regexpEmail){
+                                band_email = true;
+                                break;
+                            }
+                        }*/
+                        //If there's no email, returns false
+                        //if(!band_email)
+                        //   return false;
+                        //If there's an email, continues the user creation process
+                        return [4 /*yield*/, dao_user.createUser(dto_user)];
+                    case 3:
+                        /*for(let cont of contact){
+                            if(!regexpEmail){
+                                band_email = true;
+                                break;
+                            }
+                        }*/
+                        //If there's no email, returns false
+                        //if(!band_email)
+                        //   return false;
+                        //If there's an email, continues the user creation process
+                        _a.sent();
                         dao_contact = new MDBDAOContact_1.MDBDAOContact();
                         cont = 0;
                         /*for(let cont of contact){
@@ -84,49 +112,72 @@ var BUser = /** @class */ (function () {
                         dto_contact.setContact(email);
                         dto_contact.setContatType(ContactConstants_1.ContactConstants.CONTACT_EMAIL);
                         return [4 /*yield*/, dao_contact.createContact(nickn, dto_contact)];
-                    case 1:
+                    case 4:
                         _a.sent();
                         /* ENVIAMOS CORREO */
                         mailSender.sendWelcome(email, nickn);
-                        //var dao_action:IDAOAction = new MDBDAOAction();
-                        //dto_action.setActions([1006, 1004]);
-                        //dao_action.createAction(dto_action);
-                        return [2 /*return*/, true];
+                        return [3 /*break*/, 8];
+                    case 5:
+                        x_1 = _a.sent();
+                        console.log("error:", x_1);
+                        return [4 /*yield*/, dao_user.deleteUser(nickn)];
+                    case 6:
+                        _a.sent();
+                        return [3 /*break*/, 8];
+                    case 7: return [2 /*return*/, true];
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        console.log("El usuario ya existe");
+                        _a.label = 10;
+                    case 10: return [2 /*return*/];
                 }
             });
         });
     };
     BUser.prototype.userLogin = function (nickname, password) {
-        /*        var dto_user:DTOUser = new DTOUser();
-                var dto_action:DTOAction = new DTOAction();
-                var dao_user:IDAOUser = new MDBDAOUser();
-                var dao_action:IDAOAction = new MDBDAOAction();
-                //Searches the user in the system
-                dto_user = dao_user.findUsers(nickname);
-                if(){
-                    //If the password is correct
-                    if(dto_user.getHashPassword() == password){
-                        dto_action.addAction(1001);
-                        dao_action.createAction(dto_action);
-                        //Se sube un usuario a sesión
-                        return true;
-                    }
-                    //If it isn't
-                    else{
-                        dto_action.addAction(1002);
-                        this.loginTries++;
-                        //If it's users third try
-                        if(this.loginTries == 3){
-                            dto_user.setActive(false);
-                            dao_user.updateUser(dto_user);
-                            dto_action.setActions([1005, 1003]);
-                            dao_action.createAction(dto_action);
+        return __awaiter(this, void 0, void 0, function () {
+            var dto_user, dto_action, dao_user, dao_action;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto_user = new DTOUser_1.DTOUser();
+                        dto_action = new DTOAction_1.DTOAction();
+                        dao_user = new MDBDAOUser_1.MDBDAOUser();
+                        dao_action = new MDBDAOAction_1.MDBDAOAction();
+                        return [4 /*yield*/, dao_user.findUsers(nickname)];
+                    case 1:
+                        //Searches the user in the system
+                        dto_user = _a.sent();
+                        if (dto_user != undefined) {
+                            //If the password is correct
+                            if (dto_user.getHashPassword() === password) {
+                                console.log("iguales");
+                                //dto_action.addAction(1001);
+                                //dao_action.createAction(dto_action); 
+                                dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_SESSION_LOGINSUCCESSFUL);
+                                //Se sube un usuario a sesión
+                                return [2 /*return*/, true];
+                            }
+                            //If it isn't
+                            else {
+                                //dto_action.addAction(1002);
+                                this.loginTries++;
+                                //If it's users third try 
+                                if (this.loginTries == 3) {
+                                    dto_user.setActive(false);
+                                    dao_user.updateUser(dto_user);
+                                    //dto_action.setActions([1005, 1003]);
+                                    //dao_action.createAction(dto_action);
+                                }
+                                return [2 /*return*/, false];
+                            }
                         }
-                        return false;
-                    }
+                        else
+                            console.log("Usuario inexistente");
+                        return [2 /*return*/];
                 }
-              else*/
-        return false;
+            });
+        });
     };
     BUser.prototype.userLogout = function (nickname) {
         return;

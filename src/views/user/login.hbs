@@ -1,0 +1,25 @@
+<script src="/js/hashLog.js">
+
+</script>
+<div class="container p-4">
+    <div class="div">
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/user/login" method="POST" id="formLog">
+                        
+                        <div class="form-group" >
+                            <input type="text" class="form-control" name="nickname" placeholder="nickname(used for login)" >
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" name="password" id="p" placeholder="password" >
+                        </div>
+                    </form>
+                    <div class="form-group">
+                            <button class="btn btn-success btn-block" onclick="sendForm()">Login</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
