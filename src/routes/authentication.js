@@ -29,22 +29,32 @@ router.get("/login",(req,res)=>
 });
 router.post("/login",async (req,res)=>
 {
-    res.send("recibido Login");
     console.log(req.body);
     const {nickname,password}=req.body;
     const BUser1=require("../app/classes/bussines/BUser");
     var buser=new BUser1.BUser();
     try
     {
-        var res=await buser.userLogin(nickname,password);
-        if(res==true)
+        var result=await buser.userLogin(nickname,password);
+        if(result==true)
+        {
             console.log("Existe");
+            res.redirect(200,"/user/my-files");
+        }
         else
+        {
+            info={"error_message":"Problems with the authentication","error_detailed":"Sorry, we could not authenticated you correctly. Try again."}
             console.log("Error con usuario");
+            res.redirect(200,"/error");
+        }
+            
     }
     catch(x)
     {
-        console.log("Error:",x);
+        info={"error_message":"Problems with the authentication","error_detailed":"Sorry, we could not authenticated you correctly. Try again."}
+
+        res.redirect("/error",{info:info});
+        //console.log("Error:",x);
     }
 });
 module.exports=router;

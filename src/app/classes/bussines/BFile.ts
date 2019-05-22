@@ -1,9 +1,9 @@
 import { DTOFileInfo } from "../dataAccess/dto/DTOFileInfo";
-import { MDBDAOUser } from "../dataAccess/dao/MDBDAOFileInfo";
+import { MDBDAOFileInfo } from "../dataAccess/dao/MDBDAOFileInfo";
 import { IDAOFileInfo } from "../dataAccess/dao/IDAOFileInfo";
 
 import { DTOFileData } from "../dataAccess/dto/DTOFileData";
-import { MDBDAOUser } from "../dataAccess/dao/MDBDAOFileData";
+import { MDBDAOFileData } from "../dataAccess/dao/FSDAOFileData";
 import { IDAOFileData } from "../dataAccess/dao/IDAOFileData";
 
 import { DTOAction } from "../dataAccess/dto/DTOAction";
@@ -32,7 +32,7 @@ export class BFile
 	private publicKey:string;
 	constructor(){}
 
-	public uploadFile(cname:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
+	/*public uploadFile(cname:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dao_file_info:IDAOFileInfo = new MDBDAOFileInfo();
@@ -67,5 +67,9 @@ export class BFile
 
 	public deleteFile():boolean{
 		return ;
+	}*/
+	async cipherFile()
+	{
+
 	}
 }

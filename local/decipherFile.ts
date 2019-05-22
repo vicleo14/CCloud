@@ -12,6 +12,12 @@ import {IDAOFileData} from "../src/app/classes/dataAccess/dao/IDAOFileData";
 import {FSDAOFileData} from "../src/app/classes/dataAccess/dao/FSDAOFileData";
 import {IRSA} from '../src/app/classes/crypto/IRSA';
 import {RSA} from '../src/app/classes/crypto/RSA';
+import { IDAOFileInfo } from "../src/app/classes/dataAccess/dao/IDAOFileInfo";
+import { MDBDAOFileInfo } from "../src/app/classes/dataAccess/dao/MDBDAOFileInfo";
+import { IDAOKey } from "../src/app/classes/dataAccess/dao/IDAOKey";
+import { MDBDAOKey } from "../src/app/classes/dataAccess/dao/MDBDAOKey";
+import { DTOKey } from "../src/app/classes/dataAccess/dto/DTOKey";
+import { DTOFileInfo } from "../src/app/classes/dataAccess/dto/DTOFileInfo";
 var name1="c.gnf";//"cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 var name2="key.vmf";//"key"+ExtensionConstants.CIPHERKEYD_EXTENSION;
 var name3="mac.drc";//"mac"+ExtensionConstants.MACKEYD_EXTENSION;
@@ -21,47 +27,66 @@ var c1c="key.cdcr";
 var c2c="mac.cvmf";
 var arcC="cipheredData.gnf";
 const filestr = require('fs');
-function enServidor()
+async function decipherFile(idFile)
 {
-    console.log("ADVERTENCIA: LA MAC ESTA FIJA");
-    var  cipher:IBlockCipher=new AES256();
+    const path="../storage/";
 
+    var  cipher:IBlockCipher=new AES256();
     var generator:IRandomGenerator=new RandomGenerator();
     var mac:IMac=new HMac();
     var hash:IHash=new SHA256();
     var fs:IDAOFileData=new FSDAOFileData();
     var rsa:IRSA=new RSA();
+    /* DECIFRADO */
     var pubKey = filestr.readFileSync("../local/publicKey.txt").toString();
     var privKey = filestr.readFileSync("../local/privateKey.txt").toString();
-    console.log(pubKey.length);
-    console.log(privKey.length);
-     /* LEEMOS LLAVE Y ARCHIVO CIFRADO */
-     var key1=filestr.readFileSync(pathP+c1c);
-     console.log(key1);
-     console.log(key1.length);
-     var key2=filestr.readFileSync(pathP+c2c);
-     console.log(key2);
-     console.log(key2.length);
-     //var mac2=fs.readFile("./",name3).toString();
-     var cd2=fs.readFile(pathP,arcC);
-     var mres="SxULAFwTWVcksl0q/WOfzRU8+0hZuI4CwoXhLOZl5vo=";
-     var decipheredKeyC= rsa.privateDecryption(privKey, key1, 'rocanroll');
-     var decipheresKeyM = rsa.privateDecryption(privKey, key2, 'rocanroll');
-     console.log(decipheredKeyC);
-     console.log(decipheresKeyM);
-     //console.log("key2",key2);
-     /* COMPROBAMOS MAC */
-     //Read cipher data
-     var message=filestr.readFileSync(pathP+arcC).toString();
-     
-     if(mac.verifyMac(message, decipheresKeyM.toString(), mres))
-         console.log("MAC verificada");
-     else
-         console.log("ERROR EN MAC");
- 
-     /* DECIFRAMOS ARCHIVO */
-     //console.log(cd2.length);
-     var result=cipher.decipherFile(cd2,decipheredKeyC.toString());
-     fs.createFile("./",namep,result);
+    /* Obtenemos datos de archivos */
+    var daoFile:IDAOFileInfo=new MDBDAOFileInfo();
+    var daoKey:IDAOKey=new MDBDAOKey();
+    var infoFile:DTOFileInfo=await daoFile.findFileById(idFile);
+    var keys:DTOKey[]=await daoKey.findKeysByFileId(idFile);
+    
+     /* LEEMOS LLAVES Y ARCHIVO CIFRADO */
+     var nameFileC=infoFile[0].getCipheredName();
+     var nameFileD=infoFile[0].getDecipheredName();
+     var macArc=infoFile[0].getMAC();
+     var nameKeyM=keys[1].getKeyFileName();
+     var nameKeyC=keys[0].getKeyFileName();
+     var hashKeyM=keys[1].getKeyHash();
+     var hashKeyC=keys[0].getKeyHash();
+     var cipheredAESkey=fs.readFile(path,nameKeyC);
+     var cipheredMACkey=fs.readFile(path,nameKeyM);
+     var cipheredMessage=fs.readFile(path,nameFileC);
+     /* DECIFRAMOS LLAVES */
+    var decipheredKeyC= rsa.privateDecryption(privKey, cipheredAESkey, 'rocanroll');
+    var decipheresKeyM = rsa.privateDecryption(privKey, cipheredMACkey, 'rocanroll');
+
+    /* VERIFICAMOS HASH DE LLAVES */
+    if(hash.compareHash(decipheresKeyM.toString(),hashKeyM) && hash.compareHash(decipheredKeyC.toString(),hashKeyC))
+    {     
+        console.log("Key hash verified");
+        /* VERIFICAMOS MAC DEL ARCHIVO */
+        console.log(mac.calculateMac(cipheredMessage.toString(),decipheresKeyM.toString()));
+        if(mac.verifyMac(cipheredMessage.toString(),decipheresKeyM.toString(),macArc))
+        {
+            console.log("Integrity verified");
+            var result=cipher.decipherFile(cipheredMessage,decipheredKeyC.toString());
+            return result;
+            fs.createFile("./",nameFileD,result);
+            /* SE TIENE QUE CIFRAR CON NUEVAS LLAVES */
+            console.log("creado ",nameFileD);
+        }
+        else{
+            console.log("Something is bad")
+            return undefined;
+        }
+        /*console.log(cipheredAESkey);*/
+    }else{
+        console.log("Something is bad")
+        return undefined;
+    }
+
 }
-enServidor();
+decipherFile("vicleo16pruebaIMG20195321075317");
+
+

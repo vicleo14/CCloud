@@ -24,4 +24,8 @@ router.get("/key-lost",async (req,res)=>
 {    
     res.render("user/keylost");
 });
+router.get("/request-key",async (req,res)=>
+{    
+    res.render("user/requestkey");
+});
 module.exports=router;

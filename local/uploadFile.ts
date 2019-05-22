@@ -35,13 +35,6 @@ function uploadFile(/*file*/)
     var hash:IHash=new SHA256();
     var fs:IDAOFileData=new FSDAOFileData();
     var rsa:IRSA=new RSA();
-
-
-
-
-
-
-
     
     /* GENERAMOS VALORES ALEATORIOS */
     

@@ -3,7 +3,7 @@ const router=express.Router();
 
 router.get("/",(req,res)=>
 {
-    res.send("Inicio de desarrollo");
+    res.render("other/welcome");
 });
 
 module.exports=router;
