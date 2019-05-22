@@ -48,11 +48,7 @@ export class BFile
 		this.privateKey = fs.readFileSync("../privateKey.txt").toString();
 	}
 
-<<<<<<< HEAD
-	/*public uploadFile(cname:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
-=======
 	public uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
->>>>>>> 7209349f615f6fa577b31597aec63dafc2dd7578
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dto_action:DTOAction = new DTOAction();
@@ -205,14 +201,6 @@ export class BFile
 		}
 	}
 
-<<<<<<< HEAD
-	public deleteFile():boolean{
-		return ;
-	}*/
-	async cipherFile()
-	{
-
-=======
 	public deleteFile(nickname:string, fileName:string):boolean{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_action:DTOAction = new DTOAction();
@@ -242,6 +230,5 @@ export class BFile
 			dao_action.createAction(nickname, 2000);
 			return true;
 		}
->>>>>>> 7209349f615f6fa577b31597aec63dafc2dd7578
 	}
 }

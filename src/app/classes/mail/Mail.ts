@@ -10,8 +10,8 @@ export class Mail
             host: "smtp.gmail.com",
             auth: {
               type: "login", // default
-              user: "@gmail.com",
-              pass: ""
+              user: "ccloud.crypto@gmail.com",
+              pass: "ccloudEscom"
             }
         }
         this.createTransport =nodemailer.createTransport(this.oConfig);
