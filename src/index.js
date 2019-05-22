@@ -31,6 +31,7 @@ app.use((req,res,next)=>
 app.use(require("./routes/index"));
 app.use(require("./routes/authentication"));
 app.use("/user",require("./routes/user"));
+app.use("/authentication",require("./routes/authentication"));
 /* PUBLICO */
 app.use(express.static(path.join(__dirname,"public")))
 /* INIT */
