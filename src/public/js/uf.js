@@ -39,7 +39,9 @@ window.uploadFile=function(file) {
         console.log(mres);
         console.log(hashK);
         console.log(hashm);
-        console.log(cipheredData);
+        console.log(cipheredData.toString());
+        var ct=document.getElementById("ci");
+        ct.value=cipheredData;  
         //console.log(cipheredKeyM);
         //console.log(cipheredKeyC);
     };

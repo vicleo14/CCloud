@@ -1,0 +1,24 @@
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">File</th>
+      <th scope="col">Size</th>
+      <th scope="col">Date</th>
+      <th scope="col">Actions</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each files}}    
+    <tr>
+      <td>{{this.decipheredName}}</td>
+      <td>{{this.size}} bytes</td>
+      <td>{{this.date}}</td>
+      <td><a class="btn btn btn-outline-warning" href="request-key?id={{this.id}}" role="button">Request key</a></td>
+      <td><a class="btn btn btn-outline-danger" href="key-lost?id={{this.id}}" role="button">Lost my key</a></td></td>
+    </tr>
+    {{/each}}
+    
+  </tbody>
+</table>

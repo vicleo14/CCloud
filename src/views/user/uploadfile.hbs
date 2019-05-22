@@ -6,11 +6,11 @@
         <div class="col-md-12 mx-auto">
             <div class="card">
                 <div class="card-body">
-                    <form action="/user/login" method="POST" id="uploadFile">
+                    <form action="/user/upload-file" method="POST" id="uploadFile">
                         
                         <div class="input-group mb-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile02" onchange="uploadFile(this.files)">
+                            <input type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files)">
                             <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
                         </div>
                         
@@ -19,10 +19,9 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Ciphered info</span>
                             </div>
-                            <textarea class="form-control" aria-label="Ciphered info"></textarea>
+                            <textarea class="form-control" aria-label="Ciphered info" id="ci" name="fileC"></textarea>
                             </div>
-                    </form>
-                    <div class="card">
+                            <div class="card">
                         <div class="card-body">
                             The MAC Key:
                         </div>
@@ -64,8 +63,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                            <button class="btn btn-success btn-block" onclick="sendForm()">Send file</button>
+                            <button class="btn btn-success btn-block">Send file</button>
                         </div>
+                    </form>
+                    
                 </div>
             </div>
         </div>

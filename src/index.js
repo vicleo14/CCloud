@@ -2,6 +2,7 @@ const express=require("express");
 const morgan=require("morgan");
 const exphbs=require("express-handlebars");
 const path=require("path");
+var bodyParser = require('body-parser')
 /* INICIALIZACIONES */
 const app=express();
 /* CONFIGURACIONES */
@@ -15,10 +16,12 @@ app.engine(".hbs",exphbs({
     helpers:require("./libs/handlebars")
 }));
 app.set('view engine','hbs');
+
 /* MIDDLEWARES */
 app.use(morgan("dev"));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use(bodyParser({limit: '4MB'}));
 /* VAIABLES GLOBALES */
 app.use((req,res,next)=>
 {
