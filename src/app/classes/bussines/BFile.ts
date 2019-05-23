@@ -32,16 +32,19 @@ import {IHash} from "../crypto/IHash";
 import {SHA256} from "../crypto/SHA256";
 
 import * as fs from 'fs';
-import {downloadData} from "../utils/downloadDataType";
-
+//import {downloadData} from "../utils/downloadDataType";
+import {BKey} from "./BKey";
 export class BFile
 {
 	private privateKey:string;
 	private publicKey:string;
+
+	private bsKey:BKey;
 	constructor(){
 		//Getting server keys
-		this.publicKey = fs.readFileSync("../publicKey.txt").toString();
-		this.privateKey = fs.readFileSync("../privateKey.txt").toString();
+		//this.publicKey = fs.readFileSync("../../../../local/publicKey.txt").toString();
+		//this.privateKey = fs.readFileSync("../../../../local/privateKey.txt").toString();
+		this.bsKey=new BKey()
 	}
 
 	public uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, 
@@ -74,7 +77,7 @@ export class BFile
 				//Creating the file
 				dto_file_data.setFileName(cipheredName);
 				dto_file_data.setData(cfile);
-				dao_file_data.createFile("../../../../storage", dto_file_data);
+				dao_file_data.createFile("../../../../storage/","", dto_file_data);//Revisar
 				
 				//Obtaining the date
 				var date = new Date();
@@ -186,7 +189,7 @@ export class BFile
 			//Decryption of the MACs key
 			var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon');
 			//Verifying the MAC
-			if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC, MAC)){
+			if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC.toString(), MAC)){
 				//Obtaining the date
 				var date = new Date();
 				dto_file_info.setSize(size);
@@ -233,5 +236,15 @@ export class BFile
 			dao_action.createAction(nickname, 2000);
 			return true;
 		}
+	}
+	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer,hashKey:string,hashMac:string)
+	{
+		var decipheredKeyC:any;
+		var decipheredKeyM:any;
+		if( (decipheredKeyC=this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
+		{
+			console.log("Llaves coinciden");
+		}
+		return true;
 	}
 }
