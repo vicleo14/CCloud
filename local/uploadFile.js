@@ -87,6 +87,24 @@ function uploadFile( /*file*/) {
     fs.createFile(pathOut, name1, cipheredData);
     fs.createFile(pathOut, name2, cipheredKeyC);
     fs.createFile(pathOut, name3, cipheredKeyM);
+    /*const options = {
+        url: 'localhost',
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8',
+            'User-Agent': 'my-reddit-client'
+        }
+    };*/
+    var request = require('request');
+    request('localhost:3030', function (req, res) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        var prueba = {
+            name: 'name',
+            data: 'file',
+            MAC: 'mac'
+        };
+        res.end(JSON.stringify(prueba));
+    });
 }
 //uploadFile();
 function f1() {
