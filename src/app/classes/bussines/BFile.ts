@@ -3,11 +3,7 @@ import { MDBDAOFileInfo } from "../dataAccess/dao/MDBDAOFileInfo";
 import { IDAOFileInfo } from "../dataAccess/dao/IDAOFileInfo";
 
 import { DTOFileData } from "../dataAccess/dto/DTOFileData";
-<<<<<<< HEAD
-import { MDBDAOFileData } from "../dataAccess/dao/FSDAOFileData";
-=======
 import { FSDAOFileData } from "../dataAccess/dao/FSDAOFileData";
->>>>>>> 7209349f615f6fa577b31597aec63dafc2dd7578
 import { IDAOFileData } from "../dataAccess/dao/IDAOFileData";
 
 import { DTOAction } from "../dataAccess/dto/DTOAction";
@@ -48,7 +44,8 @@ export class BFile
 		this.privateKey = fs.readFileSync("../privateKey.txt").toString();
 	}
 
-	public uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
+	public uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, 
+		MAC:string, cipheredKey:Buffer, hashMac:string, hashKeyFile:string):boolean{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dto_action:DTOAction = new DTOAction();
@@ -61,51 +58,57 @@ export class BFile
 		var hash:IHash = new SHA256();
 		var rsa:IRSA = new RSA();
 		//Decryption of the MACs key
-		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon');
-		//Verifying the MAC
-		if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC, MAC)){
-			//File's name encryption
-			var keyGen:IRandomGenerator=new RandomGenerator();
-		    var aes:IBlockCipher=new AES256();
-		    var key_name=keyGen.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
-		    var cipheredName=aes.cipher(name,key_name);
-			//var cipheredName = rsa.privateEncryption(this.privateKey, name, 'camaleon');
-			//Creating the file
-			dto_file_data.setFileName(cipheredName);
-			dto_file_data.setData(cfile);
-			dao_file_data.createFile("../uploadedFiles", dto_file_data);
-			
-			//Obtaining the date
-			var date = new Date();
-			//Calculating id
-			var id = nickname.concat(cipheredName, date.toString().slice(0, 24));
-			//Filling file's information
-			dto_file_info.setCipheredName(cipheredName);
-			dto_file_info.setSize(size);
-			dto_file_info.setDecipheredName(name);
-			dto_file_info.setId(id);
-			dto_file_info.setMAC(MAC);
-			dto_file_info.setDate(date);
-			dao_file_info.createFile(nickname, dto_file_info);
-			
-			//Hashing file's key
-			var hashedKey = hash.calculateHash(cipheredKey.toString('base64'));
-			//Filling key's information
-			dto_key.setIdFile(dto_file_info.getId());
-			dto_key.setIdType(1);
-			dto_key.setKeyHash(hashedKey);
-			dto_key.setKeyFileName(key_name);
-			dao_key.createKey(dto_key);
+		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon').toString();
+		//Decryption of the file's key
+		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'camaleon').toString();
+		//Verifying keyMacHash and keyFileHash 
+		if(hash.compareHash(hash.calculateHash(decipheredKeyMAC), hashMac) && hash.compareHash(hash.calculateHash(decipheredKeyFile), hashKeyFile)){
+			//Verifying the MAC
+			if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC, MAC)){
+				//File's name encryption
+				var keyGen:IRandomGenerator=new RandomGenerator();
+			    var aes:IBlockCipher=new AES256();
+			    var key_name=keyGen.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
+			    var cipheredName=aes.cipher(name,key_name);
+				//var cipheredName = rsa.privateEncryption(this.privateKey, name, 'camaleon');
+				//Creating the file
+				dto_file_data.setFileName(cipheredName);
+				dto_file_data.setData(cfile);
+				dao_file_data.createFile("../../../../storage", dto_file_data);
+				
+				//Obtaining the date
+				var date = new Date();
+				//Calculating id
+				var id = nickname.concat(cipheredName, date.toString().slice(0, 24));
+				//Filling file's information
+				dto_file_info.setCipheredName(cipheredName);
+				dto_file_info.setSize(size);
+				dto_file_info.setDecipheredName(name);
+				dto_file_info.setId(id);
+				dto_file_info.setMAC(MAC);
+				dto_file_info.setDate(date);
+				dao_file_info.createFile(nickname, dto_file_info);
+				
+				//Hashing file's key
+				var hashedKey = hash.calculateHash(cipheredKey.toString('base64'));
+				//Filling key's information
+				dto_key.setIdFile(dto_file_info.getId());
+				dto_key.setIdType(1);
+				dto_key.setKeyHash(hashedKey);
+				dto_key.setKeyFileName(key_name);
+				dao_key.createKey(dto_key);
 
-			//Filling actions
-			dao_action.createAction(nickname, 2001);
-			dao_action.createAction(nickname, 3006);
-			return true;
+				//Filling actions
+				dao_action.createAction(nickname, 2001);
+				dao_action.createAction(nickname, 3006);
+				return true;
+			}
+			else{
+				dao_action.createAction(nickname, 2005);
+				return false;
+			}
 		}
-		else{
-			dao_action.createAction(nickname, 2005);
-			return false;
-		}
+		return false;
 	}
 
 	public downloadFile(nickname:string, fileName:string):downloadData{
