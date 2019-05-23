@@ -1,5 +1,16 @@
-<script src="/js/uf.js">
-
+<script src="/js/uf.js"></script>
+<script >
+    function sendData()
+    {
+        
+        var petition=new XMLHttpRequest;
+        petition.open("POST","http://localhost:3000/user/upload-file");
+        petition.setRequestHeader("Content-Type", "application/json");
+        var data=JSON.stringify(infoContainer);
+        console.log(data);
+        console.log(data.length);
+        petition.send(data);
+    }
 </script>
 <div class="container p-12">
     <div class="div">
@@ -15,57 +26,18 @@
                         </div>
                         
                         </div>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Ciphered info</span>
-                            </div>
-                            <textarea class="form-control" aria-label="Ciphered info" id="ci" name="fileC"></textarea>
-                            </div>
-                            <div class="card">
-                        <div class="card-body">
-                            The MAC Key:
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            The MAC key hash:
-                        </div>
-                    </div>
-                    <div class="card">
+                       
+                    <div class="card" id="macTagView">
                         <div class="card-body">
                             The MAC tag:
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            The AES Key:
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            The AES key hash:
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            The AES key RSA:
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body" >
-                            The MAC key RSA:
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-bdy">
-                            <a class="btn btn btn-outline-warning" href="#" role="button">Get your MAC key</a>
-                            <a class="btn btn btn-outline-danger" href="#" role="button">Get your AES key</a>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                            <button class="btn btn-success btn-block">Send file</button>
-                        </div>
+                    
+                    
                     </form>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block" onclick="sendData()">Send file</button>
+                    </div>
                     
                 </div>
             </div>

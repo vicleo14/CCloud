@@ -19,9 +19,10 @@ app.set('view engine','hbs');
 
 /* MIDDLEWARES */
 app.use(morgan("dev"));
-app.use(express.urlencoded({extended:false}));
-app.use(express.json());
-app.use(bodyParser({limit: '4MB'}));
+//app.use(express.urlencoded({extended:false}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json());
 /* VAIABLES GLOBALES */
 app.use((req,res,next)=>
 {

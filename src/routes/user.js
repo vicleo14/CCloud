@@ -7,8 +7,9 @@ router.get("/upload-file",(req,res)=>
 });
 router.post("/upload-file",(req,res)=>
 {
-    res.send("recibido file");
-    console.log(req.body);
+    //res.send("recibido file");
+    var fileInfo=req.body;
+    console.log(fileInfo.name);
 });
 
 router.get("/my-files",async (req,res)=>

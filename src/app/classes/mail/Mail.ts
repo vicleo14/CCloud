@@ -11,7 +11,7 @@ export class Mail
             auth: {
               type: "login", // default
               user: "ccloud.crypto@gmail.com",
-              pass: "ccloudEscom"
+              pass: ""
             }
         }
         this.createTransport =nodemailer.createTransport(this.oConfig);

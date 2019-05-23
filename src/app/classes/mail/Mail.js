@@ -8,7 +8,7 @@ var Mail = /** @class */ (function () {
             auth: {
                 type: "login",
                 user: "ccloud.crypto@gmail.com",
-                pass: "ccloudEscom"
+                pass: ""
             }
         };
         this.createTransport = nodemailer.createTransport(this.oConfig);

@@ -31,18 +31,18 @@ function uploadFile(file)
         "-----END PUBLIC KEY-----";
         
     
-        var cipher = new AES256_1.AES256();
-        var generator = new RandomGenerator_1.RandomGenerator();
-        var mac = new HMac_1.HMac();
-        var hash = new SHA256_1.SHA256();
-        var fs = new FSDAOFileData_1.FSDAOFileData();
-        var rsa = new RSA_1.RSA();
+        var cipher = new AES256();
+        var generator = new RandomGenerator();
+        var mac = new HMac();
+        var hash = new SHA256();
+        var fs = new FSDAOFileData();
+        var rsa = new RSA();
         var reader = new FileReader();
         var fileS = file[0];
         reader.onload = function () {
             /* GENERAMOS VALORES ALEATORIOS */
-            var keyC = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
-            var keyM = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
+            var keyC = generator.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
+            var keyM = generator.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
             var cipheredData = cipher.cipherFile(reader.result, keyC);
             /* CALCULAMOS TAG CON IMAC */
@@ -62,6 +62,8 @@ function uploadFile(file)
            // console.log(cipheredData.toString());
             var ct=document.getElementById("ci");
             ct.value=cipheredData;  
+            var tagMacE=document.getElementById("macTagView");
+            tagMacE.value="Tag de MAC:"+tagMacE;
             console.log("RSAK1",cipheredKeyM.toString());
             console.log("RSAK2",cipheredKeyC.toString());
         };
