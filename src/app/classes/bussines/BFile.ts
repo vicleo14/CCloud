@@ -31,9 +31,20 @@ import {HMac} from "../crypto/HMac";
 import {IHash} from "../crypto/IHash";
 import {SHA256} from "../crypto/SHA256";
 
+import {ExtensionConstants} from "../utils/ExtensionConstants";
+import {ActionConstants} from "../utils/ActionConstants";
+import {KeyConstants} from "../utils/KeyConstants";
+
 import * as fs from 'fs';
 //import {downloadData} from "../utils/downloadDataType";
 import {BKey} from "./BKey";
+import * as dateFormat from 'dateformat';
+
+const name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
+const name2="key"+ExtensionConstants.CIPHERKEYC_EXTENSION;
+const name3="mac"+ExtensionConstants.MACKEYC_EXTENSION;
+const path="../../../../storage";
+
 export class BFile
 {
 	private privateKey:string;
@@ -47,8 +58,8 @@ export class BFile
 		this.bsKey=new BKey()
 	}
 
-	public uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, 
-		MAC:string, cipheredKey:Buffer, hashMac:string, hashKeyFile:string):boolean{
+	async uploadFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, 
+		MAC:string, cipheredKey:Buffer, hashMac:string, hashKeyFile:string){
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dto_action:DTOAction = new DTOAction();
@@ -60,6 +71,7 @@ export class BFile
 		var hmac:IMac = new HMac();
 		var hash:IHash = new SHA256();
 		var rsa:IRSA = new RSA();
+		
 		//Decryption of the MACs key
 		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon').toString();
 		//Decryption of the file's key
@@ -68,23 +80,14 @@ export class BFile
 		if(hash.compareHash(hash.calculateHash(decipheredKeyMAC), hashMac) && hash.compareHash(hash.calculateHash(decipheredKeyFile), hashKeyFile)){
 			//Verifying the MAC
 			if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC, MAC)){
-				//File's name encryption
-				var keyGen:IRandomGenerator=new RandomGenerator();
-			    var aes:IBlockCipher=new AES256();
-			    var key_name=keyGen.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
-			    var cipheredName=aes.cipher(name,key_name);
-				//var cipheredName = rsa.privateEncryption(this.privateKey, name, 'camaleon');
-				//Creating the file
-				dto_file_data.setFileName(cipheredName);
-				dto_file_data.setData(cfile);
-				dao_file_data.createFile("../../../../storage/","", dto_file_data);//Revisar
-				
 				//Obtaining the date
 				var date = new Date();
 				//Calculating id
-				var id = nickname.concat(cipheredName, date.toString().slice(0, 24));
+				var split = name.split(".");
+				var id = nickname + name + dateFormat( new Date(),"yyyyMMddhhMMss");
+
 				//Filling file's information
-				dto_file_info.setCipheredName(cipheredName);
+				dto_file_info.setCipheredName(id+ExtensionConstants.GENERIC_EXTENSION);
 				dto_file_info.setSize(size);
 				dto_file_info.setDecipheredName(name);
 				dto_file_info.setId(id);
@@ -94,20 +97,33 @@ export class BFile
 				
 				//Hashing file's key
 				var hashedKey = hash.calculateHash(cipheredKey.toString('base64'));
-				//Filling key's information
-				dto_key.setIdFile(dto_file_info.getId());
-				dto_key.setIdType(1);
-				dto_key.setKeyHash(hashedKey);
-				dto_key.setKeyFileName(key_name);
+				
+				//Filling file's key information
+				dto_key.setIdFile(id);
+				dto_key.setIdType(KeyConstants.KEY_CIPHER_DECIPHER);
+				dto_key.setKeyHash(hashKeyFile);
+				dto_key.setKeyFileName(id+ExtensionConstants.CIPHERKEYC_EXTENSION);
 				dao_key.createKey(dto_key);
 
+				//Filling MAC's key information
+				dto_key.setIdFile(id);
+				dto_key.setIdType(KeyConstants.KEY_INTEGRITY);
+				dto_key.setKeyHash(hashMac);
+				dto_key.setKeyFileName(id+ExtensionConstants.MACKEYC_EXTENSION);
+				dao_key.createKey(dto_key);
+
+				//Creating the files
+				dao_file_data.createFile(path, id+ExtensionConstants.GENERIC_EXTENSION, cfile);
+				dao_file_data.createFile(path, id+ExtensionConstants.CIPHERKEYC_EXTENSION, cipheredKey);
+				dao_file_data.createFile(path, id+ExtensionConstants.MACKEYC_EXTENSION, cipheredKeyMAC);
+
 				//Filling actions
-				dao_action.createAction(nickname, 2001);
-				dao_action.createAction(nickname, 3006);
+				dao_action.createAction(nickname, ActionConstants.ACTION_FILE_UPLOADED);
+				dao_action.createAction(nickname, ActionConstants.ACTION_KEY_MACUPLOADED);
 				return true;
 			}
 			else{
-				dao_action.createAction(nickname, 2005);
+				dao_action.createAction(nickname, ActionConstants.ACTION_FILE_CORRUPTED);
 				return false;
 			}
 		}
