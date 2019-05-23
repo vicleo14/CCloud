@@ -34,25 +34,27 @@ export class BKey
         this.fsO=new FSDAOFileData();
         this.pathP="../../../../storage/";
     }
-    async decipherKey(key:Buffer,hash:string)
+    async decipherKey(key:string,hash:string)
     {
         var result=undefined;
+        console.log("Hash recibido",hash);
         
         var privKey = filestr.readFileSync("./privateKey.txt").toString();
         var decipheredKey= await this.rsa.privateDecryption(privKey, key, 'rocanroll');
+        console.log("Hash calculado",this.hashO.calculateHash(decipheredKey));
         if(this.hashO.compareHash(decipheredKey.toString(),hash))
         {
             result=decipheredKey;
         }
         return result;
     }
-    async cipherKey(key:Buffer)
+    async cipherKey(key:string)
     {
         var pubKey = filestr.readFileSync("./publicKey.txt").toString();
         var cipheredKey = this.rsa.publicEncryption(pubKey.toString(), key);
-        return cipheredKey;
+        return cipheredKey.toString();
     }
-    async storeKey(dtoKey:DTOKey, key:Buffer)
+    async storeKey(dtoKey:DTOKey, key:string)
     {
         var status:boolean=false;
         var check;

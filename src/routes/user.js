@@ -1,11 +1,12 @@
 const express=require("express");
+const fs=require("fs");
 const router=express.Router();
 
 router.get("/upload-file",(req,res)=>
 {
     res.render("user/uploadfile");
 });
-router.post("/upload-file",(req,res)=>
+router.post("/upload-file",async (req,res)=>
 {
     var BSFile_1 = require("../app/classes/bussines/BFile");
     const bsFile = new BSFile_1.BFile();
@@ -20,17 +21,13 @@ router.post("/upload-file",(req,res)=>
     var mac=fileInfo.mac;
     var nickname="vicleo16";
     var size=0;
+    var i=0;
+    console.log("cipheredM:",cipheredM  );
+
     
-    bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
-    /*
-    "name":file[0].name,
-              "mac":mres,
-              "hashK":hashK,
-              "hashM":hashm,
-              "AESkey":cipheredKeyC,
-              "macKey":cipheredKeyM,
-              "data":cipheredData
-    console.log(fileInfo.name);*/
+    await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
+    
+
 });
 
 router.get("/my-files",async (req,res)=>
@@ -50,4 +47,11 @@ router.get("/request-key",async (req,res)=>
 {    
     res.render("user/requestkey");
 });
+router.post("/public-key",async (req,res)=>
+{    
+    var key=fs.readFileSync("./publicKey.txt");
+    console.log(key.toString());
+    res.send(key);
+});
+
 module.exports=router;

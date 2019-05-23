@@ -1,5 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){
 "use strict";
 exports.__esModule = true;
 var AES256_1 = require("../src/app/classes/crypto/AES256");
@@ -9,22 +8,8 @@ var SHA256_1 = require("../src/app/classes/crypto/SHA256");
 var HMac_1 = require("../src/app/classes/crypto/HMac");
 var FSDAOFileData_1 = require("../src/app/classes/dataAccess/dao/FSDAOFileData");
 var RSA_1 = require("../src/app/classes/crypto/RSA");
-window.uploadFile=function(file) {
+window.uploadFile = function (file) {
     {
-        var publicKey = "-----BEGIN PUBLIC KEY-----" +
-            "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1jDb8HxsMWhf0Gh3Yzh7" +
-            "O+SHeV/WsiGyKhKhYd1O5DZUUqgWRaVG8v8DIAQLzNc7QJx2nPFv/tBZ9tFCwfAL" +
-            "xoua+xvHCl5JONzKLzirTpu5mUOtNBai58P3cyUopOQIxzAVwHxboY4LLR3ZSg8t" +
-            "T609pBckZiRhL4LM0Gv3vjuJdrJkFpiF4I4keOSbDFoosgtnJewbYXFBbPSizL4i" +
-            "gFmtk6SCUOFR504DEQDvpnFXyIIjoKHkFh44M3YqNKZglUii12QKRv1K+7Dj3Zb4" +
-            "M4XOjKz4fjUeJnGGC+VP+YbakBeH/2D5l2oz62bv52B6+HgyNlzTx6Oqk4t74jUm" +
-            "k7Je2oIzoI9dQjNullnfVdLHs0Rp7GCYQclsKtHr2aiz74D/ZyHKgmstuVGv8xuP" +
-            "ZNnyfiVBOMbG8yxefUnrHNkRnxfv6jOXUA/ah3b3vFgb4uBq1cBlNlnYWX1y4mf8" +
-            "oRAKab1K9NBZJ3mVpzW/qJjGI8Zbl7s0Uqlmn8FxgW13LNs4rtQWz5D01uJ6AqUh" +
-            "jcIfaOg/HwEViwcfkantsfYTZV70X0+G2qHTFeUJOiLh3+YTLUHC/y44t1UlY38c" +
-            "BJGhwgfFm8lqcIC734stsrMEk2GhTO8tjBUnBbOPT5u7OOUIVwt8b7h3RvBph9qt" +
-            "KVcoV6mWkkQRPoKW7uI3o78CAwEAAQ==" +
-            "-----END PUBLIC KEY-----";
         var cipher = new AES256_1.AES256();
         var generator = new RandomGenerator_1.RandomGenerator();
         var mac = new HMac_1.HMac();
@@ -46,8 +31,8 @@ window.uploadFile=function(file) {
             var hashm = hash.calculateHash(keyM);
             /* CIFRAMOS LLAVES CON RSA */
             //Se cifran con la llave pública la llave de la mac y la llave del archivo
-            var cipheredKeyM = rsa.publicEncryption(publicKey, Buffer.from(keyM, "base64"));
-            var cipheredKeyC = rsa.publicEncryption(publicKey.toString(), Buffer.from(keyC, "base64"));
+            var cipheredKeyM = rsa.publicEncryption(pubKey, keyM);
+            var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
             console.log(keyC);
             console.log(keyM);
             console.log(mres);
@@ -57,16 +42,28 @@ window.uploadFile=function(file) {
             var ct = document.getElementById("ci");
             ct.value = cipheredData;
             var tagMacE = document.getElementById("macTagView");
-            tagMacE.value = "Tag de MAC:" + tagMacE;
+            tagMacE.innerHTML = "Tag de MAC:" + mres;
+            /*console.log("Ciphered file:", cipheredData.toString());
             console.log("RSAK1", cipheredKeyM.toString());
-            console.log("RSAK2", cipheredKeyC.toString());
+            console.log("RSAK2", cipheredKeyC.toString());*/
+            window.infoContainer = {
+                "name": file[0].name,
+                "mac": mres,
+                "hashK": hashK,
+                "hashM": hashm,
+                "AESkey": cipheredKeyC,
+                "macKey": cipheredKeyM,
+                "data": cipheredData
+            };
+            console.log("key", keyC);
+            console.log("K1", cipheredKeyC);
+            console.log("K2", cipheredKeyM);
         };
         reader.readAsBinaryString(fileS);
     }
-}
+};
 
-}).call(this,require("buffer").Buffer)
-},{"../src/app/classes/crypto/AES256":2,"../src/app/classes/crypto/HMac":3,"../src/app/classes/crypto/RSA":4,"../src/app/classes/crypto/RandomGenerator":5,"../src/app/classes/crypto/SHA256":6,"../src/app/classes/dataAccess/dao/FSDAOFileData":7,"../src/app/classes/utils/CryptoConstants":8,"buffer":56}],2:[function(require,module,exports){
+},{"../src/app/classes/crypto/AES256":2,"../src/app/classes/crypto/HMac":3,"../src/app/classes/crypto/RSA":4,"../src/app/classes/crypto/RandomGenerator":5,"../src/app/classes/crypto/SHA256":6,"../src/app/classes/dataAccess/dao/FSDAOFileData":7,"../src/app/classes/utils/CryptoConstants":8}],2:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 exports.__esModule = true;
@@ -145,6 +142,7 @@ var HMac = /** @class */ (function () {
 exports.HMac = HMac;
 
 },{"crypto":64}],4:[function(require,module,exports){
+(function (Buffer){
 "use strict";
 exports.__esModule = true;
 var crypto = require("crypto");
@@ -155,37 +153,42 @@ var RSA = /** @class */ (function () {
         var pub_enc = crypto.publicEncrypt({
             key: publicKey,
             padding: crypto.constants.RSA_PKCS1_PADDING
-        }, message);
-        return pub_enc;
+        }, Buffer.from(message, "base64"));
+        var pubencS = pub_enc.toString("base64");
+        return pubencS;
     };
     RSA.prototype.publicDecryption = function (publicKey, message) {
         var pub_dec = crypto.publicDecrypt({
             key: publicKey,
             padding: crypto.constants.RSA_PKCS1_PADDING
-        }, message);
-        return pub_dec;
+        }, Buffer.from(message, "base64"));
+        var pubedecS = pub_dec.toString("base64");
+        return pubedecS;
     };
     RSA.prototype.privateEncryption = function (privateKey, message, cipherPhrase) {
         var priv_enc = crypto.privateEncrypt({
             key: privateKey,
             padding: crypto.constants.RSA_PKCS1_PADDING,
             passphrase: cipherPhrase
-        }, message);
-        return priv_enc;
+        }, Buffer.from(message, "base64"));
+        var privedecS = priv_enc.toString("base64");
+        return privedecS;
     };
     RSA.prototype.privateDecryption = function (privateKey, message, cipherPhrase) {
         var priv_dec = crypto.privateDecrypt({
             key: privateKey,
             passphrase: cipherPhrase,
             padding: crypto.constants.RSA_PKCS1_PADDING
-        }, message);
-        return priv_dec;
+        }, Buffer.from(message, "base64"));
+        var privdecS = priv_dec.toString("base64");
+        return privdecS;
     };
     return RSA;
 }());
 exports.RSA = RSA;
 
-},{"crypto":64}],5:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"buffer":56,"crypto":64}],5:[function(require,module,exports){
 "use strict";
 exports.__esModule = true;
 var crypto = require("crypto");

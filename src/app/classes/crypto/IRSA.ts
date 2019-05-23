@@ -1,7 +1,7 @@
 export interface IRSA
 {
-	publicEncryption(publicKey:string, message:Buffer):Buffer;
-	publicDecryption(publicKey:string, message:Buffer):Buffer;
-	privateEncryption(privateKey:string, message:Buffer, cipherPhrase:string):Buffer;
-	privateDecryption(privateKey:string, message:Buffer, cipherPhrase:string):Buffer;
+	publicEncryption(publicKey:string, message:string):string;
+	publicDecryption(publicKey:string, message:string):string;
+	privateEncryption(privateKey:string, message:string, cipherPhrase:string):string;
+	privateDecryption(privateKey:string, message:string, cipherPhrase:string):string;
 }

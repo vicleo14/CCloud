@@ -172,7 +172,7 @@ export class BFile
 		}
 	}
 
-	public updateFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer):boolean{
+	public updateFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string):boolean{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dto_file_data:DTOFileData = new DTOFileData();
 		var dto_action:DTOAction = new DTOAction();
@@ -203,7 +203,7 @@ export class BFile
 		}
 		else{
 			//Decryption of the MACs key
-			var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon');
+			var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanrol');
 			//Verifying the MAC
 			if(hmac.verifyMac(cfile.toString(), decipheredKeyMAC.toString(), MAC)){
 				//Obtaining the date
@@ -253,14 +253,23 @@ export class BFile
 			return true;
 		}
 	}
-	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer,hashKey:string,hashMac:string)
+	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
 	{
-		var decipheredKeyC:any;
-		var decipheredKeyM:any;
-		if( (decipheredKeyC=this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
+		var decipheredKeyC:string;
+		var decipheredKeyM:string;
+		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
-			console.log("Llaves coinciden");
+			await console.log(decipheredKeyC);
+			await console.log(decipheredKeyM);
+			
+			console.log("That's ok");
+			return true;
 		}
-		return true;
+		else
+		{
+			console.log("Something was wrokg");
+			return false;
+		}
+		
 	}
 }
