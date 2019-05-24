@@ -15,7 +15,7 @@ export  class AES256 implements IBlockCipher{
     {
         var iv=this.ivGenerator.generateRandom(CryptoConstants.AES_IVSIZE_BYTES);
         const cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
-        let encrypted = cipher.update(data, 'base64', 'base64');
+        let encrypted = cipher.update(data, 'ascii', 'hex');
         encrypted += cipher.final('base64');
         console.log("IV",iv);
         return encrypted+iv;
@@ -27,7 +27,7 @@ export  class AES256 implements IBlockCipher{
         data=data.substr(0,data.length-CryptoConstants.AES_IVSIZE_BYTES);
 
         const decipher = crypto.createDecipheriv(this.ALGORITHM, key, iv);
-        let decrypted = decipher.update(data, 'base64', 'base64');
+        let decrypted = decipher.update(data, 'base64', 'ascii');
         decrypted += decipher.final('base64');
         return decrypted;
     }
