@@ -19,11 +19,12 @@ window.uploadFile = function (file) {
         var reader = new FileReader();
         var fileS = file[0];
         reader.onload = function () {
+            console.log("Tamaanio de lectura:",reader.result.length);
             /* GENERAMOS VALORES ALEATORIOS */
             var keyC = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             var keyM = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
-            var cipheredData = cipher.cipherFile(reader.result, keyC);
+            var cipheredData = cipher.cipher(reader.result, keyC);
             /* CALCULAMOS TAG CON IMAC */
             var mres = mac.calculateMac(cipheredData.toString(), keyM);
             /* CALCULAMOS HASH DE LLAVES */
@@ -42,12 +43,16 @@ window.uploadFile = function (file) {
                 "hashM": hashm,
                 "AESkey": cipheredKeyC,
                 "macKey": cipheredKeyM,
-                "data": cipheredData
+                "data": cipheredData,
+                "nickname": "vicleo16",
+                "size": cipheredData.length
             };
             console.log(">>>>>key1 deciphered:\n", keyC);
-            console.log(">>>>>key2 deciphered:\n", keyC);
+            console.log(">>>>>key2 deciphered:\n", keyM);
             console.log(">>>>>K1 ciphered:\n", cipheredKeyC);
             console.log(">>>>>K2 ciphered:\n", cipheredKeyM);
+            console.log("File size:", cipheredData.length);
+            console.log("Ciphered file:", cipheredData);
         };
         reader.readAsBinaryString(fileS);
     }
@@ -69,8 +74,8 @@ var AES256 = /** @class */ (function () {
     AES256.prototype.cipher = function (data, key) {
         var iv = this.ivGenerator.generateRandom(CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
-        var encrypted = cipher.update(data, 'ascii', 'hex');
-        encrypted += cipher.final('hex');
+        var encrypted = cipher.update(data, 'ascii', 'base64');
+        encrypted += cipher.final('base64');
         console.log("IV", iv);
         return encrypted + iv;
     };

@@ -43,7 +43,7 @@ import * as dateFormat from 'dateformat';
 const name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 const name2="key"+ExtensionConstants.CIPHERKEYC_EXTENSION;
 const name3="mac"+ExtensionConstants.MACKEYC_EXTENSION;
-const path="../../../../storage";
+const path="storage/";
 
 export class BFile
 {
@@ -253,15 +253,43 @@ export class BFile
 			return true;
 		}
 	}
-	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
+	async decipherFile(data:string,key:string,macKey:string,tag:string)
 	{
+		var result=undefined;
+		const mac:IMac=new HMac();
+		const blockCipher:IBlockCipher=new AES256();//Esto cambia si se pone opcion de seguridad
+		if(mac.verifyMac(data,macKey,tag))
+		{
+			try
+			{
+				var buf=Buffer.from(data);
+				console.log(buf)
+				result=await blockCipher.decipher(data,key);
+				console.log("Decipher result:",Buffer.from(buf));
+				console.log("Decipher size A:",Buffer.from(result).length);
+			}
+			catch(x)
+			{
+				console.log("Something is wrong:",x);
+				result=undefined;
+			}
+		}
+		else
+		{
+			result=undefined;
+		}
+		return result;
+
+	}
+	async saveFile(nickname:string, name:string, cfile:string, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
+	{
+		const fs:IDAOFileData=new FSDAOFileData();
 		var decipheredKeyC:string;
 		var decipheredKeyM:string;
 		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
-			await console.log(decipheredKeyC);
-			await console.log(decipheredKeyM);
-			
+			var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);
+			fs.createFile(path,name,Buffer.from(decipheredFile));
 			console.log("That's ok");
 			return true;
 		}

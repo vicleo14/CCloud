@@ -47,7 +47,9 @@ window.uploadFile=function(file)
                 "hashM": hashm,
                 "AESkey": cipheredKeyC,
                 "macKey": cipheredKeyM,
-                "data": cipheredData
+                "data": cipheredData,
+                "nickname":"vicleo16",
+                "size":cipheredData.length
             };
             console.log(">>>>>key1 deciphered:\n", keyC);
             console.log(">>>>>key2 deciphered:\n", keyM);

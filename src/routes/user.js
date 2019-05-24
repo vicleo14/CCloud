@@ -19,14 +19,13 @@ router.post("/upload-file",async (req,res)=>
     var cipheredData=fileInfo.data;
     var name=fileInfo.name;
     var mac=fileInfo.mac;
-    var nickname="vicleo16";
-    var size=0;
-    var i=0;
-    console.log("cipheredM:",cipheredM  );
-
+    var nickname=fileInfo.nickname;
+    var size=fileInfo.size;
+    //console.log("info:",fileInfo  );
+    
     
     await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
-    
+    console.log("finished");
 
 });
 

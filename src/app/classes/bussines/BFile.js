@@ -44,6 +44,7 @@ var MDBDAOAction_1 = require("../dataAccess/dao/MDBDAOAction");
 var DTOKey_1 = require("../dataAccess/dto/DTOKey");
 var MDBDAOKey_1 = require("../dataAccess/dao/MDBDAOKey");
 var RSA_1 = require("../crypto/RSA");
+var AES256_1 = require("../crypto/AES256");
 var HMac_1 = require("../crypto/HMac");
 var SHA256_1 = require("../crypto/SHA256");
 var ExtensionConstants_1 = require("../utils/ExtensionConstants");
@@ -55,7 +56,7 @@ var dateFormat = require("dateformat");
 var name1 = "cipheredData" + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION;
 var name2 = "key" + ExtensionConstants_1.ExtensionConstants.CIPHERKEYC_EXTENSION;
 var name3 = "mac" + ExtensionConstants_1.ExtensionConstants.MACKEYC_EXTENSION;
-var path = "../../../../storage";
+var path = "storage/";
 var BFile = /** @class */ (function () {
     function BFile() {
         //Getting server keys
@@ -247,12 +248,49 @@ var BFile = /** @class */ (function () {
             return true;
         }
     };
+    BFile.prototype.decipherFile = function (data, key, macKey, tag) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, mac, blockCipher, buf, x_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        result = undefined;
+                        mac = new HMac_1.HMac();
+                        blockCipher = new AES256_1.AES256();
+                        if (!mac.verifyMac(data, macKey, tag)) return [3 /*break*/, 5];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        buf = Buffer.from(data);
+                        console.log(buf);
+                        return [4 /*yield*/, blockCipher.decipher(data, key)];
+                    case 2:
+                        result = _a.sent();
+                        console.log("Decipher result:", Buffer.from(buf));
+                        console.log("Decipher size A:", Buffer.from(result).length);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        x_1 = _a.sent();
+                        console.log("Something is wrong:", x_1);
+                        result = undefined;
+                        return [3 /*break*/, 4];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        result = undefined;
+                        _a.label = 6;
+                    case 6: return [2 /*return*/, result];
+                }
+            });
+        });
+    };
     BFile.prototype.saveFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey, hashKey, hashMac) {
         return __awaiter(this, void 0, void 0, function () {
-            var decipheredKeyC, decipheredKeyM, _a;
+            var fs, decipheredKeyC, decipheredKeyM, _a, decipheredFile;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.bsKey.decipherKey(cipheredKey, hashKey)];
+                    case 0:
+                        fs = new FSDAOFileData_1.FSDAOFileData();
+                        return [4 /*yield*/, this.bsKey.decipherKey(cipheredKey, hashKey)];
                     case 1:
                         _a = (decipheredKeyC = _b.sent()) != undefined;
                         if (!_a) return [3 /*break*/, 3];
@@ -261,16 +299,14 @@ var BFile = /** @class */ (function () {
                         _a = (decipheredKeyM = _b.sent()) != undefined;
                         _b.label = 3;
                     case 3:
-                        if (!_a) return [3 /*break*/, 6];
-                        return [4 /*yield*/, console.log(decipheredKeyC)];
+                        if (!_a) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.decipherFile(cfile, decipheredKeyC, decipheredKeyM, MAC)];
                     case 4:
-                        _b.sent();
-                        return [4 /*yield*/, console.log(decipheredKeyM)];
-                    case 5:
-                        _b.sent();
+                        decipheredFile = _b.sent();
+                        fs.createFile(path, name, Buffer.from(decipheredFile));
                         console.log("That's ok");
                         return [2 /*return*/, true];
-                    case 6:
+                    case 5:
                         console.log("Something was wrokg");
                         return [2 /*return*/, false];
                 }
