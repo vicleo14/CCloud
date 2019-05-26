@@ -23,6 +23,14 @@
         //console.log(data);
         //console.log(data.length);
         petition.send(data);
+        petition.onreadystatechange=function()
+        {
+            if(petition.readyState==4 )
+            {
+                petition.abort();
+                console.log("Peticion terminada");
+            }
+        }
     }
 </script>
 <div class="container p-12">

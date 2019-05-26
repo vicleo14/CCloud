@@ -262,9 +262,9 @@ export class BFile
 		{
 			try
 			{
-				var buf=Buffer.from(data);
+				var buf=Buffer.from(data,"base64");
 				console.log(buf)
-				result=await blockCipher.decipher(data,key);
+				result=await blockCipher.decipherFile(buf,key);
 				console.log("Decipher result:",Buffer.from(buf));
 				console.log("Decipher size A:",Buffer.from(result).length);
 			}
@@ -286,6 +286,7 @@ export class BFile
 		const fs:IDAOFileData=new FSDAOFileData();
 		var decipheredKeyC:string;
 		var decipheredKeyM:string;
+		
 		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
 			var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);

@@ -261,9 +261,9 @@ var BFile = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        buf = Buffer.from(data);
+                        buf = Buffer.from(data, "base64");
                         console.log(buf);
-                        return [4 /*yield*/, blockCipher.decipher(data, key)];
+                        return [4 /*yield*/, blockCipher.decipherFile(buf, key)];
                     case 2:
                         result = _a.sent();
                         console.log("Decipher result:", Buffer.from(buf));

@@ -12,7 +12,7 @@ var AES256 = /** @class */ (function () {
     AES256.prototype.cipher = function (data, key) {
         var iv = this.ivGenerator.generateRandom(CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
-        var encrypted = cipher.update(data, 'base64', 'base64');
+        var encrypted = cipher.update(data, 'ascii', 'hex');
         encrypted += cipher.final('base64');
         console.log("IV", iv);
         return encrypted + iv;
@@ -21,7 +21,7 @@ var AES256 = /** @class */ (function () {
         var iv = data.substr(data.length - CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         data = data.substr(0, data.length - CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var decipher = crypto.createDecipheriv(this.ALGORITHM, key, iv);
-        var decrypted = decipher.update(data, 'base64', 'base64');
+        var decrypted = decipher.update(data, 'base64', 'ascii');
         decrypted += decipher.final('base64');
         return decrypted;
     };

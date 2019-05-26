@@ -24,9 +24,9 @@ window.uploadFile = function (file) {
             var keyC = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             var keyM = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
-            var cipheredData = cipher.cipher(reader.result, keyC);
+            var cipheredData = cipher.cipherFile(reader.result, keyC);
             /* CALCULAMOS TAG CON IMAC */
-            var mres = mac.calculateMac(cipheredData.toString(), keyM);
+            var mres = mac.calculateMac(cipheredData.toString("base64"), keyM);
             /* CALCULAMOS HASH DE LLAVES */
             var hashK = hash.calculateHash(keyC);
             var hashm = hash.calculateHash(keyM);
@@ -43,7 +43,7 @@ window.uploadFile = function (file) {
                 "hashM": hashm,
                 "AESkey": cipheredKeyC,
                 "macKey": cipheredKeyM,
-                "data": cipheredData,
+                "data": cipheredData.toString("base64"),
                 "nickname": "vicleo16",
                 "size": cipheredData.length
             };
@@ -53,6 +53,7 @@ window.uploadFile = function (file) {
             console.log(">>>>>K2 ciphered:\n", cipheredKeyM);
             console.log("File size:", cipheredData.length);
             console.log("Ciphered file:", cipheredData);
+            console.log("Ciphered file b64:", cipheredData.toString("base64"));
         };
         reader.readAsBinaryString(fileS);
     }

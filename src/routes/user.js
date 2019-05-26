@@ -21,12 +21,12 @@ router.post("/upload-file",async (req,res)=>
     var mac=fileInfo.mac;
     var nickname=fileInfo.nickname;
     var size=fileInfo.size;
-    //console.log("info:",fileInfo  );
+    console.log("info:",cipheredData  );
     
     
     await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
     console.log("finished");
-
+    res.send(true);
 });
 
 router.get("/my-files",async (req,res)=>
