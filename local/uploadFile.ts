@@ -19,7 +19,7 @@ import {MDBDAOFileInfo} from "../src/app/classes/dataAccess/dao/MDBDAOFileInfo";
 import {MDBDAOKey} from "../src/app/classes/dataAccess/dao/MDBDAOKey";
 import {DTOKey} from "../src/app/classes/dataAccess/dto/DTOKey";
 import {DTOFileInfo} from "../src/app/classes/dataAccess/dto/DTOFileInfo";
-import * as dateFormat from 'dateformat';
+import * as dateFormat from "dateformat";
 var name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 var name2="key"+ExtensionConstants.CIPHERKEYC_EXTENSION;
 var name3="mac"+ExtensionConstants.MACKEYC_EXTENSION;

@@ -55,7 +55,7 @@ var BKey = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         result = undefined;
-                        privKey = filestr.readFileSync("./privateKey.txt").toString();
+                        privKey = filestr.readFileSync("privateKey.txt").toString();
                         return [4 /*yield*/, this.rsa.privateDecryption(privKey, key, 'rocanroll')];
                     case 1:
                         decipheredKey = _a.sent();

@@ -7,4 +7,5 @@ export interface IDAOKey
     updateKey(key:DTOKey):any;
     findKeysByFileId(idFile:any):any;
     findKeyByFileIdAndType(idFile:any,idType:number):any;
+    shareKey(idFile:string, user:string):any;
 }

@@ -50,4 +50,14 @@ export class MDBDAOKey implements IDAOKey
         key.setKeyHash(result[0][0].tx_hash);
         return key;
     }
+
+    async shareKey(idFile:string, user:string)
+    {
+        const query = await pool.query(
+           'CALL shareFile(?,?)',
+            [idFile,
+                user
+            ]);
+        return true;
+    }
 }
