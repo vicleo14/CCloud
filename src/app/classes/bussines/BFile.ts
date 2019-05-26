@@ -48,13 +48,13 @@ export class BFile
 {
 	private privateKey:string;
 	private publicKey:string;
-	//private bsKey:BKey;
+	private bsKey:BKey;
 
 	constructor(){
 		//Getting server keys
 		this.publicKey = fs.readFileSync("../../../../local/publicKey.txt").toString();
 		//this.privateKey = fs.readFileSync("../../../../local/privateKey.txt").toString();
-		//this.bsKey=new BKey()
+		this.bsKey=new BKey()
 	}
 
 	async uploadFile(nickname:string, name:string, cfile:string, size:number, cipheredKeyMAC:string, 
@@ -71,12 +71,9 @@ export class BFile
 		var hash:IHash = new SHA256();
 		var rsa:IRSA = new RSA();
 		
-		//Converting keys to buffers
-		var bufMac = Buffer.from(cipheredKeyMAC);
-		var bufFile = Buffer.from(cipheredKey);
 		//Decryption of the keys
-		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, bufMac, 'rocanroll').toString();
-		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, bufFile, 'rocanroll').toString();
+		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
+		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
 		//Verifying keyMacHash and keyFileHash 
 		if(hash.compareHash(hash.calculateHash(decipheredKeyMAC), hashMac) && hash.compareHash(hash.calculateHash(decipheredKeyFile), hashKeyFile)){
 			//Verifying the MAC
@@ -209,6 +206,7 @@ export class BFile
 			//Filling data in DB
 			var idFile = dto_file_info.getId();
 			dao_key.shareKey(idFile, userShared);
+			dao_action.createAction(user, ActionConstants.ACTION_FILE_SHARED);
 			return true;
 		}
 	}
@@ -244,16 +242,20 @@ export class BFile
 		}
 	}
 
-	/*async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:Buffer, MAC:string, cipheredKey:Buffer,hashKey:string,hashMac:string)
+	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
 	{
-		var decipheredKeyC:any;
-		var decipheredKeyM:any;
-		if( (decipheredKeyC=this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
+		var decipheredKeyC:string;
+		var decipheredKeyM:string;
+		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
-			console.log("Llaves coinciden");
+			await console.log(decipheredKeyC);
+			await console.log(decipheredKeyM);
+			
+			console.log("That's ok");
+			return true;
 		}
 		return true;
-	}*/
+	}
 
 	cipher(data:string, key:string):string{
 		var aes:IBlockCipher = new AES256();

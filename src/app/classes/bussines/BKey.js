@@ -55,10 +55,12 @@ var BKey = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         result = undefined;
-                        privKey = filestr.readFileSync("privateKey.txt").toString();
+                        console.log("Hash recibido", hash);
+                        privKey = filestr.readFileSync("./privateKey.txt").toString();
                         return [4 /*yield*/, this.rsa.privateDecryption(privKey, key, 'rocanroll')];
                     case 1:
                         decipheredKey = _a.sent();
+                        console.log("Hash calculado", this.hashO.calculateHash(decipheredKey));
                         if (this.hashO.compareHash(decipheredKey.toString(), hash)) {
                             result = decipheredKey;
                         }
@@ -73,7 +75,7 @@ var BKey = /** @class */ (function () {
             return __generator(this, function (_a) {
                 pubKey = filestr.readFileSync("./publicKey.txt").toString();
                 cipheredKey = this.rsa.publicEncryption(pubKey.toString(), key);
-                return [2 /*return*/, cipheredKey];
+                return [2 /*return*/, cipheredKey.toString()];
             });
         });
     };

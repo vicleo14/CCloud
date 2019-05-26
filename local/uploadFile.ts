@@ -168,7 +168,20 @@ async function buscarPorUsuario(user)
     console.log("Results:",results);
     return results;
 }
-buscarPorUsuario("vicleo16");
+function cifrarRSA()
+{
+    var rsa:IRSA=new RSA();
+    var pubKey = filestr.readFileSync("./publicKey.txt");
+    var privKey = filestr.readFileSync("../local/privateKey.txt").toString();
+    //console.log("Private",privKey.toString());
+    //var cipheredKeyM = rsa.publicEncryption(publicKey, Buffer.from("RHCrigsEq4tdoZ6XMnVMtQclEB1JQ5T4","base64"));
+    var cipheredKeyM = rsa.publicEncryption(pubKey, "aY5UeE0Thc1thwU82UkAXcbu4z8PFxnS");
+    var decipheredKeyM = rsa.privateDecryption(privKey, cipheredKeyM, 'rocanroll');
+    console.log("Ciphered",cipheredKeyM);
+    console.log("Deciphered",decipheredKeyM);
+    //console.log("SIZE:",cipheredKeyM.length);
+}
+//buscarPorUsuario("vicleo16");
 
-
+cifrarRSA();
 //f1();

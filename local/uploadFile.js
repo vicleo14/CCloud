@@ -95,16 +95,16 @@ function uploadFile( /*file*/) {
             'User-Agent': 'my-reddit-client'
         }
     };*/
-    var request = require('request');
+    /*var request = require('request');
     request('localhost:3030', function (req, res) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        var prueba = {
-            name: 'name',
-            data: 'file',
-            MAC: 'mac'
-        };
-        res.end(JSON.stringify(prueba));
-    });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      var prueba = {
+          name: 'name',
+          data: 'file',
+          MAC: 'mac'
+      }
+      res.end(JSON.stringify(prueba));
+    });*/
 }
 //uploadFile();
 function f1() {
@@ -189,5 +189,18 @@ function buscarPorUsuario(user) {
         });
     });
 }
-buscarPorUsuario("vicleo16");
+function cifrarRSA() {
+    var rsa = new RSA_1.RSA();
+    var pubKey = filestr.readFileSync("./publicKey.txt");
+    var privKey = filestr.readFileSync("../local/privateKey.txt").toString();
+    //console.log("Private",privKey.toString());
+    //var cipheredKeyM = rsa.publicEncryption(publicKey, Buffer.from("RHCrigsEq4tdoZ6XMnVMtQclEB1JQ5T4","base64"));
+    var cipheredKeyM = rsa.publicEncryption(pubKey, "aY5UeE0Thc1thwU82UkAXcbu4z8PFxnS");
+    var decipheredKeyM = rsa.privateDecryption(privKey, cipheredKeyM, 'rocanroll');
+    console.log("Ciphered", cipheredKeyM);
+    console.log("Deciphered", decipheredKeyM);
+    //console.log("SIZE:",cipheredKeyM.length);
+}
+//buscarPorUsuario("vicleo16");
+cifrarRSA();
 //f1();
