@@ -50,7 +50,7 @@ window.uploadFile=function(file)
                 "macKey": cipheredKeyM,
                 "data": cipheredData.toString("base64"),
                 "nickname":"vicleo16",
-                "size":cipheredData.length
+                "size":reader.result.length
             };
             console.log(">>>>>key1 deciphered:\n", keyC);
             console.log(">>>>>key2 deciphered:\n", keyM);

@@ -289,8 +289,50 @@ export class BFile
 		
 		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
-			var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);
-			fs.createFile(path,name,Buffer.from(decipheredFile));
+			
+			/* GENERAMOS EL NOMBRE DEL ARCHIVO */
+			var split=name.split(".");
+			var nomArcG=nickname+split[0]+dateFormat( new Date(),"yyyyMMddhhMMss");
+			var clave=nomArcG;
+    		var nomMAC=nomArcG+ExtensionConstants.MACKEYC_EXTENSION;
+			var nomKey=nomArcG+ExtensionConstants.CIPHERKEYC_EXTENSION;
+
+			//Almacenamos en HDD
+			var name1=nomArcG+ExtensionConstants.GENERIC_EXTENSION;
+			fs.createFile(path,name1,cfile);
+			fs.createFile(path,nomKey,cipheredKey);
+			fs.createFile(path,nomMAC,cipheredKeyMAC);
+			
+			//Almacenamos en BD
+			var dtoFile:DTOFileInfo=new DTOFileInfo();
+			dtoFile.setId(clave);
+			dtoFile.setDecipheredName(name);
+			dtoFile.setCipheredName(name1);
+			dtoFile.setMAC(MAC);
+			dtoFile.setDate(new Date());
+			dtoFile.setSize(size);
+			var dtoK1:DTOKey=new DTOKey();
+			dtoK1.setIdFile(clave);
+			dtoK1.setIdType(KeyConstants.KEY_CIPHER_DECIPHER);
+			dtoK1.setKeyFileName(nomKey);
+			dtoK1.setKeyHash(hashKey);
+
+			var dtoK2:DTOKey=new DTOKey();
+			dtoK2.setIdFile(clave);
+			dtoK2.setIdType(KeyConstants.KEY_INTEGRITY);
+			dtoK2.setKeyFileName(nomMAC);
+			dtoK2.setKeyHash(hashMac);
+			//DAOS
+
+			var daoFile:IDAOFileInfo=new MDBDAOFileInfo();
+			var daoKey:IDAOKey=new MDBDAOKey();
+			await daoFile.createFile(nickname,dtoFile);
+			await daoKey.createKey(dtoK1);
+			await daoKey.createKey(dtoK2);
+
+			//var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);
+			//fs.createFile(path,name,Buffer.from(decipheredFile));
+
 			console.log("That's ok");
 			return true;
 		}

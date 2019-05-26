@@ -36,7 +36,7 @@ export  class AES256 implements IBlockCipher{
         var iv=this.ivGenerator.generateRandom(CryptoConstants.AES_IVSIZE_BYTES);
         var buf_iv = Buffer.from(iv);
         const cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
-        var buf_d = cipher.update(data);
+        var buf_d = cipher.update(data,"binary");
         var buf_d2 = cipher.final();
         const totLength = buf_d.length + buf_d2.length + buf_iv.length;
         var encrypted = Buffer.concat([buf_iv, buf_d, buf_d2], totLength);

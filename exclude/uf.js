@@ -23,14 +23,15 @@ window.uploadFile = function (file) {
             var keyC = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             var keyM = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
-            var cipheredData = cipher.cipher(reader.result, keyC);
+            var cipheredData = cipher.cipherFile(reader.result, keyC);
             /* CALCULAMOS TAG CON IMAC */
-            var mres = mac.calculateMac(cipheredData.toString(), keyM);
+            var mres = mac.calculateMac(cipheredData.toString("base64"), keyM);
             /* CALCULAMOS HASH DE LLAVES */
             var hashK = hash.calculateHash(keyC);
             var hashm = hash.calculateHash(keyM);
             /* CIFRAMOS LLAVES CON RSA */
-            //Se cifran con la llave pública la llave de la mac y la llave del archivo
+            //Se cifran con la llave publica la llave de la mac y la llave del archivo
+            //La llave pubilca es pedida como global cuando se acccede a la pagina
             var cipheredKeyM = rsa.publicEncryption(pubKey, keyM);
             var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
             var tagMacE = document.getElementById("macTagView");
@@ -42,9 +43,9 @@ window.uploadFile = function (file) {
                 "hashM": hashm,
                 "AESkey": cipheredKeyC,
                 "macKey": cipheredKeyM,
-                "data": cipheredData,
+                "data": cipheredData.toString("base64"),
                 "nickname": "vicleo16",
-                "size": cipheredData.length
+                "size": reader.result.length
             };
             console.log(">>>>>key1 deciphered:\n", keyC);
             console.log(">>>>>key2 deciphered:\n", keyM);
@@ -74,7 +75,7 @@ var AES256 = /** @class */ (function () {
         var iv = this.ivGenerator.generateRandom(CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
         var encrypted = cipher.update(data, 'ascii', 'hex');
-        encrypted += cipher.final('hex');
+        encrypted += cipher.final('base64');
         console.log("IV", iv);
         return encrypted + iv;
     };
@@ -82,15 +83,15 @@ var AES256 = /** @class */ (function () {
         var iv = data.substr(data.length - CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         data = data.substr(0, data.length - CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var decipher = crypto.createDecipheriv(this.ALGORITHM, key, iv);
-        var decrypted = decipher.update(data, 'hex', 'ascii');
-        decrypted += decipher.final('ascii');
+        var decrypted = decipher.update(data, 'base64', 'ascii');
+        decrypted += decipher.final('base64');
         return decrypted;
     };
     AES256.prototype.cipherFile = function (data, key) {
         var iv = this.ivGenerator.generateRandom(CryptoConstants_1.CryptoConstants.AES_IVSIZE_BYTES);
         var buf_iv = Buffer.from(iv);
         var cipher = crypto.createCipheriv(this.ALGORITHM, key, iv);
-        var buf_d = cipher.update(data);
+        var buf_d = cipher.update(data, "binary");
         var buf_d2 = cipher.final();
         var totLength = buf_d.length + buf_d2.length + buf_iv.length;
         var encrypted = Buffer.concat([buf_iv, buf_d, buf_d2], totLength);

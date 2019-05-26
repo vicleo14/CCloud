@@ -285,7 +285,7 @@ var BFile = /** @class */ (function () {
     };
     BFile.prototype.saveFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey, hashKey, hashMac) {
         return __awaiter(this, void 0, void 0, function () {
-            var fs, decipheredKeyC, decipheredKeyM, _a, decipheredFile;
+            var fs, decipheredKeyC, decipheredKeyM, _a, split, nomArcG, clave, nomMAC, nomKey, name1, dtoFile, dtoK1, dtoK2, daoFile, daoKey;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -299,14 +299,49 @@ var BFile = /** @class */ (function () {
                         _a = (decipheredKeyM = _b.sent()) != undefined;
                         _b.label = 3;
                     case 3:
-                        if (!_a) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.decipherFile(cfile, decipheredKeyC, decipheredKeyM, MAC)];
+                        if (!_a) return [3 /*break*/, 7];
+                        split = name.split(".");
+                        nomArcG = nickname + split[0] + dateFormat(new Date(), "yyyyMMddhhMMss");
+                        clave = nomArcG;
+                        nomMAC = nomArcG + ExtensionConstants_1.ExtensionConstants.MACKEYC_EXTENSION;
+                        nomKey = nomArcG + ExtensionConstants_1.ExtensionConstants.CIPHERKEYC_EXTENSION;
+                        name1 = nomArcG + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION;
+                        fs.createFile(path, name1, cfile);
+                        fs.createFile(path, nomKey, cipheredKey);
+                        fs.createFile(path, nomMAC, cipheredKeyMAC);
+                        dtoFile = new DTOFileInfo_1.DTOFileInfo();
+                        dtoFile.setId(clave);
+                        dtoFile.setDecipheredName(name);
+                        dtoFile.setCipheredName(name1);
+                        dtoFile.setMAC(MAC);
+                        dtoFile.setDate(new Date());
+                        dtoFile.setSize(size);
+                        dtoK1 = new DTOKey_1.DTOKey();
+                        dtoK1.setIdFile(clave);
+                        dtoK1.setIdType(KeyConstants_1.KeyConstants.KEY_CIPHER_DECIPHER);
+                        dtoK1.setKeyFileName(nomKey);
+                        dtoK1.setKeyHash(hashKey);
+                        dtoK2 = new DTOKey_1.DTOKey();
+                        dtoK2.setIdFile(clave);
+                        dtoK2.setIdType(KeyConstants_1.KeyConstants.KEY_INTEGRITY);
+                        dtoK2.setKeyFileName(nomMAC);
+                        dtoK2.setKeyHash(hashMac);
+                        daoFile = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                        daoKey = new MDBDAOKey_1.MDBDAOKey();
+                        return [4 /*yield*/, daoFile.createFile(nickname, dtoFile)];
                     case 4:
-                        decipheredFile = _b.sent();
-                        fs.createFile(path, name, Buffer.from(decipheredFile));
+                        _b.sent();
+                        return [4 /*yield*/, daoKey.createKey(dtoK1)];
+                    case 5:
+                        _b.sent();
+                        return [4 /*yield*/, daoKey.createKey(dtoK2)];
+                    case 6:
+                        _b.sent();
+                        //var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);
+                        //fs.createFile(path,name,Buffer.from(decipheredFile));
                         console.log("That's ok");
                         return [2 /*return*/, true];
-                    case 5:
+                    case 7:
                         console.log("Something was wrokg");
                         return [2 /*return*/, false];
                 }
