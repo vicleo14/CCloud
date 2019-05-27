@@ -33,6 +33,7 @@ app.use(require("./routes/index"));
 app.use(require("./routes/authentication"));
 app.use("/user",require("./routes/user"));
 app.use("/authentication",require("./routes/authentication"));
+app.use("/key",require("./routes/keys"));
 app.use(require("./routes/messages"));
 /* PUBLICO */
 app.use(express.static(path.join(__dirname,"public")))
