@@ -127,6 +127,21 @@ var MDBDAOKey = /** @class */ (function () {
             });
         });
     };
+    MDBDAOKey.prototype.shareKey = function (idFile, user) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pool.query('CALL shareFile(?,?)', [idFile,
+                            user
+                        ])];
+                    case 1:
+                        query = _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
     return MDBDAOKey;
 }());
 exports.MDBDAOKey = MDBDAOKey;
