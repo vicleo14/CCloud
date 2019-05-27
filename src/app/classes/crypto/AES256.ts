@@ -50,7 +50,7 @@ export  class AES256 implements IBlockCipher{
         const decipher = crypto.createDecipheriv(this.ALGORITHM, key, buf_iv);
         var content = Buffer.alloc(data.length-CryptoConstants.AES_IVSIZE_BYTES);
         data.copy(content, 0, CryptoConstants.AES_IVSIZE_BYTES, data.length);
-        var buf_d = decipher.update(content);
+        var buf_d = decipher.update(content,"binary");
         var buf_d2 = decipher.final();
         const totLength = buf_d.length + buf_d2.length;
         var decrypted = Buffer.concat([buf_d, buf_d2], totLength);

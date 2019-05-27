@@ -95,29 +95,47 @@ function decipherFile(idFile) {
                         if (mac.verifyMac(cipheredMessage.toString(), decipheresKeyM.toString(), macArc)) {
                             console.log("Integrity verified");
                             result = cipher.decipherFile(cipheredMessage, decipheredKeyC.toString());
+                            return [2 /*return*/, result];
                             fs.createFile("./", nameFileD, result);
+                            /* SE TIENE QUE CIFRAR CON NUEVAS LLAVES */
                             console.log("creado ", nameFileD);
                         }
                         else {
                             console.log("Something is bad");
+                            return [2 /*return*/, undefined];
                         }
                         /*console.log(cipheredAESkey);*/
                     }
                     else {
                         console.log("Something is bad");
+                        return [2 /*return*/, undefined];
                     }
-                    /* VERIFICAMOS MAC DEL ARCHIVO */
-                    /*if(mac.verifyMac(cipheredMessage.toString(),decipheresKeyM.toString(),macArc))
-                    {
-                        console.log("Integrity verified")
-                    }else{
-                        console.log("Something is bad")
-                    }
-                     /*console.log(cipheredAESkey);*/
-                    console.log(macArc);
                     return [2 /*return*/];
             }
         });
     });
 }
-decipherFile("vicleo16pruebaIMG20195321075317");
+function f3(idFile) {
+    return __awaiter(this, void 0, void 0, function () {
+        var path, hash, fs, daoFile, infoFile, nameFileC, nameFileD, macArc, cipheredMessage;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    path = "../storage/";
+                    hash = new SHA256_1.SHA256();
+                    fs = new FSDAOFileData_1.FSDAOFileData();
+                    daoFile = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                    return [4 /*yield*/, daoFile.findFileById(idFile)];
+                case 1:
+                    infoFile = _a.sent();
+                    nameFileC = infoFile[0].getCipheredName();
+                    nameFileD = infoFile[0].getDecipheredName();
+                    macArc = infoFile[0].getMAC();
+                    cipheredMessage = fs.readFile(path, nameFileC).toString("base64");
+                    console.log(cipheredMessage);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+f3("vicleo16pruebaIMG20195321075317");

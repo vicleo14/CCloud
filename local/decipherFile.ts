@@ -87,6 +87,17 @@ async function decipherFile(idFile)
     }
 
 }
-decipherFile("vicleo16pruebaIMG20195321075317");
+async function f3(idFile)
+{
+    const path="../storage/";
+    var fs:IDAOFileData=new FSDAOFileData();
+    var daoFile:IDAOFileInfo=new MDBDAOFileInfo();
+    var infoFile:DTOFileInfo=await daoFile.findFileById(idFile);
+    
+    var nameFileC=infoFile[0].getCipheredName();
+    var cipheredMessage=fs.readFile(path,nameFileC).toString("base64");
+    console.log(cipheredMessage);
+    
+}
 
 

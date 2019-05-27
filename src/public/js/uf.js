@@ -53,6 +53,17 @@ window.uploadFile = function (file) {
             console.log(">>>>>K2 ciphered:\n", cipheredKeyM);
             console.log("File size:", cipheredData.length);
             console.log("Ciphered file:", cipheredData);
+            document.getElementById("linkMac").classList.remove("disabled");
+            document.getElementById("linkKey").classList.remove("disabled");
+            document.getElementById("sendButton").classList.remove("disabled");
+            document.getElementById("linkMac").onclick=function(code)
+            {
+              this.href='data:text/plain;charset=utf-8,'+encodeURIComponent(keyM); 
+            };
+          document.getElementById("linkKey").onclick=function(code)
+          {
+              this.href='data:text/plain;charset=utf-8,'+encodeURIComponent(keyC); 
+          };
         };
         reader.readAsBinaryString(fileS);
     }

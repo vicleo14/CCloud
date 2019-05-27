@@ -28,7 +28,35 @@ router.post("/upload-file",async (req,res)=>
     console.log("finished");
     res.send(true);
 });
-
+router.get("/download-file",async (req,res)=>
+{
+    //console.log("Params:",req.query.id);
+    var id=req.query.id;
+    var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
+    var daoFiles = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+    var results=await daoFiles.findFileById(id);
+    //console.log(results);
+    res.render("user/downloadfile",{files:results});
+});
+router.post("/download-file",async (req,res)=>
+{
+    var obj=req.body;
+    var idFile=obj.id;
+    console.log("Solicitud de Descarga:",idFile);
+    var FSDAOFileData_1 = require("../app/classes/dataAccess/dao/FSDAOFileData");
+    var fs = new FSDAOFileData_1.FSDAOFileData();
+    const path="storage/";
+    var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
+    var daoFile=new MDBDAOFileInfo_1.MDBDAOFileInfo();
+    var DTOFileInfo_1 = require("../app/classes/dataAccess/dto/DTOFileInfo");
+    var infoFile=await daoFile.findFileById(idFile);
+    
+    var nameFileC=infoFile[0].getCipheredName();
+    var cipheredMessage=fs.readFile(path,nameFileC).toString();
+    console.log(cipheredMessage.length);
+    obj.dataFile=cipheredMessage;
+    res.send(obj);
+});
 router.get("/my-files",async (req,res)=>
 {
     var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
@@ -46,6 +74,8 @@ router.get("/request-key",async (req,res)=>
 {    
     res.render("user/requestkey");
 });
+
+
 router.post("/public-key",async (req,res)=>
 {    
     var key=fs.readFileSync("./publicKey.txt");
