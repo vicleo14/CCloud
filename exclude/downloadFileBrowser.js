@@ -97,6 +97,7 @@ function downloadData() {
     return __awaiter(this, void 0, void 0, function () {
         var cipher, infoFile, data, petition;
         return __generator(this, function (_a) {
+            window.result = 0;
             cipher = new AES256_1.AES256();
             console.log("Begin download");
             infoFile = {
@@ -112,11 +113,12 @@ function downloadData() {
             petition.send(data);
             petition.onreadystatechange = function () {
                 return __awaiter(this, void 0, void 0, function () {
-                    var values, cipheredData, buf;
+                    var fs, values, cipheredData, buf, targetA;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 if (!(petition.readyState == 4)) return [3 /*break*/, 2];
+                                fs = require("fs");
                                 values = JSON.parse(petition.response);
                                 console.log("Termina peticion servidor.Comenzando decifrado", values);
                                 petition.abort();
@@ -127,6 +129,18 @@ function downloadData() {
                             case 1:
                                 result = _a.sent();
                                 console.log(result);
+                                console.log(result);
+                                targetA = document.getElementById("downloadFile");
+                                targetA.classList.remove("disabled");
+                                document.getElementById("downloadFile").onclick = function (code) {
+                                    return __awaiter(this, void 0, void 0, function () {
+                                        return __generator(this, function (_a) {
+                                            //console.log("Archivo escrito");
+                                            this.href = 'data:image/png;base64,' + result;
+                                            return [2 /*return*/];
+                                        });
+                                    });
+                                };
                                 _a.label = 2;
                             case 2: return [2 /*return*/];
                         }

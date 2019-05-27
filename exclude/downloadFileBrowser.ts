@@ -70,6 +70,8 @@ window.verifykeys = function()
 }
 async function downloadData()
 {
+  
+  window.result=0;
   var cipher = new AES256();
   console.log("Begin download");
 
@@ -88,14 +90,24 @@ async function downloadData()
   {
     if(petition.readyState==4 )
     {
+      var fs=require("fs");
         var values=JSON.parse(petition.response);
         console.log("Termina peticion servidor.Comenzando decifrado",values);
         petition.abort();
         var cipheredData=values.dataFile;
         var buf=Buffer.from(cipheredData,"base64");
-		console.log(buf)
+		    console.log(buf)
         result=await cipher.decipherFile(buf,cipherKey);
         console.log(result);
+        console.log(result);
+        var targetA=document.getElementById("downloadFile");
+        targetA.classList.remove("disabled");
+        document.getElementById("downloadFile").onclick=async function(code)
+        {
+          
+          //console.log("Archivo escrito");
+          this.href='data:image/png;base64,'+result; 
+        };
     }
   }
 }
