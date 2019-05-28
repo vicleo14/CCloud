@@ -13,7 +13,7 @@ var HMac = /** @class */ (function () {
     };
     HMac.prototype.verifyMac = function (message, key, tag) {
         var tagp = this.calculateMac(message, key);
-        return (tag === tagp) ? true : false;
+        return (tag == tagp) ? true : false;
     };
     return HMac;
 }());

@@ -22,11 +22,14 @@ router.post("/upload-file",async (req,res)=>
     var nickname="vicleo16";
     var size=0;
     var i=0;
-    console.log("cipheredM:",cipheredM  );
+    console.log("cipheredM:",cipheredM);
 
-    
-    await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
-    
+    console.log(typeof(cipheredData));
+    console.log("CipheredData: ",JSON.stringify(cipheredData));
+    //await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
+    var subido;
+    await (subido = bsFile.uploadFile(nickname, name, cipheredData.toString(), size, cipheredM, mac, cipheredK, hashM, hashK));
+    console.log(subido);
 
 });
 

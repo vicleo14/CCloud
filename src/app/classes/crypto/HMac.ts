@@ -15,6 +15,6 @@ export class HMac implements IMac
 	public verifyMac(message: string, key: string, tag: string): boolean
 	{
 		var tagp:string = this.calculateMac(message, key);
-		return (tag === tagp)?true:false;
+		return (tag == tagp)?true:false;
 	}
 }

@@ -1,4 +1,5 @@
 import {BFile} from "../src/app/classes/bussines/BFile";
+import {BUser} from "../src/app/classes/bussines/BUser";
 
 import { AES256 } from "../src/app/classes/crypto/AES256";
 import { IBlockCipher } from "../src/app/classes/crypto/IBlockCipher";
@@ -23,10 +24,11 @@ function main(){
 	var mac:IMac = new HMac();
 	var hash:IHash = new SHA256();
 	var rsa:IRSA = new RSA();
+	var bUser:BUser =  new BUser();
 	var bFile:BFile = new BFile();
 
 	//Constants
-	const nickname = "memo";
+	const nickname = "memo1";
 	const fileName = "Ensayo. Un final Perfecto.pdf";
 
 	//File's encryption
@@ -39,12 +41,19 @@ function main(){
 	var mac_calc = mac.calculateMac(cfile, keyMac);
 
 	//Obtaining public key
-	var publicKey = fs.readFileSync("../local/publicKey.txt").toString();
+	var publicKey = fs.readFileSync("./../local/publicKey.txt").toString();
 	//Encrypting keys
-	var cipheredKeyFile = rsa.publicEncryption(publicKey, cfile);
-	var cipheredKeyMac = rsa.publicEncryption();
+	var cipheredKeyFile = rsa.publicEncryption(publicKey, key);
+	var cipheredKeyMac = rsa.publicEncryption(publicKey, keyMac);
 
-	bFile.uploadFile()
+	//Calculating Hashes
+	var hashKeyFile = hash.calculateHash(cipheredKeyFile);
+	var hashMac = hash.calculateHash(mac_calc);
+
+	bFile.uploadFile(nickname, fileName, cfile, 80000, cipheredKeyMac, mac_calc, cipheredKeyFile, hashMac, hashKeyFile);
+	bFile.shareFile(nickname, "victor1", fileName);
+	bFile.downloadFile(nickname, fileName);
+	//bFile.deleteFile(nickname, fileName);
 }
 
 main();

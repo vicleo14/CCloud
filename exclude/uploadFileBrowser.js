@@ -17,12 +17,13 @@ window.uploadFile = function (file) {
         var rsa = new RSA_1.RSA();
         var reader = new FileReader();
         var fileS = file[0];
+        var pubKey = fs.readFile("../local", "publicKey.txt").toString();
         reader.onload = function () {
             /* GENERAMOS VALORES ALEATORIOS */
             var keyC = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             var keyM = generator.generateRandom(CryptoConstants_1.CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
-            var cipheredData = cipher.cipherFile(reader.result, keyC);
+            var cipheredData = cipher.cipher(reader.result, keyC);
             /* CALCULAMOS TAG CON IMAC */
             var mres = mac.calculateMac(cipheredData.toString(), keyM);
             /* CALCULAMOS HASH DE LLAVES */
@@ -32,19 +33,8 @@ window.uploadFile = function (file) {
             //Se cifran con la llave pública la llave de la mac y la llave del archivo
             var cipheredKeyM = rsa.publicEncryption(pubKey, keyM);
             var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
-            console.log(keyC);
-            console.log(keyM);
-            console.log(mres);
-            console.log(hashK);
-            console.log(hashm);
-            // console.log(cipheredData.toString());
-            var ct = document.getElementById("ci");
-            ct.value = cipheredData;
             var tagMacE = document.getElementById("macTagView");
             tagMacE.innerHTML = "Tag de MAC:" + mres;
-            /*console.log("Ciphered file:", cipheredData.toString());
-            console.log("RSAK1", cipheredKeyM.toString());
-            console.log("RSAK2", cipheredKeyC.toString());*/
             window.infoContainer = {
                 "name": file[0].name,
                 "mac": mres,
@@ -54,9 +44,12 @@ window.uploadFile = function (file) {
                 "macKey": cipheredKeyM,
                 "data": cipheredData
             };
-            console.log("key", keyC);
-            console.log("K1", cipheredKeyC);
-            console.log("K2", cipheredKeyM);
+            console.log(">>>>>key1 deciphered:\n", keyC);
+            console.log(">>>>>key2 deciphered:\n", keyM);
+            console.log(">>>>>K1 ciphered:\n", cipheredKeyC);
+            console.log(">>>>>K2 ciphered:\n", cipheredKeyM);
+            console.log("File size:", cipheredData.length);
+            console.log("Ciphered file:", cipheredData);
         };
         reader.readAsBinaryString(fileS);
     }

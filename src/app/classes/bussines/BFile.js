@@ -44,12 +44,13 @@ var MDBDAOAction_1 = require("../dataAccess/dao/MDBDAOAction");
 var DTOKey_1 = require("../dataAccess/dto/DTOKey");
 var MDBDAOKey_1 = require("../dataAccess/dao/MDBDAOKey");
 var RSA_1 = require("../crypto/RSA");
+var AES256_1 = require("../crypto/AES256");
 var HMac_1 = require("../crypto/HMac");
 var SHA256_1 = require("../crypto/SHA256");
 var ExtensionConstants_1 = require("../utils/ExtensionConstants");
 var ActionConstants_1 = require("../utils/ActionConstants");
 var KeyConstants_1 = require("../utils/KeyConstants");
-//import {downloadData} from "../utils/downloadDataType";
+var fs = require("fs");
 var BKey_1 = require("./BKey");
 var dateFormat = require("dateformat");
 var name1 = "cipheredData" + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION;
@@ -59,8 +60,8 @@ var path = "../../../../storage";
 var BFile = /** @class */ (function () {
     function BFile() {
         //Getting server keys
-        //this.publicKey = fs.readFileSync("../../../../local/publicKey.txt").toString();
-        //this.privateKey = fs.readFileSync("../../../../local/privateKey.txt").toString();
+        this.publicKey = fs.readFileSync("publicKey.txt").toString();
+        this.privateKey = fs.readFileSync("privateKey.txt").toString();
         this.bsKey = new BKey_1.BKey();
     }
     BFile.prototype.uploadFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey, hashMac, hashKeyFile) {
@@ -78,12 +79,16 @@ var BFile = /** @class */ (function () {
                 hmac = new HMac_1.HMac();
                 hash = new SHA256_1.SHA256();
                 rsa = new RSA_1.RSA();
-                decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'camaleon').toString();
-                decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'camaleon').toString();
+                decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
+                decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
+                console.log("DecipheredKeyMac: ", decipheredKeyMAC);
+                console.log("Llaves descifradas");
                 //Verifying keyMacHash and keyFileHash 
-                if (hash.compareHash(hash.calculateHash(decipheredKeyMAC), hashMac) && hash.compareHash(hash.calculateHash(decipheredKeyFile), hashKeyFile)) {
+                if (hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile)) {
+                    console.log("Hashs correctas");
                     //Verifying the MAC
-                    if (hmac.verifyMac(cfile.toString(), decipheredKeyMAC, MAC)) {
+                    if (this.verify(cfile, MAC, decipheredKeyMAC)) {
+                        console.log("MAC correcta");
                         date = new Date();
                         split = name.split(".");
                         id = nickname + name + dateFormat(new Date(), "yyyyMMddhhMMss");
@@ -95,7 +100,8 @@ var BFile = /** @class */ (function () {
                         dto_file_info.setMAC(MAC);
                         dto_file_info.setDate(date);
                         dao_file_info.createFile(nickname, dto_file_info);
-                        hashedKey = hash.calculateHash(cipheredKey.toString('base64'));
+                        console.log("Archivo en BD");
+                        hashedKey = hash.calculateHash(cipheredKey);
                         //Filling file's key information
                         dto_key.setIdFile(id);
                         dto_key.setIdType(KeyConstants_1.KeyConstants.KEY_CIPHER_DECIPHER);
@@ -112,6 +118,7 @@ var BFile = /** @class */ (function () {
                         dao_file_data.createFile(path, id + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION, cfile);
                         dao_file_data.createFile(path, id + ExtensionConstants_1.ExtensionConstants.CIPHERKEYC_EXTENSION, cipheredKey);
                         dao_file_data.createFile(path, id + ExtensionConstants_1.ExtensionConstants.MACKEYC_EXTENSION, cipheredKeyMAC);
+                        console.log("Archivos creados");
                         //Filling actions
                         dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_UPLOADED);
                         dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_KEY_MACUPLOADED);
@@ -127,125 +134,142 @@ var BFile = /** @class */ (function () {
         });
     };
     BFile.prototype.downloadFile = function (nickname, fileName) {
-        var dto_file_info = new DTOFileInfo_1.DTOFileInfo();
-        var dto_file_data = new DTOFileData_1.DTOFileData();
-        var dto_action = new DTOAction_1.DTOAction();
-        var dto_key = new DTOKey_1.DTOKey();
-        var dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-        var dao_file_data = new FSDAOFileData_1.FSDAOFileData();
-        var dao_action = new MDBDAOAction_1.MDBDAOAction();
-        var dao_key = new MDBDAOKey_1.MDBDAOKey();
-        var hmac = new HMac_1.HMac();
-        var hash = new SHA256_1.SHA256();
-        var rsa = new RSA_1.RSA();
-        //Searching the file
-        var files = new Array();
-        files = dao_file_info.findFilesByUser(nickname);
-        var i = 0;
-        for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
-            var f = files_1[_i];
-            if (f[i].getDecipheredName() == fileName) {
-                dto_file_info = f[i];
-                break;
-            }
-            i += 1;
-        }
-        //If the file wasn't found
-        if (dto_file_info.getId() == null) {
-            dao_action.createAction(nickname, 2004);
-            return null;
-        }
-        //If the file was found
-        else {
-            //Obtaining file's data
-            var data = dao_file_data.readFile("../uploadedFiles", dto_file_info.getCipheredName());
-            dao_action.createAction(nickname, 2002);
-            var data_to_return;
-            data_to_return.data = data;
-            data_to_return.fileName = dto_file_info.getDecipheredName();
-            data_to_return.MAC = dto_file_info.getMAC();
-            return data_to_return;
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            var dto_file_info, dto_file_data, dto_action, dto_key, dao_file_info, dao_file_data, dao_action, dao_key, hmac, hash, rsa, files, i, _i, files_1, f, idFile, data, hashKeyFile, hashKeyMac, return_data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto_file_info = new DTOFileInfo_1.DTOFileInfo();
+                        dto_file_data = new DTOFileData_1.DTOFileData();
+                        dto_action = new DTOAction_1.DTOAction();
+                        dto_key = new DTOKey_1.DTOKey();
+                        dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                        dao_file_data = new FSDAOFileData_1.FSDAOFileData();
+                        dao_action = new MDBDAOAction_1.MDBDAOAction();
+                        dao_key = new MDBDAOKey_1.MDBDAOKey();
+                        hmac = new HMac_1.HMac();
+                        hash = new SHA256_1.SHA256();
+                        rsa = new RSA_1.RSA();
+                        files = new Array();
+                        return [4 /*yield*/, dao_file_info.findFilesByUser(nickname)];
+                    case 1:
+                        files = _a.sent();
+                        i = 0;
+                        for (_i = 0, files_1 = files; _i < files_1.length; _i++) {
+                            f = files_1[_i];
+                            if (f[i].getDecipheredName() == fileName) {
+                                dto_file_info = f[i];
+                                break;
+                            }
+                            i += 1;
+                        }
+                        if (!(dto_file_info.getId() == null)) return [3 /*break*/, 2];
+                        dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_NOTFOUND);
+                        return [2 /*return*/, null];
+                    case 2:
+                        idFile = dto_file_info.getId();
+                        data = dao_file_data.readFile(path, idFile + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION);
+                        return [4 /*yield*/, dao_key.findKeyByFileIdAndType(idFile, KeyConstants_1.KeyConstants.KEY_CIPHER_DECIPHER)];
+                    case 3:
+                        hashKeyFile = _a.sent();
+                        return [4 /*yield*/, dao_key.findKeyByFileIdAndType(idFile, KeyConstants_1.KeyConstants.KEY_INTEGRITY)];
+                    case 4:
+                        hashKeyMac = _a.sent();
+                        return_data = {
+                            hashKeyFile: hashKeyFile.getKeyHash(),
+                            hashKeyMac: hashKeyMac.getKeyHash(),
+                            mac: dto_file_info.getMAC(),
+                            data: data.toString()
+                        };
+                        dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_DOWNLOADED);
+                        return [2 /*return*/, JSON.stringify(return_data)];
+                }
+            });
+        });
     };
-    BFile.prototype.updateFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey) {
-        var dto_file_info = new DTOFileInfo_1.DTOFileInfo();
-        var dto_file_data = new DTOFileData_1.DTOFileData();
-        var dto_action = new DTOAction_1.DTOAction();
-        var dto_key = new DTOKey_1.DTOKey();
-        var dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-        var dao_file_data = new FSDAOFileData_1.FSDAOFileData();
-        var dao_action = new MDBDAOAction_1.MDBDAOAction();
-        var dao_key = new MDBDAOKey_1.MDBDAOKey();
-        var hmac = new HMac_1.HMac();
-        var hash = new SHA256_1.SHA256();
-        var rsa = new RSA_1.RSA();
-        //Searching for the file
-        var files = new Array();
-        files = dao_file_info.findFilesByUser(nickname);
-        var i = 0;
-        for (var _i = 0, files_2 = files; _i < files_2.length; _i++) {
-            var f = files_2[_i];
-            if (f[i].getDecipheredName() == name) {
-                dto_file_info = f[i];
-                break;
-            }
-            i += 1;
-        }
-        //If the file wasn't found
-        if (dto_file_info.getId() == null) {
-            dao_action.createAction(nickname, 2004);
-            return false;
-        }
-        else {
-            //Decryption of the MACs key
-            var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanrol');
-            //Verifying the MAC
-            if (hmac.verifyMac(cfile.toString(), decipheredKeyMAC.toString(), MAC)) {
-                //Obtaining the date
-                var date = new Date();
-                dto_file_info.setSize(size);
-                dto_file_info.setMAC(MAC);
-                dto_file_info.setDate(date);
-                dao_file_info.updateFile(dto_file_info);
-                dao_action.createAction(nickname, 2000);
-                dao_action.createAction(nickname, 3006);
-                return true;
-            }
-            else {
-                dao_action.createAction(nickname, 2005);
-                return false;
-            }
-        }
+    BFile.prototype.shareFile = function (user, userShared, fileName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var dto_file_info, dto_file_data, dto_action, dto_key, dao_file_info, dao_file_data, dao_action, dao_key, files, i, _i, files_2, f, idFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto_file_info = new DTOFileInfo_1.DTOFileInfo();
+                        dto_file_data = new DTOFileData_1.DTOFileData();
+                        dto_action = new DTOAction_1.DTOAction();
+                        dto_key = new DTOKey_1.DTOKey();
+                        dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                        dao_file_data = new FSDAOFileData_1.FSDAOFileData();
+                        dao_action = new MDBDAOAction_1.MDBDAOAction();
+                        dao_key = new MDBDAOKey_1.MDBDAOKey();
+                        files = new Array();
+                        return [4 /*yield*/, dao_file_info.findFilesByUser(user)];
+                    case 1:
+                        files = _a.sent();
+                        i = 0;
+                        for (_i = 0, files_2 = files; _i < files_2.length; _i++) {
+                            f = files_2[_i];
+                            if (f[i].getDecipheredName() == fileName) {
+                                dto_file_info = f[i];
+                                break;
+                            }
+                            i += 1;
+                        }
+                        //If the file wasn't found
+                        if (dto_file_info.getId() == null) {
+                            dao_action.createAction(user, ActionConstants_1.ActionConstants.ACTION_FILE_NOTFOUND);
+                            return [2 /*return*/, false];
+                        }
+                        //If the file was found
+                        else {
+                            idFile = dto_file_info.getId();
+                            dao_key.shareKey(idFile, userShared);
+                            dao_action.createAction(user, ActionConstants_1.ActionConstants.ACTION_FILE_SHARED);
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     BFile.prototype.deleteFile = function (nickname, fileName) {
-        var dto_file_info = new DTOFileInfo_1.DTOFileInfo();
-        var dto_action = new DTOAction_1.DTOAction();
-        var dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-        var dao_file_data = new FSDAOFileData_1.FSDAOFileData();
-        var dao_action = new MDBDAOAction_1.MDBDAOAction();
-        //Searching the file
-        var files = new Array();
-        files = dao_file_info.findFilesByUser(nickname);
-        var i = 0;
-        for (var _i = 0, files_3 = files; _i < files_3.length; _i++) {
-            var f = files_3[_i];
-            if (f[i].getDecipheredName() == fileName) {
-                dto_file_info = f[i];
-                break;
-            }
-            i += 1;
-        }
-        //If the file wasn't found
-        if (dto_file_info.getId() == null) {
-            dao_action.createAction(nickname, 2004);
-            return false;
-        }
-        //If the file was found
-        else {
-            dao_file_info.deleteFile(dto_file_info.getId());
-            dao_action.createAction(nickname, 2000);
-            return true;
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            var dto_file_info, dto_action, dao_file_info, dao_file_data, dao_action, files, i, _i, files_3, f;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto_file_info = new DTOFileInfo_1.DTOFileInfo();
+                        dto_action = new DTOAction_1.DTOAction();
+                        dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                        dao_file_data = new FSDAOFileData_1.FSDAOFileData();
+                        dao_action = new MDBDAOAction_1.MDBDAOAction();
+                        files = new Array();
+                        return [4 /*yield*/, dao_file_info.findFilesByUser(nickname)];
+                    case 1:
+                        files = _a.sent();
+                        i = 0;
+                        for (_i = 0, files_3 = files; _i < files_3.length; _i++) {
+                            f = files_3[_i];
+                            if (f[i].getDecipheredName() == fileName) {
+                                dto_file_info = f[i];
+                                break;
+                            }
+                            i += 1;
+                        }
+                        //If the file wasn't found
+                        if (dto_file_info.getId() == null) {
+                            dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_NOTFOUND);
+                            return [2 /*return*/, false];
+                        }
+                        //If the file was found
+                        else {
+                            dao_file_info.deleteFile(dto_file_info.getId());
+                            dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_UNDEFINED);
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     BFile.prototype.saveFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey, hashKey, hashMac) {
         return __awaiter(this, void 0, void 0, function () {
@@ -270,12 +294,26 @@ var BFile = /** @class */ (function () {
                         _b.sent();
                         console.log("That's ok");
                         return [2 /*return*/, true];
-                    case 6:
-                        console.log("Something was wrokg");
-                        return [2 /*return*/, false];
+                    case 6: return [2 /*return*/, true];
                 }
             });
         });
+    };
+    BFile.prototype.cipher = function (data, key) {
+        var aes = new AES256_1.AES256();
+        return aes.cipher(data, key);
+    };
+    BFile.prototype.decipher = function (data, key, mac, keyMac) {
+        var aes = new AES256_1.AES256();
+        var calc_mac = new HMac_1.HMac();
+        if (this.verify(data, mac, keyMac))
+            return aes.decipher(data, key);
+        else
+            return "Error. File corrupted";
+    };
+    BFile.prototype.verify = function (data, mac, keyMac) {
+        var calc_mac = new HMac_1.HMac();
+        return calc_mac.verifyMac(data, keyMac, mac) ? true : false;
     };
     return BFile;
 }());

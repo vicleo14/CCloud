@@ -2,10 +2,10 @@ const mysql=require("mysql");
 
 const {promisify}=require('util');
 const HOST="localhost";
-const DATABASE="db_Ccloud";
+const DATABASE="db_ccloud";
 const PORT="3306";
 const USER="root";
-const PASSWORD="root";
+const PASSWORD="";
 const pool=mysql.createPool(
     {
         host: HOST, 

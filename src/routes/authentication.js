@@ -7,7 +7,7 @@ router.get("/register",(req,res)=>
 });
 router.post("/register",async (req,res)=>
 {
-    res.send("recibido");
+    res.render("other/welcome");
     console.log(req.body)
     const {curp,name,lastname,secondlast,nickname,email,password,rpass,birthdate}=req.body;
     const BUser1=require("../app/classes/bussines/BUser");

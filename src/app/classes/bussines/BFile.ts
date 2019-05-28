@@ -52,9 +52,9 @@ export class BFile
 
 	constructor(){
 		//Getting server keys
-		this.publicKey = fs.readFileSync("../../../../local/publicKey.txt").toString();
-		//this.privateKey = fs.readFileSync("../../../../local/privateKey.txt").toString();
-		this.bsKey=new BKey()
+		this.publicKey = fs.readFileSync("publicKey.txt").toString();
+		this.privateKey = fs.readFileSync("privateKey.txt").toString();
+		this.bsKey=new BKey();
 	}
 
 	async uploadFile(nickname:string, name:string, cfile:string, size:number, cipheredKeyMAC:string, 
@@ -74,10 +74,14 @@ export class BFile
 		//Decryption of the keys
 		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
 		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
+		console.log("DecipheredKeyMac: ", decipheredKeyMAC);
+		console.log("Llaves descifradas");
 		//Verifying keyMacHash and keyFileHash 
-		if(hash.compareHash(hash.calculateHash(decipheredKeyMAC), hashMac) && hash.compareHash(hash.calculateHash(decipheredKeyFile), hashKeyFile)){
+		if(hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile)){
+			console.log("Hashs correctas");
 			//Verifying the MAC
-			if(this.verify(cfile, MAC, cipheredKeyMAC)){
+			if(this.verify(cfile, MAC, decipheredKeyMAC)){
+				console.log("MAC correcta");
 				//Obtaining the date
 				var date = new Date();
 				//Calculating id
@@ -92,6 +96,7 @@ export class BFile
 				dto_file_info.setMAC(MAC);
 				dto_file_info.setDate(date);
 				dao_file_info.createFile(nickname, dto_file_info);
+				console.log("Archivo en BD");
 				
 				//Hashing file's key
 				var hashedKey = hash.calculateHash(cipheredKey);
@@ -114,6 +119,8 @@ export class BFile
 				dao_file_data.createFile(path, id+ExtensionConstants.GENERIC_EXTENSION, cfile);
 				dao_file_data.createFile(path, id+ExtensionConstants.CIPHERKEYC_EXTENSION, cipheredKey);
 				dao_file_data.createFile(path, id+ExtensionConstants.MACKEYC_EXTENSION, cipheredKeyMAC);
+
+				console.log("Archivos creados");
 
 				//Filling actions
 				dao_action.createAction(nickname, ActionConstants.ACTION_FILE_UPLOADED);
@@ -142,7 +149,7 @@ export class BFile
 		var rsa:IRSA = new RSA();
 		//Searching the file
 		let files:DTOFileInfo[]=new Array();
-		files = dao_file_info.findFilesByUser(nickname);
+		files = await dao_file_info.findFilesByUser(nickname);
 		var i = 0;
 		for(let f of files){
 			if(f[i].getDecipheredName() == fileName){
@@ -162,8 +169,8 @@ export class BFile
 			var idFile = dto_file_info.getId();
 			var data = dao_file_data.readFile(path, idFile+ExtensionConstants.GENERIC_EXTENSION);
 			//Obtaining keys hashes
-			var hashKeyFile:DTOKey = dao_key.findKeyByFileIdAndType(idFile, KeyConstants.KEY_CIPHER_DECIPHER);
-			var hashKeyMac:DTOKey = dao_key.findKeyByFileIdAndType(idFile, KeyConstants.KEY_INTEGRITY);
+			var hashKeyFile:DTOKey = await dao_key.findKeyByFileIdAndType(idFile, KeyConstants.KEY_CIPHER_DECIPHER);
+			var hashKeyMac:DTOKey = await dao_key.findKeyByFileIdAndType(idFile, KeyConstants.KEY_INTEGRITY);
 			//Returning the data
 			var return_data = {
 				hashKeyFile : hashKeyFile.getKeyHash(),
@@ -187,7 +194,7 @@ export class BFile
 		var dao_key:IDAOKey = new MDBDAOKey();
 		//Searching the file
 		let files:DTOFileInfo[]=new Array();
-		files = dao_file_info.findFilesByUser(user);
+		files = await dao_file_info.findFilesByUser(user);
 		var i = 0;
 		for(let f of files){
 			if(f[i].getDecipheredName() == fileName){
@@ -220,7 +227,7 @@ export class BFile
 		
 		//Searching the file
 		let files:DTOFileInfo[]=new Array();
-		files = dao_file_info.findFilesByUser(nickname);
+		files = await dao_file_info.findFilesByUser(nickname);
 		var i = 0;
 		for(let f of files){
 			if(f[i].getDecipheredName() == fileName){

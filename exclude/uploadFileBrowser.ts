@@ -12,6 +12,7 @@ import {IDAOFileData} from "../src/app/classes/dataAccess/dao/IDAOFileData";
 import {FSDAOFileData} from "../src/app/classes/dataAccess/dao/FSDAOFileData";
 import {IRSA} from '../src/app/classes/crypto/IRSA';
 import {RSA} from '../src/app/classes/crypto/RSA';
+import * as fs from 'fs';
 window.uploadFile=function(file)
 {
     {
@@ -23,12 +24,13 @@ window.uploadFile=function(file)
         var rsa = new RSA();
         var reader = new FileReader();
         var fileS = file[0];
+        var pubKey = fs.readFile("../local", "publicKey.txt").toString();
         reader.onload = function () {
             /* GENERAMOS VALORES ALEATORIOS */
             var keyC = generator.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
             var keyM = generator.generateRandom(CryptoConstants.AES_KEYSIZE_BYTES);
             /* CIFRAMOS CON AES */
-            var cipheredData = cipher.cipher(reader.result, keyC);
+            var cipheredData = cipher.cipher(reader.result.toString(), keyC);
             /* CALCULAMOS TAG CON IMAC */
             var mres = mac.calculateMac(cipheredData.toString(), keyM);
             /* CALCULAMOS HASH DE LLAVES */
