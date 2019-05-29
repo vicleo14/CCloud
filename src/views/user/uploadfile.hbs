@@ -23,24 +23,56 @@
         //console.log(data);
         //console.log(data.length);
         petition.send(data);
+        petition.onreadystatechange=function()
+        {
+            if(petition.readyState==4 )
+            {
+                petition.abort();
+                console.log("Peticion terminada");
+                alert("Thanks, your file is now throgh our servers =)");
+                document.getElementById("sendButton").classList.add("disabled");
+                document.getElementById("linkMac").classList.add("disabled");
+                document.getElementById("linkKey").classList.add("disabled");
+            }
+        }
     }
 </script>
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Hi !</h4>
+  <p>For assure our services we cipher all your files before send it to our server. For this we need two keys that your computer 
+      will generate. Once you select your file a MAC tag will be generated and we use this for assure that your file was not modified trhough the web. When you want to download the file we will ask you both keys so save it in a secure place please :).
+  </p>
+  <hr>
+  <p class="mb-0">
+      Follow the next steps to upload a files:
+      <ol>
+          <li>Select the file you want to upload</li>
+          <li>Your computer will cipher the file, be patient please!</li>
+          <li>Once the file is processed you will see the value of your MAC tag and now you are able to download your keys by clicking on each button.</li>
+          <li><b>TIP: Once you storage your keys, you can change the file name for identify it but do not change the extension</b></li>
+          <li>Now it is time to send the file. Now any person without the keys can see the original content. :)</li>
+          <li>When all the file arrive to us your work has finished. Now you can take a break. We will save your file in a secure way</li>
+      </ol>
+      
+  </p>
+</div>
 <div class="container p-12">
     <div class="div">
         <div class="col-md-12 mx-auto">
             <div class="card">
                 <div class="card-body">
                     <form action="/user/upload-file" method="POST" id="uploadFile">
-                        
                         <div class="input-group mb-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files)">
-                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files)">
+                                <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                            </div>
                         </div>
-                        
-                        </div>
-                       
-                    <div class="card" id="macTagView">
+                        <a href="#" id="linkMac" download="macKey.drc" class="btn btn-primary btn-lg btn-block disabled">Download MAC key</a>
+                        <br \>
+                        <a href="#" id="linkKey" download="cipherKey.vmf"  class="btn btn-primary btn-lg btn-block disabled">Download cipher/decipher Key</a>
+                
+                    <div class="card" id="macTagView" >
                         <div class="card-body">
                             The MAC tag:
                         </div>
@@ -49,7 +81,7 @@
                     
                     </form>
                     <div class="form-group">
-                        <button class="btn btn-success btn-block" onclick="sendData()">Send file</button>
+                        <button id="sendButton" class="btn btn-success btn-lg btn-block disabled" onclick="sendData()">Send file</button>
                     </div>
                     
                 </div>

@@ -32,12 +32,13 @@ window.uploadFile=function(file)
             /* CIFRAMOS CON AES */
             var cipheredData = cipher.cipher(reader.result.toString(), keyC);
             /* CALCULAMOS TAG CON IMAC */
-            var mres = mac.calculateMac(cipheredData.toString(), keyM);
+            var mres = mac.calculateMac(cipheredData.toString('base64'), keyM);
             /* CALCULAMOS HASH DE LLAVES */
             var hashK = hash.calculateHash(keyC);
             var hashm = hash.calculateHash(keyM);
             /* CIFRAMOS LLAVES CON RSA */
-            //Se cifran con la llave pública la llave de la mac y la llave del archivo
+            //Se cifran con la llave publica la llave de la mac y la llave del archivo
+            //La llave pubilca es pedida como global cuando se acccede a la pagina
             var cipheredKeyM = rsa.publicEncryption(pubKey, keyM);
             var cipheredKeyC = rsa.publicEncryption(pubKey.toString(), keyC);
             var tagMacE = document.getElementById("macTagView");
@@ -49,7 +50,9 @@ window.uploadFile=function(file)
                 "hashM": hashm,
                 "AESkey": cipheredKeyC,
                 "macKey": cipheredKeyM,
-                "data": cipheredData
+                "data": cipheredData.toString("base64"),
+                "nickname":"vicleo16",
+                "size":reader.result.length
             };
             console.log(">>>>>key1 deciphered:\n", keyC);
             console.log(">>>>>key2 deciphered:\n", keyM);

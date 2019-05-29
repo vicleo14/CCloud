@@ -1,0 +1,21 @@
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">File</th>
+      <th scope="col">Key Type</th>
+      <th scope="col">Date</th>
+      <th scope="col">State</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each requests}}    
+    <tr>
+      <td>{{this.file}}</td>
+      <td>{{this.keyType}}</td>
+      <td>{{this.date}}</td>
+      <td>{{this.state}}</td>
+    </tr>
+    {{/each}}
+    
+  </tbody>
+</table>

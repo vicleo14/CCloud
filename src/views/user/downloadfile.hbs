@@ -1,0 +1,62 @@
+
+<script src="/js/df.js"></script>
+
+
+
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Hi!</h4>
+  <p>
+      For assure that you flie were send correctly through the web we ned to verify it with the MAC key and for see the original content of your file we need the cipher key. So, please llok for your keys and load each file in the correspodnig place for verify it. =)
+  </p>
+  <hr>
+  <p class="mb-0">
+      Follow the next steps to upload a files:
+      <ol>
+          <li>Select the keys files and let us to verify it.</li>
+          <li>Your computer will cipher the file, be patient please!</li>
+          
+      </ol>
+      
+  </p>
+</div>
+{{#each files}}    
+<script>
+    window.fileID = "{{this.id}}";
+    console.log("FileID:",fileID);
+</script>
+<div class="container p-12">
+    <div class="div">
+        <div class="col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    Your file info:
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name:{{this.decipheredName}}</li>
+                    <li class="list-group-item">Uploaded date:{{this.date}}</li>
+                    <li class="list-group-item">Size:{{this.size}} bytes</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <form action="/user/upload-file" method="POST" id="uploadFile">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input id="MacKeyFile" type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files,1)">
+                                <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose the MAC key </label>
+                            </div>
+                            <div class="custom-file">
+                                <input id="CipherKeyFile" type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files,0)">
+                                <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose the cipher/decipher key </label>
+                            </div>
+                        </div>                
+                    </form>  
+                    <button id="2" class="btn btn-warning btn-lg btn-block" onclick="verifykeys()">Verify and process</button>
+                    <br \>
+                    <a href="#" id="downloadFile" download="{{this.decipheredName}}"  class="btn btn-success btn-lg btn-block disabled">Download file</a>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}

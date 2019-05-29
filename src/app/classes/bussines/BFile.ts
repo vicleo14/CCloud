@@ -42,7 +42,7 @@ import * as dateFormat from 'dateformat';
 const name1="cipheredData"+ExtensionConstants.GENERIC_EXTENSION;
 const name2="key"+ExtensionConstants.CIPHERKEYC_EXTENSION;
 const name3="mac"+ExtensionConstants.MACKEYC_EXTENSION;
-const path="../../../../storage";
+const path="storage/";
 
 export class BFile
 {
@@ -74,14 +74,10 @@ export class BFile
 		//Decryption of the keys
 		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
 		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
-		console.log("DecipheredKeyMac: ", decipheredKeyMAC);
-		console.log("Llaves descifradas");
 		//Verifying keyMacHash and keyFileHash 
 		if(hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile)){
-			console.log("Hashs correctas");
 			//Verifying the MAC
 			if(this.verify(cfile, MAC, decipheredKeyMAC)){
-				console.log("MAC correcta");
 				//Obtaining the date
 				var date = new Date();
 				//Calculating id
@@ -96,17 +92,13 @@ export class BFile
 				dto_file_info.setMAC(MAC);
 				dto_file_info.setDate(date);
 				dao_file_info.createFile(nickname, dto_file_info);
-				console.log("Archivo en BD");
-				
-				//Hashing file's key
-				var hashedKey = hash.calculateHash(cipheredKey);
 				
 				//Filling file's key information
 				dto_key.setIdFile(id);
 				dto_key.setIdType(KeyConstants.KEY_CIPHER_DECIPHER);
 				dto_key.setKeyHash(hashKeyFile);
 				dto_key.setKeyFileName(id+ExtensionConstants.CIPHERKEYC_EXTENSION);
-				dao_key.createKey(dto_key);
+				await dao_key.createKey(dto_key);
 
 				//Filling MAC's key information
 				dto_key.setIdFile(id);
@@ -119,9 +111,7 @@ export class BFile
 				dao_file_data.createFile(path, id+ExtensionConstants.GENERIC_EXTENSION, cfile);
 				dao_file_data.createFile(path, id+ExtensionConstants.CIPHERKEYC_EXTENSION, cipheredKey);
 				dao_file_data.createFile(path, id+ExtensionConstants.MACKEYC_EXTENSION, cipheredKeyMAC);
-
-				console.log("Archivos creados");
-
+				
 				//Filling actions
 				dao_action.createAction(nickname, ActionConstants.ACTION_FILE_UPLOADED);
 				dao_action.createAction(nickname, ActionConstants.ACTION_KEY_MACUPLOADED);
@@ -249,20 +239,93 @@ export class BFile
 		}
 	}
 
-	async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
+	/*async saveFile(nickname:string, name:string, cfile:Buffer, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
 	{
+		var result=undefined;
+		const mac:IMac=new HMac();
+		const blockCipher:IBlockCipher=new AES256();//Esto cambia si se pone opcion de seguridad
+		if(mac.verifyMac(data,macKey,tag))
+		{
+			try
+			{
+				var buf=Buffer.from(data,"base64");
+				console.log(buf)
+				result=await blockCipher.decipherFile(buf,key);
+				console.log("Decipher result:",Buffer.from(buf));
+				console.log("Decipher size A:",Buffer.from(result).length);
+			}
+			catch(x)
+			{
+				console.log("Something is wrong:",x);
+				result=undefined;
+			}
+		}
+		else
+		{
+			result=undefined;
+		}
+		return result;
+
+	}*/
+
+	/*async saveFileVLMF(nickname:string, name:string, cfile:string, size:number, cipheredKeyMAC:string, MAC:string, cipheredKey:string,hashKey:string,hashMac:string)
+	{
+		const fs:IDAOFileData=new FSDAOFileData();
 		var decipheredKeyC:string;
 		var decipheredKeyM:string;
+		
 		if( (decipheredKeyC=await this.bsKey.decipherKey(cipheredKey,hashKey)) != undefined && (decipheredKeyM=await this.bsKey.decipherKey(cipheredKeyMAC,hashMac)) != undefined)
 		{
-			await console.log(decipheredKeyC);
-			await console.log(decipheredKeyM);
 			
+			// GENERAMOS EL NOMBRE DEL ARCHIVO
+			var split=name.split(".");
+			var nomArcG=nickname+split[0]+dateFormat( new Date(),"yyyyMMddhhMMss");
+			var clave=nomArcG;
+    		var nomMAC=nomArcG+ExtensionConstants.MACKEYC_EXTENSION;
+			var nomKey=nomArcG+ExtensionConstants.CIPHERKEYC_EXTENSION;
+
+			//Almacenamos en HDD
+			var name1=nomArcG+ExtensionConstants.GENERIC_EXTENSION;
+			fs.createFile(path,name1,cfile);
+			fs.createFile(path,nomKey,cipheredKey);
+			fs.createFile(path,nomMAC,cipheredKeyMAC);
+			
+			//Almacenamos en BD
+			var dtoFile:DTOFileInfo=new DTOFileInfo();
+			dtoFile.setId(clave);
+			dtoFile.setDecipheredName(name);
+			dtoFile.setCipheredName(name1);
+			dtoFile.setMAC(MAC);
+			dtoFile.setDate(new Date());
+			dtoFile.setSize(size);
+			var dtoK1:DTOKey=new DTOKey();
+			dtoK1.setIdFile(clave);
+			dtoK1.setIdType(KeyConstants.KEY_CIPHER_DECIPHER);
+			dtoK1.setKeyFileName(nomKey);
+			dtoK1.setKeyHash(hashKey);
+
+			var dtoK2:DTOKey=new DTOKey();
+			dtoK2.setIdFile(clave);
+			dtoK2.setIdType(KeyConstants.KEY_INTEGRITY);
+			dtoK2.setKeyFileName(nomMAC);
+			dtoK2.setKeyHash(hashMac);
+			//DAOS
+
+			var daoFile:IDAOFileInfo=new MDBDAOFileInfo();
+			var daoKey:IDAOKey=new MDBDAOKey();
+			await daoFile.createFile(nickname,dtoFile);
+			await daoKey.createKey(dtoK1);
+			await daoKey.createKey(dtoK2);
+
+			//var decipheredFile=await this.decipherFile(cfile,decipheredKeyC,decipheredKeyM,MAC);
+			//fs.createFile(path,name,Buffer.from(decipheredFile));
+
 			console.log("That's ok");
 			return true;
 		}
 		return true;
-	}
+	}*/
+
 
 	cipher(data:string, key:string):string{
 		var aes:IBlockCipher = new AES256();
