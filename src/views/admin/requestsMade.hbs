@@ -1,0 +1,28 @@
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">File</th>
+      <th scope="col">Date</th>
+      <th scope="col">Key Type</th>
+      <th scope="col">Status</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each requests}}    
+    <tr>
+      <td>{{this.decipheredName}}</td>
+      <td>{{this.size}} bytes</td>
+      <td>{{this.date}}</td>
+      <td><a class="btn btn btn-outline-success" href="download-file?id={{this.id}}" role="button">Confirm Request</a></td>
+      <td><a class="btn btn btn-outline-warning" href="request-key?id={{this.id}}" role="button">Key delivered</a></td>
+      <td><a class="btn btn btn-outline-danger" href="key-lost?id={{this.id}}" role="button">Lost my key</a></td></td>
+    </tr>
+    {{/each}}
+    
+  </tbody>
+</table>

@@ -82,53 +82,19 @@ router.get("/key-lost",async (req,res)=>
 router.get("/request-key",async (req,res)=>
 {    
     res.render("user/requestkey");
+    var BRequest_1 = require("../app/classes/bussines/BRequest");
+    bRequest = new BRequest_1.BRequest();
+    var requestValid = bRequest.newRequest('memo1',req.query.id, 1);
+    if(!requestValid){
+        
+    }
 });
 
 router.get("/my-requests",async(req,res)=>
 {
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    
-    var imprimir = bRequest.findRequestsByUser("memo1");
-    /*var MDBDAORequest_1 = require("../app/classes/dataAccess/dao/MDBDAORequest");
-    daoRequest = new MDBDAORequest_1.MDBDAORequest();
-    var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
-    daoFiles = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-    var DTORequest_1 = require("../app/classes/dataAccess/dto/DTORequest");
-    resultado = new DTORequest_1.DTORequest();
-    var DTOFileInfo_1 = require("../app/classes/dataAccess/dto/DTOFileInfo");
-    file = new DTOFileInfo_1.DTOFileInfo();
-
-    var resultado = await daoRequest.findRequestByUser("memo1");
-    var imprimir = [];
-    console.log(resultado);
-    console.log(resultado.length);
-    for(var i=0; i<resultado.length; i+=1){
-        var file = await daoFiles.findFileById(resultado[i].getIdFile());
-        var keyType;
-        resultado[i].getIdKeyType()?keyType="File":keyType="MAC";
-        var fileName = file[i].getDecipheredName();
-        var state = resultado[i].getState();
-        var state_desc;
-        if(state == 1)
-            state_desc="Sent";
-        else if(state == 2)
-            state_desc="Confirmed";
-        else
-            state_desc="Finished";
-        var auxiliar = [fileName,keyType];
-        console.log(auxiliar);
-        resultado[i].setIdFile(fileName);
-        resultado[i].setUser(keyType);
-        var dat = resultado[i].getCodeDate();
-        imprimir[i] = {
-            file:fileName,
-            keyType:keyType,
-            date:dat,
-            state:state_desc
-        }  
-    }*/
-    console.log(imprimir);
+    var imprimir = await bRequest.findRequestsByUser("memo1");
     res.render("user/myrequests",{requests:imprimir});
 });
 
