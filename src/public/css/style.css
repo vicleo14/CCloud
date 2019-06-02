@@ -7,6 +7,18 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+.bred
+{
+  background-color: firebrick
+}
+.bblue
+{
+  background-color: darkblue
+}
+.bgray
+{
+  background-color: gray
+}
 body {
   background: #fff;
   color: #666666;

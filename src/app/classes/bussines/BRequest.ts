@@ -71,8 +71,9 @@ export class BRequest{
 		var dto_file_info:DTOFileInfo = new DTOFileInfo();
 		var dao_action:IDAOAction = new MDBDAOAction();
 		//Verify if the user already did a request for the key of this file
-		dto_request = await dao_request.findRequestByUserFileAndType(nickname, fileId, keyType);
-		if(dto_request == null)
+
+		/*---------------------- VICTOR: REVISAR LOGICA DEL REQUEST -----------------------------*/
+		if(await dao_request.findRequestByUserFileAndType(nickname, fileId, keyType) != null)
 			return false;
 		//Searching the specified file
 		dto_file_info = await dao_file_info.findFileById(fileId);
@@ -89,7 +90,7 @@ export class BRequest{
 			dto_request.setIdKeyType(keyType);
 			dao_request.createRequest(dto_request);
 			//Storing the actions
-			dao_action.createAction(nickname, ActionConstants.ACTION_KEY_UNDEFINED);
+			dao_action.createAction(nickname, ActionConstants.ACTION_KEY_UNDEFINED);//CAMBIAR LA ACCION UNDEFINED
 			return true;
 		}
 	}
@@ -112,7 +113,7 @@ export class BRequest{
 		return ;
 	}
 
-	async requestFinalized((nickname:string, fileId:string, keyType:number){
+	async requestFinalized(nickname:string, fileId:string, keyType:number){
 
 	}
 }

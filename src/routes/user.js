@@ -1,7 +1,6 @@
 const express=require("express");
 const fs=require("fs");
 const router=express.Router();
-
 router.get("/upload-file",(req,res)=>
 {
     res.render("user/uploadfile");
@@ -24,12 +23,12 @@ router.post("/upload-file",async (req,res)=>
     var nickname="memo1";
     var size=0;
     var i=0;
-    console.log("cipheredM:",cipheredM);
-    console.log("CipheredData: ",cipheredData);
+    //console.log("cipheredM:",cipheredM);
+    //console.log("CipheredData: ",cipheredData);
     //await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
     var subido;
     await (subido = bsFile.uploadFile(nickname, name, cipheredData, size, cipheredM, mac, cipheredK, hashM, hashK));
-    console.log(subido);
+    //console.log(subido);
     
     /*await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
     console.log("finished");*/
@@ -61,7 +60,7 @@ router.post("/download-file",async (req,res)=>
     
     var nameFileC=infoFile[0].getCipheredName();
     var cipheredMessage=fs.readFile(path,nameFileC).toString();
-    console.log(cipheredMessage.length);
+    //console.log(cipheredMessage.length);
     obj.dataFile=cipheredMessage;
     res.send(obj);
 });
@@ -70,9 +69,8 @@ router.get("/my-files",async (req,res)=>
 {
     var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
     daoFiles = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-    var results=await daoFiles.findFilesByUser("memo1");
-    console.log(results);
-
+    console.log("Username:",req.session.user.username);
+    var results=await daoFiles.findFilesByUser(req.session.user.username);
     res.render("user/myfiles",{files:results});
 });
 router.get("/key-lost",async (req,res)=>
@@ -84,7 +82,8 @@ router.get("/request-key",async (req,res)=>
     res.render("user/requestkey");
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    var requestValid = bRequest.newRequest('memo1',req.query.id, 1);
+    console.log("AaaaaaaaaaAAAAAAA:",req.session.user.username);
+    var requestValid = await bRequest.newRequest(req.session.user.username,req.query.id, 1);
     if(!requestValid){
         
     }
@@ -94,15 +93,22 @@ router.get("/my-requests",async(req,res)=>
 {
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    var imprimir = await bRequest.findRequestsByUser("memo1");
+    /* AQUI */
+    //console.log("values:",express);
+    var imprimir = await bRequest.findRequestsByUser(req.session.user.username);
+    console.log("VALUES:",imprimir);
     res.render("user/myrequests",{requests:imprimir});
 });
 
 router.post("/public-key",async (req,res)=>
 {    
     var key=fs.readFileSync("./publicKey.txt");
-    console.log(key.toString());
+    //console.log(key.toString());
     res.send(key);
+});
+router.get("/my-profile",async (req,res)=>
+{      
+    res.render("user/myprofile");
 });
 
 module.exports=router;

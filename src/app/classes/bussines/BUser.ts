@@ -117,7 +117,8 @@ export class BUser
                 //dao_action.createAction(dto_action); 
                 dao_action.createAction(nickname,ActionConstants.ACTION_SESSION_LOGINSUCCESSFUL);  
                 //Se sube un usuario a sesión
-                return true;
+                dto_user.setHashPassword("");
+                return dto_user;
             }
             //If it isn't
             else{
@@ -130,7 +131,7 @@ export class BUser
                     //dto_action.setActions([1005, 1003]);
                     //dao_action.createAction(dto_action);
                 }
-                return false;
+                return null;
             }   
         }
       else

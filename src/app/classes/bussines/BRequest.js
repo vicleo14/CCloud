@@ -39,11 +39,9 @@ var DTOFileInfo_1 = require("../dataAccess/dto/DTOFileInfo");
 var MDBDAOFileInfo_1 = require("../dataAccess/dao/MDBDAOFileInfo");
 var DTORequest_1 = require("../dataAccess/dto/DTORequest");
 var MDBDAORequest_1 = require("../dataAccess/dao/MDBDAORequest");
-var DTOAction_1 = require("../dataAccess/dto/DTOAction");
+var RequestConstants_1 = require("../utils/RequestConstants");
 var MDBDAOAction_1 = require("../dataAccess/dao/MDBDAOAction");
 var ActionConstants_1 = require("../utils/ActionConstants");
-var express = require("express");
-var app = express();
 var BRequest = /** @class */ (function () {
     function BRequest() {
     }
@@ -101,26 +99,21 @@ var BRequest = /** @class */ (function () {
     };
     BRequest.prototype.newRequest = function (nickname, fileId, keyType) {
         return __awaiter(this, void 0, void 0, function () {
-            var dao_file_info, dao_request, dto_request, requestsMade, dto_file_info, dto_action, dao_action, _i, requestsMade_1, req;
+            var dao_file_info, dao_request, dto_request, dto_file_info, dao_action;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
                         dao_request = new MDBDAORequest_1.MDBDAORequest();
                         dto_request = new DTORequest_1.DTORequest();
-                        requestsMade = new Array();
                         dto_file_info = new DTOFileInfo_1.DTOFileInfo();
-                        dto_action = new DTOAction_1.DTOAction();
                         dao_action = new MDBDAOAction_1.MDBDAOAction();
-                        return [4 /*yield*/, dao_request.findRequestByUserAndFile(nickname, fileId)];
+                        return [4 /*yield*/, dao_request.findRequestByUserFileAndType(nickname, fileId, keyType)];
                     case 1:
                         //Verify if the user already did a request for the key of this file
-                        requestsMade = _a.sent();
-                        for (_i = 0, requestsMade_1 = requestsMade; _i < requestsMade_1.length; _i++) {
-                            req = requestsMade_1[_i];
-                            if (req.getIdKeyType() == keyType)
-                                return [2 /*return*/, false];
-                        }
+                        /*---------------------- VICTOR: REVISAR LOGICA DEL REQUEST -----------------------------*/
+                        if ((_a.sent()) != null)
+                            return [2 /*return*/, false];
                         return [4 /*yield*/, dao_file_info.findFileById(fileId)];
                     case 2:
                         //Searching the specified file
@@ -138,7 +131,7 @@ var BRequest = /** @class */ (function () {
                             dto_request.setIdKeyType(keyType);
                             dao_request.createRequest(dto_request);
                             //Storing the actions
-                            dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_KEY_UNDEFINED);
+                            dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_KEY_UNDEFINED); //CAMBIAR LA ACCION UNDEFINED
                             return [2 /*return*/, true];
                         }
                         return [2 /*return*/];
@@ -146,14 +139,33 @@ var BRequest = /** @class */ (function () {
             });
         });
     };
-    BRequest.prototype.confirmRequest = function () {
+    BRequest.prototype.confirmRequest = function (nickname, fileId, keyType, privateKey) {
         return __awaiter(this, void 0, void 0, function () {
+            var dao_file_info, dao_request, dto_request, dto_file_info, dao_action;
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        dao_file_info = new MDBDAOFileInfo_1.MDBDAOFileInfo();
+                        dao_request = new MDBDAORequest_1.MDBDAORequest();
+                        dto_request = new DTORequest_1.DTORequest();
+                        dto_file_info = new DTOFileInfo_1.DTOFileInfo();
+                        dao_action = new MDBDAOAction_1.MDBDAOAction();
+                        return [4 /*yield*/, dao_request.findRequestByUserFileAndType(nickname, fileId, keyType)];
+                    case 1:
+                        //Verifies the master key
+                        //Searches the specified request
+                        dto_request = _a.sent();
+                        if (dto_request == null)
+                            return [2 /*return*/, false];
+                        //Change the state of the request to confirmed
+                        dto_request.setState(RequestConstants_1.RequestConstants.REQUEST_CONFIRMED);
+                        //Returning the key
+                        return [2 /*return*/];
+                }
             });
         });
     };
-    BRequest.prototype.requestFinalized = function (nickname) {
+    BRequest.prototype.requestFinalized = function (nickname, fileId, keyType) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/];
