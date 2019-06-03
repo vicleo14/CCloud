@@ -87,7 +87,7 @@ var BFile = /** @class */ (function () {
                         if (!this.verify(cfile, MAC, decipheredKeyMAC)) return [3 /*break*/, 2];
                         date = new Date();
                         split = name.split(".");
-                        id = nickname + name + dateFormat(new Date(), "yyyyMMddhhMMss");
+                        id = nickname + split[0] + dateFormat(new Date(), "yyyyMMddhhMMss");
                         //Filling file's information
                         dto_file_info.setCipheredName(id + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION);
                         dto_file_info.setSize(size);
@@ -350,20 +350,47 @@ var BFile = /** @class */ (function () {
         return true;
     }*/
     BFile.prototype.cipher = function (data, key) {
-        var aes = new AES256_1.AES256();
-        return aes.cipher(data, key);
+        return __awaiter(this, void 0, void 0, function () {
+            var aes;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("DATA:", data.length);
+                        aes = new AES256_1.AES256();
+                        return [4 /*yield*/, aes.cipherFile(Buffer.from(data, "base64"), key)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
     };
     BFile.prototype.decipher = function (data, key, mac, keyMac) {
-        var aes = new AES256_1.AES256();
-        var calc_mac = new HMac_1.HMac();
-        if (this.verify(data, mac, keyMac))
-            return aes.decipher(data, key);
-        else
-            return "Error. File corrupted";
+        return __awaiter(this, void 0, void 0, function () {
+            var aes, calc_mac;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        aes = new AES256_1.AES256();
+                        calc_mac = new HMac_1.HMac();
+                        if (!this.verify(data, mac, keyMac)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, aes.decipherFile(Buffer.from(data, "base64"), key)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/, "Error. File corrupted"];
+                }
+            });
+        });
     };
     BFile.prototype.verify = function (data, mac, keyMac) {
-        var calc_mac = new HMac_1.HMac();
-        return calc_mac.verifyMac(data, keyMac, mac) ? true : false;
+        return __awaiter(this, void 0, void 0, function () {
+            var calc_mac;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        calc_mac = new HMac_1.HMac();
+                        return [4 /*yield*/, calc_mac.verifyMac(data, keyMac, mac)];
+                    case 1: return [2 /*return*/, (_a.sent()) ? true : false];
+                }
+            });
+        });
     };
     return BFile;
 }());

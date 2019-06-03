@@ -20,7 +20,7 @@ router.post("/upload-file",async (req,res)=>
     var mac=fileInfo.mac;
     //var nickname=fileInfo.nickname;
     var size=fileInfo.size;
-    var nickname="memo1";
+    var nickname=req.session.user.username;
     var size=0;
     var i=0;
     //console.log("cipheredM:",cipheredM);
@@ -75,6 +75,11 @@ router.get("/my-files",async (req,res)=>
 });
 router.get("/key-lost",async (req,res)=>
 {    
+    var idFile=req.query.id;
+    console.log("IDFILE:",idFile);
+    var BKey_1 = require("../app/classes/bussines/BKey");
+    var bKey = new BKey_1.BKey();
+    await bKey.keyLost(req.session.user.username,idFile);
     res.render("user/keylost");
 });
 router.get("/request-key",async (req,res)=>
@@ -82,7 +87,7 @@ router.get("/request-key",async (req,res)=>
     res.render("user/requestkey");
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    console.log("AaaaaaaaaaAAAAAAA:",req.session.user.username);
+    //console.log("AaaaaaaaaaAAAAAAA:",req.session.user.username);
     var requestValid = await bRequest.newRequest(req.session.user.username,req.query.id, 1);
     if(!requestValid){
         

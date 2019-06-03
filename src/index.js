@@ -33,6 +33,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 /** SEGURIDAD DE RUTAS **/
+
 app.use('/user/', function (req, res, next) {
     if(req.isAuthenticated())
     {
@@ -51,7 +52,7 @@ app.use('/admin/', function (req, res, next) {
     }
     else
     {
-        req.flash("message","Please login to continue");
+        req.flash("message","Please login  as admin to continue");
         res.redirect("/login");
     }
 });
