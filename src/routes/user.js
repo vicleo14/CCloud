@@ -1,7 +1,6 @@
 const express=require("express");
 const fs=require("fs");
 const router=express.Router();
-
 router.get("/upload-file",(req,res)=>
 {
     res.render("user/uploadfile");
@@ -21,7 +20,7 @@ router.post("/upload-file",async (req,res)=>
     var mac=fileInfo.mac;
     //var nickname=fileInfo.nickname;
     var size=fileInfo.size;
-    var nickname="memo1";
+    var nickname=req.session.user.username;
     var i=0;
     console.log("cipheredM:",cipheredM);
     console.log("CipheredData: ",cipheredData);
@@ -56,7 +55,7 @@ router.post("/download-file",async (req,res)=>
     
     var nameFileC=infoFile[0].getCipheredName();
     var cipheredMessage=fs.readFile(path,nameFileC).toString();
-    console.log(cipheredMessage.length);
+    //console.log(cipheredMessage.length);
     obj.dataFile=cipheredMessage;
     res.send(obj);
 });
@@ -65,14 +64,18 @@ router.get("/my-files",async (req,res)=>
 {
     var MDBDAOFileInfo_1 = require("../app/classes/dataAccess/dao/MDBDAOFileInfo");
     daoFiles = new MDBDAOFileInfo_1.MDBDAOFileInfo();
-    var results=await daoFiles.findFilesByUser("memo1");
-    console.log(results);
-
+    console.log("Username:",req.session.user.username);
+    var results=await daoFiles.findFilesByUser(req.session.user.username);
     res.render("user/myfiles",{files:results});
 });
 
 router.get("/key-lost",async (req,res)=>
 {    
+    var idFile=req.query.id;
+    console.log("IDFILE:",idFile);
+    var BKey_1 = require("../app/classes/bussines/BKey");
+    var bKey = new BKey_1.BKey();
+    await bKey.keyLost(req.session.user.username,idFile);
     res.render("user/keylost");
     
 });
@@ -82,7 +85,8 @@ router.get("/request-key",async (req,res)=>
     res.render("user/requestkey");
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    var requestValid = bRequest.newRequest('memo1',req.query.id, 1);
+    //console.log("AaaaaaaaaaAAAAAAA:",req.session.user.username);
+    var requestValid = await bRequest.newRequest(req.session.user.username,req.query.id, 1);
     if(!requestValid){
         
     }
@@ -92,7 +96,10 @@ router.get("/my-requests",async(req,res)=>
 {
     var BRequest_1 = require("../app/classes/bussines/BRequest");
     bRequest = new BRequest_1.BRequest();
-    var imprimir = await bRequest.findRequestsByUser("memo1");
+    /* AQUI */
+    //console.log("values:",express);
+    var imprimir = await bRequest.findRequestsByUser(req.session.user.username);
+    console.log("VALUES:",imprimir);
     res.render("user/myrequests",{requests:imprimir});
 });
 
@@ -126,8 +133,103 @@ router.post("/confirm-request",async(req,res)=>
 router.post("/public-key",async (req,res)=>
 {    
     var key=fs.readFileSync("./publicKey.txt");
-    console.log(key.toString());
+    //console.log(key.toString());
     res.send(key);
 });
+router.get("/my-profile",async (req,res)=>
+{      
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    var infoDAO=await daoUser.findUsers(req.session.user.username);
+    
+    var info={
+        curp:infoDAO.getCurp(),
+        name:infoDAO.getName(),
+        lastnameA:infoDAO.getLastNameA(),
+        lastnameB:infoDAO.getLastNameB(),
+        birthday: infoDAO.getBirthday(),
+        email: "prueba@email.com"
+    }
+    console.log(info);
+    res.render("user/myprofile",{infoUser:info});
+});
+router.post("/updateInfo",async (req,res)=>
+{      
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    var DTOUser_1 = require("../app/classes/dataAccess/dto/DTOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    dtoUser=new DTOUser_1.DTOUser();
+    //console.log(req.body);
+    var password=req.body.password;
+    const BUser1=require("../app/classes/bussines/BUser");
+    const DTOUser1=require("../app/classes/dataAccess/dto/DTOUser");
+    var buser=new BUser1.BUser();
+    try
+    { 
+        var result=await buser.userLogin(req.session.user.username,password);
+        if(result!=null)
+        {
+            var infoDAO=await daoUser.findUsers(req.session.user.username);
+            console.log(infoDAO);
+            infoDAO.setName(req.body.name);
+            infoDAO.getLastNameA(req.body.lastnameA);
+            infoDAO.getLastNameB(req.body.lastnameB);
+            infoDAO.setBirthday(req.body.birthday);
+            infoDAO.setNickname(req.session.user.username);
+            await daoUser.updateUser(infoDAO);
+            req.flash("success","Everything correct");
+        }
+        else
+        {
+            req.flash("message","Authentication failed");
+        }
+    }
+    catch(x)
+    {
+        req.flash("message","Something is wrong. Try again later.");
+    }
+    res.redirect("/user/my-profile");
+});
+router.post("/change-password",async (req,res)=>
+{      
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    var DTOUser_1 = require("../app/classes/dataAccess/dto/DTOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    dtoUser=new DTOUser_1.DTOUser();
+    //console.log(req.body);
+    var password=req.body.pact;
+    var password2=req.body.rp;
+    var password3=req.body.pa;
+    console.log(req.body);
+    const BUser1=require("../app/classes/bussines/BUser");
+    const DTOUser1=require("../app/classes/dataAccess/dto/DTOUser");
+    var buser=new BUser1.BUser();
+    try
+    { 
+        var result=await buser.userLogin(req.session.user.username,password);
+        if(result!=null)
+        {
+            if(password2==password3)
+            {
+                var infoDAO=await daoUser.updatePassword(req.session.user.username, password2);
+                req.flash("success","Password correctly changed");
+            }
+            else
+            {
+                req.flash("message","Passwords does not match");
+            }
+        }
+        else
+        {
+            req.flash("message","Authentication failed");
+        }
+    }
+    catch(x)
+    {
+        req.flash("message","Something is wrong. Try again later.");
+    }
+    res.redirect("/user/my-profile");
+});
+
 
 module.exports=router;

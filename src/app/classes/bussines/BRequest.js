@@ -243,6 +243,7 @@ var BRequest = /** @class */ (function () {
                             //Searchig for the user's e-mail
                             email = dao_contact.findEmails(nickname);
                             mail.sendRequestNumber(email[0].getContact(), nickname, dto_file_info.getDecipheredName(), code);
+                            dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_KEY_UNDEFINED);
                             return [2 /*return*/, true];
                         }
                         return [2 /*return*/];

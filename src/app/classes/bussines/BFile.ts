@@ -77,7 +77,7 @@ export class BFile
 				var date = new Date();
 				//Calculating id
 				var split = name.split(".");
-				var id = nickname + name + dateFormat( new Date(),"yyyyMMddhhMMss");
+				var id = nickname + split[0] + dateFormat( new Date(),"yyyyMMddhhMMss");
 
 				//Filling file's information
 				dto_file_info.setCipheredName(id+ExtensionConstants.GENERIC_EXTENSION);
@@ -322,22 +322,23 @@ export class BFile
 	}*/
 
 
-	cipher(data:string, key:string):string{
+	async cipher(data:string, key:string){
+		console.log("DATA:",data.length);
 		var aes:IBlockCipher = new AES256();
-		return aes.cipher(data, key);
+		return await aes.cipherFile(Buffer.from(data,"base64"), key);
 	}
 
-	decipher(data:string, key:string, mac:string, keyMac:string):string{
+	async decipher(data:string, key:string, mac:string, keyMac:string){
 		var aes:IBlockCipher = new AES256();
 		var calc_mac:IMac = new HMac();
 		if(this.verify(data, mac, keyMac))
-			return aes.decipher(data, key);
+			return await aes.decipherFile(Buffer.from(data,"base64"), key);
 		else
 			return "Error. File corrupted";
 	}	
 
-	verify(data:string, mac:string, keyMac:string):boolean{
+	async verify(data:string, mac:string, keyMac:string):boolean{
 		var calc_mac:IMac = new HMac();
-		return calc_mac.verifyMac(data, keyMac, mac)?true:false;
+		return await calc_mac.verifyMac(data, keyMac, mac)?true:false;
 	}
 }

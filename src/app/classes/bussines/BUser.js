@@ -76,6 +76,7 @@ var BUser = /** @class */ (function () {
                         dto_user.setNickname(nickn);
                         dto_user.setHashPassword(pass);
                         dto_user.setActive(true);
+                        console.log("paso");
                         band_email = false;
                         regexpEmail = new RegExp('/^((?!(@)).)*$/');
                         /*for(let cont of contact){
@@ -97,9 +98,12 @@ var BUser = /** @class */ (function () {
                         //   return false;
                         //If there's an email, continues the user creation process
                         _a.sent();
+<<<<<<< HEAD
                         return [4 /*yield*/, dao_contact.createContact(nickn, dto_contact)];
                     case 4:
                         _a.sent();
+=======
+>>>>>>> 134d99ca9db982b79454f3589d42194e98a616e7
                         console.log("usuario creado");
                         dao_contact = new MDBDAOContact_1.MDBDAOContact();
                         cont = 0;
@@ -156,7 +160,8 @@ var BUser = /** @class */ (function () {
                                 //dao_action.createAction(dto_action); 
                                 dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_SESSION_LOGINSUCCESSFUL);
                                 //Se sube un usuario a sesión
-                                return [2 /*return*/, true];
+                                dto_user.setHashPassword("");
+                                return [2 /*return*/, dto_user];
                             }
                             //If it isn't
                             else {
@@ -169,7 +174,7 @@ var BUser = /** @class */ (function () {
                                     //dto_action.setActions([1005, 1003]);
                                     //dao_action.createAction(dto_action);
                                 }
-                                return [2 /*return*/, false];
+                                return [2 /*return*/, null];
                             }
                         }
                         else
