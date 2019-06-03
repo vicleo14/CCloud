@@ -22,8 +22,38 @@ window.sendForm=function() {
         form.submit();
     }
     else {
-        alert("Las contraseñas no coinciden");
+        alert("The passwords does not match");
     }
+}
+window.sendFormChageInfo=function() {
+  var hash = new SHA256_1.SHA256();
+  /* Obtenemos campos */
+  var p1 = document.getElementById("p");
+  var phash = hash.calculateHash(p1.value);
+  p1.value = phash;
+  var form = document.getElementById("formUpdateInfo");
+  form.submit();
+}
+window.sendFormChagePassword=function() {
+  var hash = new SHA256_1.SHA256();
+  /* Obtenemos campos */
+  var pact = document.getElementById("pact");
+  var p1 = document.getElementById("pa");
+  var p2 = document.getElementById("rp");
+  console.log("V1;",p1.value,"V2:",p2.value);
+  if (p1.value == p2.value) {
+      var phashAct = hash.calculateHash(pact.value);
+      var phash = hash.calculateHash(p1.value);
+      pact.value=phashAct;
+      p1.value = phash;
+      p2.value = phash;
+      console.log(phash);
+      var form = document.getElementById("formChangePassword");
+      form.submit();
+  }
+  else {
+      alert("The passwords does not match");
+  }
 }
 
 },{"../src/app/classes/crypto/SHA256":2,"../src/app/classes/utils/ExtensionConstants":3}],2:[function(require,module,exports){

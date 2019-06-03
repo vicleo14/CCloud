@@ -1,41 +1,44 @@
+<script src="/js/hash.js"></script>
+
 <div class="container p-4"></div>
     <div class="containter md-12 lg-12 mx-auto">
         <div class="card text-center">
             <div class="card-body">
                 <h3>Welcome {{user.username}}</h3>
-                <form>
+                <form action="/user/updateInfo" method="post" id="formUpdateInfo">
+                    {{#if infoUser}}
                     <div class="form-group">
                         <label >CURP:</label>
-                        <input class="form-control" type="text" placeholder="Readonly input here..." readonly>
+                        <input class="form-control" type="text" name="" placeholder="{{infoUser.curp}}" readonly>
                     </div>
                     <div class="form-group">
                         <label >Mail:</label>
-                        <input class="form-control" type="text" placeholder="Readonly input here..." readonly>
+                        <input class="form-control" type="text" name="" placeholder="{{infoUser.email}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="formGroupNameleInput">Name:</label>
-                        <input type="text" class="form-control" id="formGroupNameleInput" placeholder="Name">
+                        <input type="text"  class="form-control" name="name" id="formGroupNameleInput" placeholder="Name" value="{{infoUser.name}}">
                     </div>
                     <div class="form-group">
                         <label for="formGroupLNAInput">First Last Name:</label>
-                        <input type="text" class="form-control" id="formGroupLNAInput" placeholder="First Last name">
+                        <input type="text" class="form-control" id="formGroupLNAInput" name="lastname" placeholder="First Last name" value="{{infoUser.lastnameA}}">
                     </div>
                     <div class="form-group">
                         <label for="formGroupSNAInput">Second Last Name:</label>
-                        <input type="text" class="form-control" id="formGroupSNAInput" placeholder="First Last name">
+                        <input type="text" class="form-control" id="formGroupSNAInput" name="secondlast" placeholder="First Last name" value="{{infoUser.lastnameB}}">
                     </div>
                     <div class="form-group">
                         <label for="formGroupSNAInput">Birthday</label>
-                        <input type="date" class="form-control" name="birthdate" placeholder="Birthdate" >
+                        <input type="date" class="form-control" name="birthdate" placeholder="Birthdate" value={{infoUser.birthday}}>
                     </div>      
                     <div class="form-group">
                         <label for="formGroupSNAInput">Confirm your password:</label>
-                        <input type="password" class="form-control" id="formGroupSNAInput" placeholder="Your actual password">
+                        <input type="password" class="form-control" id="p" name="password"  placeholder="Your actual password">
                     </div>
-                    
+                   {{/if}} 
                 </form>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Change my info</button>
+            <button class="btn btn-primary mb-2" onclick="sendFormChageInfo()">Change my info</button>
         </div>
     </div>
 </div>
@@ -44,22 +47,22 @@
         <div class="card text-center">
             <div class="card-body">
                 <h3>Change your password</h3>
-                <form>
+                <form id="formChangePassword" method="post" action="/user/change-password">
                     <div class="row">
                         <div class="col">
-                            <input type="password" class="form-control" placeholder="Your actual password">
+                            <input type="password" class="form-control" placeholder="Your actual password" id="pact" name="pact">
                         </div>
                         <div class="col">
-                            <input type="password" class="form-control" placeholder="Your new password">
+                            <input type="password" class="form-control" placeholder="Your new password" id="pa" name="pa">
                         </div>
                         <div class="col">
-                            <input type="password" class="form-control" placeholder="Confirm your new password">
+                            <input type="password" class="form-control" placeholder="Confirm your new password" id="rp" name="rp">
                         </div>
                     </div>                    
                 </form>
                  
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Change my passwords</button>
+            <button  class="btn btn-primary mb-2" onclick="sendFormChagePassword()">Change my passwords</button>
         </div>
     </div>
 </div>

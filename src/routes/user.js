@@ -113,7 +113,98 @@ router.post("/public-key",async (req,res)=>
 });
 router.get("/my-profile",async (req,res)=>
 {      
-    res.render("user/myprofile");
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    var infoDAO=await daoUser.findUsers(req.session.user.username);
+    
+    var info={
+        curp:infoDAO.getCurp(),
+        name:infoDAO.getName(),
+        lastnameA:infoDAO.getLastNameA(),
+        lastnameB:infoDAO.getLastNameB(),
+        birthday: infoDAO.getBirthday(),
+        email: "prueba@email.com"
+    }
+    console.log(info);
+    res.render("user/myprofile",{infoUser:info});
 });
+router.post("/updateInfo",async (req,res)=>
+{      
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    var DTOUser_1 = require("../app/classes/dataAccess/dto/DTOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    dtoUser=new DTOUser_1.DTOUser();
+    //console.log(req.body);
+    var password=req.body.password;
+    const BUser1=require("../app/classes/bussines/BUser");
+    const DTOUser1=require("../app/classes/dataAccess/dto/DTOUser");
+    var buser=new BUser1.BUser();
+    try
+    { 
+        var result=await buser.userLogin(req.session.user.username,password);
+        if(result!=null)
+        {
+            var infoDAO=await daoUser.findUsers(req.session.user.username);
+            console.log(infoDAO);
+            infoDAO.setName(req.body.name);
+            infoDAO.getLastNameA(req.body.lastnameA);
+            infoDAO.getLastNameB(req.body.lastnameB);
+            infoDAO.setBirthday(req.body.birthday);
+            infoDAO.setNickname(req.session.user.username);
+            await daoUser.updateUser(infoDAO);
+            req.flash("success","Everything correct");
+        }
+        else
+        {
+            req.flash("message","Authentication failed");
+        }
+    }
+    catch(x)
+    {
+        req.flash("message","Something is wrong. Try again later.");
+    }
+    res.redirect("/user/my-profile");
+});
+router.post("/change-password",async (req,res)=>
+{      
+    var DAOUser_1 = require("../app/classes/dataAccess/dao/MDBDAOUser");
+    var DTOUser_1 = require("../app/classes/dataAccess/dto/DTOUser");
+    daoUser=new DAOUser_1.MDBDAOUser();
+    dtoUser=new DTOUser_1.DTOUser();
+    //console.log(req.body);
+    var password=req.body.pact;
+    var password2=req.body.rp;
+    var password3=req.body.pa;
+    console.log(req.body);
+    const BUser1=require("../app/classes/bussines/BUser");
+    const DTOUser1=require("../app/classes/dataAccess/dto/DTOUser");
+    var buser=new BUser1.BUser();
+    try
+    { 
+        var result=await buser.userLogin(req.session.user.username,password);
+        if(result!=null)
+        {
+            if(password2==password3)
+            {
+                var infoDAO=await daoUser.updatePassword(req.session.user.username, password2);
+                req.flash("success","Password correctly changed");
+            }
+            else
+            {
+                req.flash("message","Passwords does not match");
+            }
+        }
+        else
+        {
+            req.flash("message","Authentication failed");
+        }
+    }
+    catch(x)
+    {
+        req.flash("message","Something is wrong. Try again later.");
+    }
+    res.redirect("/user/my-profile");
+});
+
 
 module.exports=router;
