@@ -369,11 +369,21 @@ DELIMITER ;
 --crear
 DROP PROCEDURE IF EXISTS createRequest;
 DELIMITER #
-CREATE PROCEDURE createRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname VARCHAR(50))
+CREATE PROCEDURE createRequest(IN idFile VARCHAR(256),IN idType INT,IN nickname VARCHAR(50), IN code INT)
 BEGIN
-	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,-1,now());
+	INSERT INTO keyRequest VALUES(idFile,idType,nickname,1,code,now());
 END #
 DELIMITER ;
+
+--checar códigos existentes
+DROP PROCEDURE IF EXISTS checkoutCode;
+DELIMITER #
+CREATE PROCEDURE checkoutCode(IN code INT)
+BEGIN
+	SELECT * FROM keyRequest WHERE code LIKE nb_code;
+END #
+DELIMITER ;
+
 --actualizar
 DROP PROCEDURE IF EXISTS updateRequest;
 DELIMITER #
@@ -421,5 +431,14 @@ CREATE PROCEDURE findRequestByUserFileType(IN nickname VARCHAR(50),IN idFile VAR
 BEGIN
 	SELECT * FROM keyRequest 
 	WHERE id_user LIKE nickname AND id_file LIKE idFile AND id_keyType=idKey;
+END #
+DELIMITER ;
+
+--find requests by state
+DROP PROCEDURE IF EXISTS findRequestsByState;
+DELIMITER #
+CREATE PROCEDURE findRequestsByState(IN state INT)
+BEGIN
+	SELECT * FROM keyRequest WHERE nb_state LIKE state;
 END #
 DELIMITER ;

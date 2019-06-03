@@ -50,7 +50,6 @@ var SHA256_1 = require("../crypto/SHA256");
 var ExtensionConstants_1 = require("../utils/ExtensionConstants");
 var ActionConstants_1 = require("../utils/ActionConstants");
 var KeyConstants_1 = require("../utils/KeyConstants");
-var fs = require("fs");
 var BKey_1 = require("./BKey");
 var dateFormat = require("dateformat");
 var name1 = "cipheredData" + ExtensionConstants_1.ExtensionConstants.GENERIC_EXTENSION;
@@ -59,14 +58,11 @@ var name3 = "mac" + ExtensionConstants_1.ExtensionConstants.MACKEYC_EXTENSION;
 var path = "storage/";
 var BFile = /** @class */ (function () {
     function BFile() {
-        //Getting server keys
-        this.publicKey = fs.readFileSync("publicKey.txt").toString();
-        this.privateKey = fs.readFileSync("privateKey.txt").toString();
         this.bsKey = new BKey_1.BKey();
     }
     BFile.prototype.uploadFile = function (nickname, name, cfile, size, cipheredKeyMAC, MAC, cipheredKey, hashMac, hashKeyFile) {
         return __awaiter(this, void 0, void 0, function () {
-            var dto_file_info, dto_file_data, dto_action, dto_key, dao_file_info, dao_file_data, dao_action, dao_key, hmac, hash, rsa, decipheredKeyMAC, decipheredKeyFile, date, split, id;
+            var dto_file_info, dto_file_data, dto_action, dto_key, dao_file_info, dao_file_data, dao_action, dao_key, hmac, hash, rsa, privateKey, decipheredKeyMAC, decipheredKeyFile, date, split, id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -81,10 +77,13 @@ var BFile = /** @class */ (function () {
                         hmac = new HMac_1.HMac();
                         hash = new SHA256_1.SHA256();
                         rsa = new RSA_1.RSA();
-                        decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
-                        decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
-                        if (!(hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile))) return [3 /*break*/, 3];
-                        if (!this.verify(cfile, MAC, decipheredKeyMAC)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.bsKey.desofuscar(155)];
+                    case 1:
+                        privateKey = _a.sent();
+                        decipheredKeyMAC = rsa.privateDecryption(privateKey, cipheredKeyMAC, 'rocanroll').toString();
+                        decipheredKeyFile = rsa.privateDecryption(privateKey, cipheredKey, 'rocanroll').toString();
+                        if (!(hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile))) return [3 /*break*/, 4];
+                        if (!this.verify(cfile, MAC, decipheredKeyMAC)) return [3 /*break*/, 3];
                         date = new Date();
                         split = name.split(".");
                         id = nickname + name + dateFormat(new Date(), "yyyyMMddhhMMss");
@@ -102,7 +101,7 @@ var BFile = /** @class */ (function () {
                         dto_key.setKeyHash(hashKeyFile);
                         dto_key.setKeyFileName(id + ExtensionConstants_1.ExtensionConstants.CIPHERKEYC_EXTENSION);
                         return [4 /*yield*/, dao_key.createKey(dto_key)];
-                    case 1:
+                    case 2:
                         _a.sent();
                         //Filling MAC's key information
                         dto_key.setIdFile(id);
@@ -118,10 +117,10 @@ var BFile = /** @class */ (function () {
                         dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_UPLOADED);
                         dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_KEY_MACUPLOADED);
                         return [2 /*return*/, true];
-                    case 2:
+                    case 3:
                         dao_action.createAction(nickname, ActionConstants_1.ActionConstants.ACTION_FILE_CORRUPTED);
                         return [2 /*return*/, false];
-                    case 3: return [2 /*return*/, false];
+                    case 4: return [2 /*return*/, false];
                 }
             });
         });

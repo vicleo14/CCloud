@@ -7,4 +7,6 @@ export interface IDAORequest
     findRequestByUser(nickname:string);
     findRequestByUserAndFile(nickname:string,idFile:string);
     findRequestByUserFileAndType(nickname:string,idFile:string,type:number);
+    codeCheckout(code:number);
+    findRequestsByState(state:number);
 }

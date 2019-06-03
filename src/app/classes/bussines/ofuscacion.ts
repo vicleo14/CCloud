@@ -51,12 +51,14 @@ export class ofusc
 		 200,161,128,166,153,152,168,47,14,129,101,115,228,194,162,138,
 		 212,225,17,208,8,139,42,242,237,154,100,63,193,108,249,236]; 
 
-	async ofusc_desofusc(txt:string, clave:number){
+	async ofuscar(txt:string, clave:number){
+		var txtBuf=Buffer.from(txt, 'ascii');
+		console.log(txtBuf);
 		var w0, w1, b;
 		for(let i=0; i<txt.length;i+=1){
 			w0 = clave%256;
-			w1 = clave/256;
-			b=txt[i];
+			w1 = Math.floor(clave/256);
+			b=txtBuf[i];
 			b = (b+w0)%256;
 			b = this.vPR[b]; 
 			b = (b+w1) % 256;
@@ -64,19 +66,34 @@ export class ofusc
 			b = (b-w1+256) % 256;
 			b = this.vPI[b]; 
 			b = (b-w0+256) % 256;
-			txt[i]=(char)b;
+			txtBuf[i]=b;
 			clave=(clave+1)%65536;
 		}
+		console.log(txtBuf);
+		return txtBuf.toString('base64');
+	}
 
-
-		/*for i = 0..length(txt)-1:
-			w0 = clave mod 256
-			w1 = clave div 256
-			b = txt[i]; b = (b+w0) mod 256
-			b = vPR[b]; b = (b+w1) mod 256
-			b = vPS[b]; b = (b-w1+256) mod 256
-			b = vPI[b]; b = (b-w0+256) mod 256
-			txt[i] = b
-			clave = (clave+1) mod 65536 */
+	async desofuscar(txt:string, clave:number){
+		var txtBuf=Buffer.from(txt, 'base64');
+		console.log(txtBuf);
+		var w0, w1, b;
+		for(let i=0; i<txt.length;i+=1){
+			w0 = clave%256;
+			w1 = Math.floor(clave/256);
+			b=txtBuf[i];
+			b = (b+w0)%256;
+			b = this.vPR[b]; 
+			b = (b+w1) % 256;
+			b = this.vPS[b]; 
+			b = (b-w1+256) % 256;
+			b = this.vPI[b]; 
+			b = (b-w0+256) % 256;
+			txtBuf[i]=b;
+			clave=(clave+1)%65536;
+		}
+		console.log(txtBuf);
+		return txtBuf.toString('ascii');
 	}
 } 
+
+var p:ofusc = new ofusc();

@@ -9,6 +9,7 @@ var FSDAOFileData_1 = require("../src/app/classes/dataAccess/dao/FSDAOFileData")
 var RSA_1 = require("../src/app/classes/crypto/RSA");
 window.uploadFile = function (file) {
     {
+        console.log(file);
         var cipher = new AES256_1.AES256();
         var generator = new RandomGenerator_1.RandomGenerator();
         var mac = new HMac_1.HMac();

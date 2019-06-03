@@ -1,0 +1,48 @@
+
+<script src="/js/df.js"></script>
+
+
+
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Hi!</h4>
+  <p>
+      To send you the key requested by the user it's necessary to insert the master key that has given to you
+  </p>
+  <hr>
+  <p class="mb-0">
+      Follow the next steps:
+      <ol>
+          <li>Upload the file of your master key</li>
+          <li>The key will be downloaded as a file. Yo must give it in person to the user that requested the key</li>
+          
+      </ol>
+      
+  </p>
+</div>  
+{{#each request}}    
+<script>
+    window.fileID = "{{this.id}}";
+    console.log("FileID:",fileID);
+</script>
+<div class="container p-12">
+    <div class="div">
+        <div class="col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/user/upload-file" method="POST" id="uploadFile">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input id="MacKeyFile" type="file" class="custom-file-input" id="inputGroupFile02" name="file" onchange="uploadFile(this.files,1)">
+                                <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose the master key </label>
+                            </div>
+                        </div>                
+                    </form>  
+                    <button id="2" class="btn btn-warning btn-lg btn-block" onclick="verifykeys()">Verify and process</button>
+                    <br \>
+                    <a href="#" id="downloadFile" download="{{this.decipheredName}}"  class="btn btn-success btn-lg btn-block disabled">Download key</a>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}

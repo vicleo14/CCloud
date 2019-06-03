@@ -16,6 +16,7 @@ import * as fs from 'fs';
 window.uploadFile=function(file)
 {
     {
+        console.log(file);
         var cipher = new AES256();
         var generator = new RandomGenerator();
         var mac = new HMac();

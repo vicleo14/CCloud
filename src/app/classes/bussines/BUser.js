@@ -50,7 +50,7 @@ var BUser = /** @class */ (function () {
     }
     BUser.prototype.createUser = function (curp, name, l_name_a, l_name_b, birth, role, nickn, pass, email) {
         return __awaiter(this, void 0, void 0, function () {
-            var mailSender, dto_user, dto_action, dto_contact, dao_user, band_email, regexpEmail, dao_contact, cont, x_1;
+            var mailSender, dto_user, dto_action, dto_contact, dao_user, dao_contact, band_email, regexpEmail, dao_contact, cont, x_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -59,13 +59,13 @@ var BUser = /** @class */ (function () {
                         dto_action = new DTOAction_1.DTOAction();
                         dto_contact = new DTOContact_1.DTOContact();
                         dao_user = new MDBDAOUser_1.MDBDAOUser();
+                        dao_contact = new MDBDAOContact_1.MDBDAOContact();
                         return [4 /*yield*/, dao_user.findUsers(nickn)];
                     case 1:
-                        if (!((_a.sent()) == undefined)) return [3 /*break*/, 9];
+                        if (!((_a.sent()) == undefined)) return [3 /*break*/, 10];
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 5, 7, 8]);
-                        //    return false;
+                        _a.trys.push([2, 6, 8, 9]);
                         //If there's no othe user with the same nickname, continues the process
                         dto_user.setCurp(curp);
                         dto_user.setName(name);
@@ -84,23 +84,23 @@ var BUser = /** @class */ (function () {
                                 break;
                             }
                         }*/
+                        dto_contact.setContatType(ContactConstants_1.ContactConstants.CONTACT_EMAIL);
+                        dto_contact.setContact(email);
                         //If there's no email, returns false
                         //if(!band_email)
                         //   return false;
                         //If there's an email, continues the user creation process
                         return [4 /*yield*/, dao_user.createUser(dto_user)];
                     case 3:
-                        /*for(let cont of contact){
-                            if(!regexpEmail){
-                                band_email = true;
-                                break;
-                            }
-                        }*/
                         //If there's no email, returns false
                         //if(!band_email)
                         //   return false;
                         //If there's an email, continues the user creation process
                         _a.sent();
+                        return [4 /*yield*/, dao_contact.createContact(nickn, dto_contact)];
+                    case 4:
+                        _a.sent();
+                        console.log("usuario creado");
                         dao_contact = new MDBDAOContact_1.MDBDAOContact();
                         cont = 0;
                         /*for(let cont of contact){
@@ -112,24 +112,24 @@ var BUser = /** @class */ (function () {
                         dto_contact.setContact(email);
                         dto_contact.setContatType(ContactConstants_1.ContactConstants.CONTACT_EMAIL);
                         return [4 /*yield*/, dao_contact.createContact(nickn, dto_contact)];
-                    case 4:
+                    case 5:
                         _a.sent();
                         /* ENVIAMOS CORREO */
                         mailSender.sendWelcome(email, nickn);
-                        return [3 /*break*/, 8];
-                    case 5:
+                        return [3 /*break*/, 9];
+                    case 6:
                         x_1 = _a.sent();
                         console.log("error:", x_1);
                         return [4 /*yield*/, dao_user.deleteUser(nickn)];
-                    case 6:
+                    case 7:
                         _a.sent();
-                        return [3 /*break*/, 8];
-                    case 7: return [2 /*return*/, true];
-                    case 8: return [3 /*break*/, 10];
-                    case 9:
+                        return [3 /*break*/, 9];
+                    case 8: return [2 /*return*/, true];
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
                         console.log("El usuario ya existe");
-                        _a.label = 10;
-                    case 10: return [2 /*return*/];
+                        _a.label = 11;
+                    case 11: return [2 /*return*/];
                 }
             });
         });

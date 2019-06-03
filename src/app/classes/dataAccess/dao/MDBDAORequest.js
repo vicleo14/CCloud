@@ -47,7 +47,8 @@ var MDBDAORequest = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, pool.query('CALL createRequest(?,?,?)', [request.getIdFile(),
                             request.getIdKeyType(),
-                            request.getUser()])];
+                            request.getUser(),
+                            request.getCode()])];
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/];
@@ -146,6 +147,52 @@ var MDBDAORequest = /** @class */ (function () {
                         request.setCodeDate(result[0][0].tst_code);
                         request.setCode(result[0][0].nb_code);
                         return [2 /*return*/, request];
+                }
+            });
+        });
+    };
+    MDBDAORequest.prototype.codeCheckout = function (code) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        request = new DTORequest_1.DTORequest();
+                        return [4 /*yield*/, pool.query('CALL checkoutCode(?)', [code])];
+                    case 1:
+                        result = _a.sent();
+                        request.setIdFile(result[0][0].id_file);
+                        request.setIdKeyType(result[0][0].id_keyType);
+                        request.setUser(result[0][0].id_user);
+                        request.setState(result[0][0].nb_state);
+                        request.setCodeDate(result[0][0].tst_code);
+                        request.setCode(result[0][0].nb_code);
+                        return [2 /*return*/, request];
+                }
+            });
+        });
+    };
+    MDBDAORequest.prototype.findRequestsByState = function (state) {
+        return __awaiter(this, void 0, void 0, function () {
+            var requests, result, i, aux;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        requests = new Array();
+                        return [4 /*yield*/, pool.query('CALL findRequestsByState(?)', [state])];
+                    case 1:
+                        result = _a.sent();
+                        for (i = 0; i < result[0].length; i++) {
+                            aux = new DTORequest_1.DTORequest();
+                            aux.setIdFile(result[0][i].id_file);
+                            aux.setIdKeyType(result[0][i].id_keyType);
+                            aux.setUser(result[0][i].id_user);
+                            aux.setState(result[0][i].nb_state);
+                            aux.setCodeDate(result[0][i].tst_code);
+                            aux.setCode(result[0][i].nb_code);
+                            requests.push(aux);
+                        }
+                        return [2 /*return*/, requests];
                 }
             });
         });

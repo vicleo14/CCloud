@@ -5,7 +5,7 @@ const HOST="localhost";
 const DATABASE="db_Ccloud";
 const PORT="3306";
 const USER="root";
-const PASSWORD="root";
+const PASSWORD="";
 const pool=mysql.createPool(
     {
         host: HOST, 

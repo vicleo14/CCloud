@@ -23,12 +23,12 @@ function sendForm()
     /* Obtenemos campos */
     var p1=document.getElementById("p").value;
     var p2=document.getElementById("rp").value;
+    
     if(p1==p2)
     {
         var phash=hash.calculateHash(p1);
         p1.value=phash;
         p2.value=phash;
-        
     }
     else
     {

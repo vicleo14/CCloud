@@ -1,4 +1,9 @@
-
+<nav class="navbar navbar-light bg-light">
+  <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="">Search</button>
+  </form>
+</nav>
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -9,20 +14,29 @@
       <th scope="col">Status</th>
       <th scope="col"></th>
       <th scope="col"></th>
-      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     {{#each requests}}    
     <tr>
-      <td>{{this.decipheredName}}</td>
-      <td>{{this.size}} bytes</td>
+      <td>{{this.user}}</td>
+      <td>{{this.file}}</td>
       <td>{{this.date}}</td>
-      <td><a class="btn btn btn-outline-success" href="download-file?id={{this.id}}" role="button">Confirm Request</a></td>
-      <td><a class="btn btn btn-outline-warning" href="request-key?id={{this.id}}" role="button">Key delivered</a></td>
-      <td><a class="btn btn btn-outline-danger" href="key-lost?id={{this.id}}" role="button">Lost my key</a></td></td>
+      <td>{{this.keyType}}</td>
+      <td>{{this.state}}</td>
+      <td><a class="btn btn btn-outline-success" href="get-key?id={{this.idFile}}&type={{this.keyTypeNum}}" role="button">Get key</a></td>
+      <td><a class="btn btn btn-outline-warning" href="request-key?id={{this.idFile}}" role="button">Key delivered</a></td>
     </tr>
     {{/each}}
     
   </tbody>
 </table>
+
+<script type="text/javascript">
+  function searchByUser(user){
+    var BRequest_1 = require("../../classes/bussines/BRequest");
+    bRequest = new BRequest_1.BRequest();
+    bRequest.findRequestsByUser(user);
+    console.log("Hola");
+  }
+</script>

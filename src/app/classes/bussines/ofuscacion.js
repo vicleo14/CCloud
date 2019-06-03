@@ -35,13 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var SHA256_1 = require("../crypto/SHA256");
-var FSDAOFileData_1 = require("../dataAccess/dao/FSDAOFileData");
-var RSA_1 = require("../crypto/RSA");
-var MDBDAOKey_1 = require("../dataAccess/dao/MDBDAOKey");
-var filestr = require('fs');
-var BKey = /** @class */ (function () {
-    function BKey() {
+var ofusc = /** @class */ (function () {
+    function ofusc() {
         this.vPR = [65, 54, 19, 98, 168, 33, 110, 187, 244, 22, 204, 4, 127, 100, 232, 93,
             30, 242, 203, 42, 116, 197, 94, 53, 210, 149, 71, 158, 150, 45, 154, 136,
             76, 125, 132, 63, 219, 172, 49, 182, 72, 95, 246, 196, 216, 57, 139, 231,
@@ -90,79 +85,14 @@ var BKey = /** @class */ (function () {
             253, 157, 24, 65, 125, 147, 216, 88, 44, 206, 254, 36, 175, 222, 184, 54,
             200, 161, 128, 166, 153, 152, 168, 47, 14, 129, 101, 115, 228, 194, 162, 138,
             212, 225, 17, 208, 8, 139, 42, 242, 237, 154, 100, 63, 193, 108, 249, 236];
-        this.rsa = new RSA_1.RSA();
-        this.hashO = new SHA256_1.SHA256();
-        this.daoKey = new MDBDAOKey_1.MDBDAOKey();
-        this.fsO = new FSDAOFileData_1.FSDAOFileData();
-        this.pathP = "../../../../storage/";
     }
-    BKey.prototype.decipherKey = function (key, hash) {
+    ofusc.prototype.ofuscar = function (txt, clave) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, privKey, decipheredKey;
+            var txtBuf, w0, w1, b, i;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        result = undefined;
-                        console.log("Hash recibido", hash);
-                        privKey = filestr.readFileSync("./privateKey.txt").toString();
-                        return [4 /*yield*/, this.rsa.privateDecryption(privKey, key, 'rocanroll')];
-                    case 1:
-                        decipheredKey = _a.sent();
-                        console.log("Hash calculado", this.hashO.calculateHash(decipheredKey));
-                        if (this.hashO.compareHash(decipheredKey.toString(), hash)) {
-                            result = decipheredKey;
-                        }
-                        return [2 /*return*/, result];
-                }
-            });
-        });
-    };
-    BKey.prototype.cipherKey = function (key) {
-        return __awaiter(this, void 0, void 0, function () {
-            var pubKey, cipheredKey;
-            return __generator(this, function (_a) {
-                pubKey = filestr.readFileSync("./publicKey.txt").toString();
-                cipheredKey = this.rsa.publicEncryption(pubKey.toString(), key);
-                return [2 /*return*/, cipheredKey.toString()];
-            });
-        });
-    };
-    BKey.prototype.storeKey = function (dtoKey, key) {
-        return __awaiter(this, void 0, void 0, function () {
-            var status, check, x_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        status = false;
-                        if (!((check = this.decipherKey(key, dtoKey.getKeyHash())) != undefined)) return [3 /*break*/, 5];
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, this.daoKey.createKey(dtoKey)];
-                    case 2:
-                        _a.sent();
-                        return [4 /*yield*/, this.fsO.createFile(this.pathP, dtoKey.getKeyFileName(), key)];
-                    case 3:
-                        _a.sent();
-                        check = undefined;
-                        status = true;
-                        return [3 /*break*/, 5];
-                    case 4:
-                        x_1 = _a.sent();
-                        status = false;
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/, status];
-                }
-            });
-        });
-    };
-    BKey.prototype.ofuscar = function (txt, clave) {
-        return __awaiter(this, void 0, void 0, function () {
-            var dao_file, txtBuf, w0, w1, b, i;
-            return __generator(this, function (_a) {
-                dao_file = new FSDAOFileData_1.FSDAOFileData();
                 txtBuf = Buffer.from(txt, 'ascii');
-                for (i = 0; i < txtBuf.length; i += 1) {
+                console.log(txtBuf);
+                for (i = 0; i < txt.length; i += 1) {
                     w0 = clave % 256;
                     w1 = Math.floor(clave / 256);
                     b = txtBuf[i];
@@ -176,19 +106,18 @@ var BKey = /** @class */ (function () {
                     txtBuf[i] = b;
                     clave = (clave + 1) % 65536;
                 }
-                dao_file.createFile(this.pathP, "victor1PrivateKey.pk", txtBuf.toString('base64'));
-                return [2 /*return*/];
+                console.log(txtBuf);
+                return [2 /*return*/, txtBuf.toString('base64')];
             });
         });
     };
-    BKey.prototype.desofuscar = function (clave) {
+    ofusc.prototype.desofuscar = function (txt, clave) {
         return __awaiter(this, void 0, void 0, function () {
-            var dao_file, privateKey, txtBuf, w0, w1, b, i;
+            var txtBuf, w0, w1, b, i;
             return __generator(this, function (_a) {
-                dao_file = new FSDAOFileData_1.FSDAOFileData();
-                privateKey = dao_file.readFile(this.pathP, "victor1PrivateKey.pk").toString();
-                txtBuf = Buffer.from(privateKey, 'base64');
-                for (i = 0; i < txtBuf.length; i += 1) {
+                txtBuf = Buffer.from(txt, 'base64');
+                console.log(txtBuf);
+                for (i = 0; i < txt.length; i += 1) {
                     w0 = clave % 256;
                     w1 = Math.floor(clave / 256);
                     b = txtBuf[i];
@@ -202,10 +131,12 @@ var BKey = /** @class */ (function () {
                     txtBuf[i] = b;
                     clave = (clave + 1) % 65536;
                 }
+                console.log(txtBuf);
                 return [2 /*return*/, txtBuf.toString('ascii')];
             });
         });
     };
-    return BKey;
+    return ofusc;
 }());
-exports.BKey = BKey;
+exports.ofusc = ofusc;
+var p = new ofusc();

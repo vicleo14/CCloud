@@ -46,14 +46,9 @@ const path="storage/";
 
 export class BFile
 {
-	private privateKey:string;
-	private publicKey:string;
 	private bsKey:BKey;
 
 	constructor(){
-		//Getting server keys
-		this.publicKey = fs.readFileSync("publicKey.txt").toString();
-		this.privateKey = fs.readFileSync("privateKey.txt").toString();
 		this.bsKey=new BKey();
 	}
 
@@ -70,10 +65,10 @@ export class BFile
 		var hmac:IMac = new HMac();
 		var hash:IHash = new SHA256();
 		var rsa:IRSA = new RSA();
-		
+		var privateKey:string = await this.bsKey.desofuscar(155);
 		//Decryption of the keys
-		var decipheredKeyMAC = rsa.privateDecryption(this.privateKey, cipheredKeyMAC, 'rocanroll').toString();
-		var decipheredKeyFile = rsa.privateDecryption(this.privateKey, cipheredKey, 'rocanroll').toString();
+		var decipheredKeyMAC = rsa.privateDecryption(privateKey, cipheredKeyMAC, 'rocanroll').toString();
+		var decipheredKeyFile = rsa.privateDecryption(privateKey, cipheredKey, 'rocanroll').toString();
 		//Verifying keyMacHash and keyFileHash 
 		if(hash.compareHash(decipheredKeyMAC, hashMac) && hash.compareHash(decipheredKeyFile, hashKeyFile)){
 			//Verifying the MAC

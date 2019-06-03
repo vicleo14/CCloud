@@ -31,11 +31,11 @@ export class BUser
         var dto_action:DTOAction = new DTOAction();
         var dto_contact:DTOContact = new DTOContact();
         var dao_user:IDAOUser = new MDBDAOUser();
+        var dao_contact:IDAOContact = new MDBDAOContact();
         //Check if the nickname is already in use
         if(await dao_user.findUsers(nickn) == undefined)
         {
             try{
-            //    return false;
             //If there's no othe user with the same nickname, continues the process
             dto_user.setCurp(curp);
             dto_user.setName(name);
@@ -46,10 +46,6 @@ export class BUser
             dto_user.setNickname(nickn);
             dto_user.setHashPassword(pass);
             dto_user.setActive(true);
-            console.log("paso");
-            //Verifies the array contactType is the same lenght as the array contact
-            //if(contact.length != typeContact.length)
-            //    return false;
             //Verifies if there is at least one email into the user contacts
             var band_email = false;
             let regexpEmail = new RegExp('/^((?!(@)).)*$/');
@@ -59,12 +55,15 @@ export class BUser
                     break;
                 }
             }*/
+            dto_contact.setContatType(ContactConstants.CONTACT_EMAIL);
+            dto_contact.setContact(email);
             //If there's no email, returns false
             //if(!band_email)
             //   return false;
             //If there's an email, continues the user creation process
             
             await dao_user.createUser(dto_user);
+            await dao_contact.createContact(nickn, dto_contact);
             console.log("usuario creado");
             //Creation of the user contacts
             var dao_contact:IDAOContact = new MDBDAOContact();

@@ -5,6 +5,7 @@
       <th scope="col">Key Type</th>
       <th scope="col">Date</th>
       <th scope="col">State</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -14,6 +15,7 @@
       <td>{{this.keyType}}</td>
       <td>{{this.date}}</td>
       <td>{{this.state}}</td>
+      <td><a class="btn btn btn-outline-success" href="confirm-request?id={{this.idFile}}&type={{this.keyTypeNum}}" role="button">Confirm</a></td>
     </tr>
     {{/each}}
     

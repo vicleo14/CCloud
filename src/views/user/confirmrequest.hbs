@@ -1,0 +1,75 @@
+<script >
+    function sendData(code)
+    {
+        var petition=new XMLHttpRequest;
+        petition.open("POST","http://localhost:3000/user/confirm-request");
+        petition.setRequestHeader("Content-Type", "application/json");
+        var data=JSON.stringify(infoContainer);
+        console.log(data);
+        //console.log(data.length);
+        petition.send(data);
+        petition.onreadystatechange=function()
+        {
+            if(petition.readyState==4 )
+            {
+                petition.abort();
+                console.log("Peticion terminada");
+            }
+        }
+    }
+</script>
+
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Hi!</h4>
+  <p>
+      To be sure that you requested the key of this file and no one else is trying to forge your indentity, please insert the code sent to your e-mail when you first requested the key
+  </p>
+  <hr>
+  <p class="mb-0">
+      To receive your new key follow the next steps:
+      <ol>
+          <li>Insert your code in the blank space</li>
+          <li>Your key will be delivered to the CEO, meet with him so he can give you the key in person</li>
+          
+      </ol>
+      
+  </p>
+</div>  
+{{#each requests}}
+<div class="container p-12">
+    <div class="div">
+        <div class="col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    Your request info
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name: {{this.file}}</li>
+                    <li class="list-group-item">Date of request: {{this.date}}</li>
+                    <li class="list-group-item">Type of key: {{this.keyType}}</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <form action="/user/confirm-request" method="POST" id="uploadFile">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input id="Code" type="text" class="form-control" placeholder="Insert code here">
+                            </div>
+                        </div>                
+                    </form>  
+                    <button id="2" class="btn btn-warning btn-lg btn-block" onclick="sendData({{this}})">Submit Code</button>
+                    <br \>
+                </div>
+            </div>
+            <script type="text/javascript">
+              window.infoContainer{
+                "idFile":"{{this.idFile}}",
+                "keyType":"{{this.keyTypeNum}}",
+                "code":getElementById("Code").value
+              }
+            </script>
+        </div>
+    </div>
+</div>
+{{/each}}

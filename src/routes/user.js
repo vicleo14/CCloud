@@ -22,17 +22,12 @@ router.post("/upload-file",async (req,res)=>
     //var nickname=fileInfo.nickname;
     var size=fileInfo.size;
     var nickname="memo1";
-    var size=0;
     var i=0;
     console.log("cipheredM:",cipheredM);
     console.log("CipheredData: ",cipheredData);
-    //await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
-    var subido;
-    await (subido = bsFile.uploadFile(nickname, name, cipheredData, size, cipheredM, mac, cipheredK, hashM, hashK));
+    var subido = await bsFile.uploadFile(nickname, name, cipheredData, size, cipheredM, mac, cipheredK, hashM, hashK);
     console.log(subido);
     
-    /*await bsFile.saveFile(nickname,name,cipheredData,size,cipheredM,mac,cipheredK,hashK,hashM);
-    console.log("finished");*/
     res.send(true);
 });
 router.get("/download-file",async (req,res)=>
@@ -75,10 +70,13 @@ router.get("/my-files",async (req,res)=>
 
     res.render("user/myfiles",{files:results});
 });
+
 router.get("/key-lost",async (req,res)=>
 {    
     res.render("user/keylost");
+    
 });
+
 router.get("/request-key",async (req,res)=>
 {    
     res.render("user/requestkey");
@@ -96,6 +94,33 @@ router.get("/my-requests",async(req,res)=>
     bRequest = new BRequest_1.BRequest();
     var imprimir = await bRequest.findRequestsByUser("memo1");
     res.render("user/myrequests",{requests:imprimir});
+});
+
+router.get("/confirm-request",async(req,res)=>
+{
+    var BRequest_1 = require("../app/classes/bussines/BRequest");
+    bRequest = new BRequest_1.BRequest();
+    var pass=new Array();
+    pass.push(await bRequest.findRequestByIdUserAndType("memo1",req.query.id,req.query.type));
+    //console.log(pass);
+    res.render("user/confirmrequest",{requests:pass});
+});
+
+router.post("/confirm-request",async(req,res)=>
+{
+    /*var BRequest_1 = require("../app/classes/bussines/BRequest");
+    bRequest = new BRequest_1.BRequest();
+    //console.log(req.body);
+    var requestInfo=req.body;
+    var idFile=req.body.idFile;
+    var user=req.body.user;
+    var keyType=req.body.keyType;
+    var code=req.body.code; 
+    var response = await bRequest.confirmRequest(user, idFile, keyType, code);
+    
+    console.log(idFile);
+    res.send(requestInfo);*/
+    console.log(req.body);
 });
 
 router.post("/public-key",async (req,res)=>
