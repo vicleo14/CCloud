@@ -98,12 +98,9 @@ var BUser = /** @class */ (function () {
                         //   return false;
                         //If there's an email, continues the user creation process
                         _a.sent();
-<<<<<<< HEAD
                         return [4 /*yield*/, dao_contact.createContact(nickn, dto_contact)];
                     case 4:
                         _a.sent();
-=======
->>>>>>> 134d99ca9db982b79454f3589d42194e98a616e7
                         console.log("usuario creado");
                         dao_contact = new MDBDAOContact_1.MDBDAOContact();
                         cont = 0;
